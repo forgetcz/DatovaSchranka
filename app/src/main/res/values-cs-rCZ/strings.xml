@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DatovaSchranka</string>
+    <string name="system_settings">Systémoví nastaveni</string>
+    <string name="add_new_account">Přidat účet</string>
+    <string name="logger">logování</string>
+    <string name="password">Heslo</string>
+    <string name="user_name">Uživateleské jméno</string>
+    <string name="nick_name">Přezdívka</string>
+    <string name="starts_each_minute">Kazdu minutu</string>
+    <string name="cancel">Cancel</string>
+    <string name="_60">10</string>
+    <string name="ok">Ok</string>
+    <string name="test_it">Otestovat</string>
+    <string name="test_account">Testovaci ucet</string>
+    <string name="please_enter_nickname">Prosim zadat nick</string>
+</resources>

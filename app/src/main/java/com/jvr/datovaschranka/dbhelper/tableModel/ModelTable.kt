@@ -1,0 +1,90 @@
+package com.jvr.datovaschranka.dbhelper.tableModel
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import com.jvr.common.lib.logger.BasicLogger
+import com.jvr.common.lib.logger.ComplexLogger
+import com.jvr.common.lib.logger.HistoryLogger
+import java.util.ArrayList
+
+abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : ITableItem<*,*> {
+    protected lateinit var db: SQLiteDatabase
+    protected lateinit var appContext: Context
+
+    override fun setContext(context: Context) {
+        appContext = context
+    }
+
+    /**
+     * Return full class & method name
+     */
+    protected fun getTag(): String {
+        val className = javaClass.name
+        val stack = Thread.currentThread().stackTrace
+        val parentFunctionName = stack[3].methodName
+        val tagResult ="$className:$parentFunctionName"
+        return tagResult
+    }
+
+    protected val logger: ComplexLogger = ComplexLogger(
+        listOf(
+            BasicLogger(), HistoryLogger()
+        )
+    )
+
+    override fun onCreateTable(db: SQLiteDatabase) {
+        try {
+            db.execSQL(getCreateModel())
+            //val s1 = this::onCreateElement.name
+            //val s2 = ::onCreateElement.name
+            //val s3 = (object{}.javaClass.enclosingMethod?.name ?: "")
+            //val s4 = Thread.currentThread().stackTrace[1].methodName
+            //logger.d("${getTag()}:${::onCreateElement.name}", "${::onCreateElement.name}- OK")
+        } catch (error : Exception){
+            logger.e("${getTag()}:${::onCreateTable.name}", error)
+        }
+    }
+
+    override fun onUpgradeTable(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        try {
+            db.execSQL("DROP TABLE IF EXISTS ${getTableName()}")
+            onCreateTable(db)
+            //val s1 = this::onUpgradeElement.name
+            //val s2 = ::onUpgradeElement.name
+            //val s3 = (object{}.javaClass.enclosingMethod?.name ?: "")
+            //val s4 = Thread.currentThread().stackTrace[1].methodName
+            //logger.d(getTag(), "${::onUpgradeElement.name}- OK")
+        } catch (error : Exception) {
+            logger.e(getTag(), error)
+        }
+    }
+
+    override fun setDatabase(db: SQLiteDatabase) {
+        this.db = db
+    }
+
+    override fun deleteAll() : Boolean {
+        try {
+            db.execSQL("DELETE FROM ${getTableName()}")
+            return true
+        } catch (error: Exception) {
+            logger.e(getTag(), error)
+            return false
+        }
+    }
+
+    override fun delete(idsList : Array<String>): Boolean {
+        // Define 'where' part of query.
+        val selection = "_id LIKE ? "
+        // Specify arguments in placeholder order.
+        //val selectionArgs = arrayOf(ids.toString())
+        // Issue SQL statement.
+        val deleteResult = db.delete(getTableName(), selection, idsList)
+        logger.d(getTag(),"Delete column $deleteResult")
+        return deleteResult == 0
+    }
+
+    override fun selectAll(): ArrayList<TItemType>? {
+        return select(null, null)
+    }
+}

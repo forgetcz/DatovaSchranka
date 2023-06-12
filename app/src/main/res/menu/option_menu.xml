@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/option_menu_item_root"
+        app:showAsAction="ifRoom"
+        android:title="" />
+
+    <item android:id="@+id/option_menu_item_logger"
+        android:title="@string/logger"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/option_menu_item_sys_settings"
+        android:title="@string/system_settings"
+        app:showAsAction="never"/>
+
+</menu>

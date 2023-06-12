@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">DatovaSchranka</string>
+    <string name="logger">Logger</string>
+    <string name="system_settings">System settings</string>
+    <string name="add_new_account">Add new account</string>
+    <string name="password">Password</string>
+    <string name="user_name">User name</string>
+    <string name="nick_name">Nick Name</string>
+    <string name="starts_each_minute">Starts each minute</string>
+    <string name="ok">OK</string>
+    <string name="_60">10</string>
+    <string name="cancel">Cancel</string>
+    <string name="test_it">Test it</string>
+    <string name="test_account">Test account</string>
+    <string name="please_enter_nickname">Please enter nick name...</string>
+</resources>
