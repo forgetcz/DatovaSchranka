@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
 }
+
 // https://blog.dipien.com/versioning-android-apps-d6ec171cfd82
 ext.versionMajor = 1
 ext.versionMinor = 0
@@ -81,6 +82,5 @@ dependencies {
     // implementation 'com.jakewharton:butterknife:10.2.1'
     // annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
-    // Data Store
-    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
+
 }

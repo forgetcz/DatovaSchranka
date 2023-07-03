@@ -9,7 +9,7 @@ import java.util.ArrayList
 
 abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : ITableItem<*,*> {
     protected lateinit var db: SQLiteDatabase
-    protected lateinit var appContext: Context
+    private lateinit var appContext: Context
 
     override fun setContext(context: Context) {
         appContext = context
@@ -18,6 +18,7 @@ abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : 
     /**
      * Return full class & method name
      */
+    @Suppress("UnnecessaryVariable")
     protected fun getTag(): String {
         val className = javaClass.name
         val stack = Thread.currentThread().stackTrace

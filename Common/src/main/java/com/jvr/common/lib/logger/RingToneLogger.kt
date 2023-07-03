@@ -18,11 +18,11 @@ class RingToneLogger : ILogger {
     )
 
     override fun d(context: BaseActivityClass, message: String) {}
-    override fun d(Tag: String, message: String) {}
+    override fun d(tag: String, message: String) {}
     override fun i(context: BaseActivityClass, message: String) {}
-    override fun i(Tag: String, message: String) {}
+    override fun i(tag: String, message: String) {}
     override fun w(context: BaseActivityClass, message: String) {}
-    override fun w(Tag: String, message: String) {}
+    override fun w(tag: String, message: String) {}
     override fun e(context: BaseActivityClass, message: String) {
         var ringtone: Ringtone? = null
         try {
@@ -46,5 +46,5 @@ class RingToneLogger : ILogger {
     override fun e(context: BaseActivityClass, message: Exception) {
         e(context, message.message!!)
     }
-    override fun e(Tag: String, message: Exception) {}
+    override fun e(tag: String, message: Exception) {}
 }

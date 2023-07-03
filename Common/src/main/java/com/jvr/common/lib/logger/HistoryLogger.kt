@@ -44,9 +44,9 @@ class HistoryLogger : ILogger, IHistoryLogger {
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Debug)
     }
 
-    override fun d(Tag: String, message: String) {
+    override fun d(tag: String, message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, Tag, message, LogMessageItem.MessageType.Debug)
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Debug)
     }
 
     override fun i(context: BaseActivityClass, message: String) {
@@ -54,9 +54,9 @@ class HistoryLogger : ILogger, IHistoryLogger {
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Info)
     }
 
-    override fun i(Tag: String, message: String) {
+    override fun i(tag: String, message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, Tag, message, LogMessageItem.MessageType.Info)
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Info)
     }
 
     override fun w(context: BaseActivityClass, message: String) {
@@ -64,9 +64,9 @@ class HistoryLogger : ILogger, IHistoryLogger {
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Warning)
     }
 
-    override fun w(Tag: String, message: String) {
+    override fun w(tag: String, message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, Tag, message, LogMessageItem.MessageType.Warning)
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Warning)
     }
 
     override fun e(context: BaseActivityClass, message: String) {
@@ -79,9 +79,9 @@ class HistoryLogger : ILogger, IHistoryLogger {
         addMessage(stackTrace, context.getTag(), message.message, LogMessageItem.MessageType.Error)
     }
 
-    override fun e(Tag: String, message: Exception) {
+    override fun e(tag: String, message: Exception) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, Tag, message.message, LogMessageItem.MessageType.Error)
+        addMessage(stackTrace, tag, message.message, LogMessageItem.MessageType.Error)
     }
 
 }

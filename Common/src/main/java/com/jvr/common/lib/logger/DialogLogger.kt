@@ -13,7 +13,7 @@ class DialogLogger : ILogger {
     override fun getTag(): String { return javaClass.name }
 
     override fun d(context: BaseActivityClass, message: String) {}
-    override fun d(Tag: String, message: String) {}
+    override fun d(tag: String, message: String) {}
     override fun i(context: BaseActivityClass, message: String) {
         context.runOnUiThread {
             Toast.makeText(
@@ -26,7 +26,7 @@ class DialogLogger : ILogger {
         }
     }
 
-    override fun i(Tag: String, message: String) {}
+    override fun i(tag: String, message: String) {}
     override fun w(context: BaseActivityClass, message: String) {
         context.runOnUiThread {
             AlertDialog.Builder(context)
@@ -41,7 +41,7 @@ class DialogLogger : ILogger {
         }
     }
 
-    override fun w(Tag: String, message: String) {}
+    override fun w(tag: String, message: String) {}
     override fun e(context: BaseActivityClass, message: String) {
         context.runOnUiThread {
             AlertDialog.Builder(context)
@@ -60,5 +60,5 @@ class DialogLogger : ILogger {
         e(context, message.message!!)
     }
 
-    override fun e(Tag: String, message: Exception) {}
+    override fun e(tag: String, message: Exception) {}
 }

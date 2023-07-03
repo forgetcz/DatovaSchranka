@@ -12,7 +12,7 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var dbHelper : DbHelper
+    private lateinit var dbHelper: DbHelper
 
     override val logger: ComplexLogger = ComplexLogger(
         listOf(
@@ -23,7 +23,7 @@ class MainActivity : BaseActivity() {
     override fun processTimerEvent(inputDate: Date): Boolean {
         try {
 
-        } catch (ex:Exception){
+        } catch (ex: Exception) {
 
         }
         return true
@@ -37,26 +37,32 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?)  {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)//https://www.youtube.com/watch?v=JxsJxuNIcMk&list=PL79lyfcua_t7yBuRfGu5wXD7ojFKNn1vG
         setContentView(binding.root)
 
-        dbHelper = DbHelper(this, null)
-        val userTable = dbHelper.getUserTable
-        userTable.modelVersion()
-        val l =
         binding.apply {
 
             btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
-                //val iitem = UserModel.Item(1,"","","")
+                //val iItem = UserModel.Item(1,"","","")
                 //nextIntent.putExtra(UserModel.Item::class.java.toString())
                 startNextIntent(nextIntent)
             }
         }
+    }
+}
+    /*dbHelper = DbHelper(this, null)
+        val storeOwner = this@MainActivity
+        val viewModel: DbViewModel = ViewModelProvider(storeOwner)[DbViewModel::class.java]
+        viewModel.getUserTableHash.observe(storeOwner) {
+            //userTable.modelVersion(viewModel)
+            println("$it----------------------------")
+        }
 
-        /*val locale = getLocale()
+        val l =
+        val locale = getLocale()
         println(locale)
         setLocale(this, "cz")
 
@@ -66,9 +72,9 @@ class MainActivity : BaseActivity() {
         userModel.selectAll()
             .forEach{f ->
                 println(f)
-            }*/
+            }
         //userModel.insertUser()
-    /*val name = "jiri 2"
+        val name = "jiri 2"
         val entry = UserModel(name)
         var result = usersDBHelper.insertUser(entry)
 
@@ -78,5 +84,3 @@ class MainActivity : BaseActivity() {
         all.forEach {
             println(it)
         }*/
-    }
-}

@@ -23,12 +23,12 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
             }
         }
     }
-    override fun d(Tag: String, message: String) {
+    override fun d(tag: String, message: String) {
         for (logger in appenderList) {
 
             RunCommandAsync(null, "", label@{
                 try {
-                    logger.d(Tag, message)
+                    logger.d(tag, message)
                     return@label true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)

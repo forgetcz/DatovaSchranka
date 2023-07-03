@@ -12,24 +12,24 @@ class BasicLogger : ILogger {
         d(context.getTag(), message)
     }
 
-    override fun d(Tag: String, message: String) {
-        Log.d(Tag, message)
+    override fun d(tag: String, message: String) {
+        Log.d(tag, message)
     }
 
     override fun i(context: BaseActivityClass, message: String) {
         i(context.getTag(), message)
     }
 
-    override fun i(Tag: String, message: String) {
-        Log.i(Tag, message)
+    override fun i(tag: String, message: String) {
+        Log.i(tag, message)
     }
 
     override fun w(context: BaseActivityClass, message: String) {
         Log.w(context.getTag(), message)
     }
 
-    override fun w(Tag: String, message: String) {
-        Log.w(Tag, message)
+    override fun w(tag: String, message: String) {
+        Log.w(tag, message)
     }
 
     override fun e(context: BaseActivityClass, message: String) {
@@ -40,7 +40,7 @@ class BasicLogger : ILogger {
         Log.e(context.getTag(), message.message!!)
     }
 
-    override fun e(Tag: String, message: Exception) {
-        Log.e(Tag, message.message!!)
+    override fun e(tag: String, message: Exception) {
+        Log.e(tag, message.message!!)
     }
 }

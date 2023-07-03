@@ -2,6 +2,7 @@ package com.jvr.datovaschranka.dbhelper.tableModel
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import androidx.appcompat.app.AppCompatActivity
 import java.util.ArrayList
 
 interface IModelTable <TItemType> where TItemType : ITableItem<*,*> {

@@ -8,7 +8,6 @@ import com.jvr.datovaschranka.constatns.Utils
 import kotlinx.parcelize.Parcelize
 import java.util.ArrayList
 
-
 class UserTable : ModelTable<UserTable.Item>() {
     @Parcelize
     data class Item (
@@ -22,7 +21,7 @@ class UserTable : ModelTable<UserTable.Item>() {
         override fun toString(): String = "id : $id; nickname : $nickName"
     }
 
-    private companion object {
+    companion object {
         const val TABLE_NAME = "Users"
 
         private const val COLUMN_ID = "_id"
@@ -31,6 +30,17 @@ class UserTable : ModelTable<UserTable.Item>() {
         private const val COLUMN_TEST_ITEM = "testItem"
         private const val COLUMN_NICK_NAME = "nickName"
         private const val COLUMN_MARK = "mark"
+
+        fun getCreateModelStatic(): String {
+            return "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" +
+                    "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
+                    "," + COLUMN_DATE_UPDATED + " TEXT" +
+                    "," + COLUMN_NICK_NAME + " TEXT NOT NULL UNIQUE" +
+                    "," + COLUMN_MARK + " TEXT NULL" +
+                    "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
+                    ")"
+        }
     }
 
     override fun getTableName(): String {
@@ -38,31 +48,7 @@ class UserTable : ModelTable<UserTable.Item>() {
     }
 
     override fun getCreateModel(): String {
-        return "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" +
-                "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
-                "," + COLUMN_DATE_UPDATED + " TEXT" +
-                "," + COLUMN_NICK_NAME + " TEXT NOT NULL UNIQUE" +
-                "," + COLUMN_MARK + " TEXT NULL" +
-                "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
-                ")"
-    }
-
-    fun modelVersion() : Int {
-        /*val userPreferences = data
-        val dataStoreManager = DataStoreManager(appContext)
-        val oldModel =  dataStoreManager.getUserTable()
-        val l = oldModel.toString()
-        println(l)
-        GlobalScope.launch(Dispatchers.IO) {
-            val l = dataStoreManager.getUserTable().catch {
-                e -> println(e)
-            }.collect  {
-                logger.d(getTag(), it.toString())
-            }
-            println(l)
-        }*/
-        return 1
+        return getCreateModelStatic()
     }
 
     override fun select(where: String?, limit : Int?): ArrayList<Item>? {
@@ -116,7 +102,7 @@ class UserTable : ModelTable<UserTable.Item>() {
         return resultList
     }
 
-    private fun getMaxUserId() : Int {
+    fun getMaxUserId() : Int? {
         var cursor: Cursor? = null
         try {
             cursor = db.rawQuery("SELECT max($COLUMN_ID) + 1"
@@ -125,8 +111,9 @@ class UserTable : ModelTable<UserTable.Item>() {
             val id = cursor.getInt(0)
             return id
         } catch (e: SQLiteException) {
+            logger.e(getTag(),e)
             cursor?.close()
-            return 0
+            return null
         }
     }
 

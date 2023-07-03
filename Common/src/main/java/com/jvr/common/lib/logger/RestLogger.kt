@@ -104,7 +104,7 @@ class RestLogger(Url:String): ILogger {
         restApiLog(Exception(message), context)
     }
 
-    override fun d(Tag: String, message: String) {
+    override fun d(tag: String, message: String) {
         TODO("Not yet implemented")
     }
 
@@ -112,7 +112,7 @@ class RestLogger(Url:String): ILogger {
         TODO("Not yet implemented")
     }
 
-    override fun i(Tag: String, message: String) {
+    override fun i(tag: String, message: String) {
         TODO("Not yet implemented")
     }
 
@@ -120,7 +120,7 @@ class RestLogger(Url:String): ILogger {
         TODO("Not yet implemented")
     }
 
-    override fun w(Tag: String, message: String) {
+    override fun w(tag: String, message: String) {
         TODO("Not yet implemented")
     }
 
@@ -132,7 +132,7 @@ class RestLogger(Url:String): ILogger {
         TODO("Not yet implemented")
     }
 
-    override fun e(Tag: String, message: Exception) {
+    override fun e(tag: String, message: Exception) {
         TODO("Not yet implemented")
     }
 }

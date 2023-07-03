@@ -1,7 +1,10 @@
 package com.jvr.datovaschranka
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.jvr.datovaschranka.activities.BaseActivity
+import com.jvr.datovaschranka.activities.MainActivity
 import com.jvr.datovaschranka.constatns.Utils
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.TimeTable
@@ -28,9 +31,11 @@ class ExampleInstrumentedTest {
     @Test
     fun test(){
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        //val app = MainActivity()
         val dbHelper = DbHelper(appContext, null)
         val userTable = dbHelper.getUserTable
-        userTable.modelVersion()
+        val maxId = userTable.getMaxUserId()
+        println(maxId)
     }
 
     @Test
