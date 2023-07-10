@@ -1,11 +1,9 @@
 package com.jvr.datovaschranka.dbhelper
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.*
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.appcompat.app.AppCompatActivity
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
@@ -13,9 +11,6 @@ import com.jvr.datovaschranka.dbhelper.tableModel.ModelTable
 import com.jvr.datovaschranka.dbhelper.tableModel.NamePasswordTable
 import com.jvr.datovaschranka.dbhelper.tableModel.TimeTable
 import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
-import java.math.BigInteger
-import java.security.MessageDigest
-import kotlin.math.pow
 
 /**
  * https://www.geeksforgeeks.org/android-sqlite-database-in-kotlin/
@@ -27,7 +22,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_NAME = "FeedReader.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
     }
 
     private fun getTag(): String {
@@ -68,8 +63,8 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     )
 
     init {
-        modelTables.forEach { fe -> fe.setDatabase(writableDatabase) }
-        modelTables.forEach { fe -> fe.setContext(context) }
+        modelTables.forEach { fe -> fe.setDatabaseToChildrenTables(writableDatabase) }
+        modelTables.forEach { fe -> fe.setContextToChildrenTables(context) }
         //val store = DbPreferences(context)
         //val tokenText = store.getAccessToken.collect(initial = "")
     }

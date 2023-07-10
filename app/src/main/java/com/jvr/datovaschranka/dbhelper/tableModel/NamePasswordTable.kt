@@ -18,7 +18,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         var fkUserId : Number? = null,
         var userName : String? = null,
         var userPassword : String? = null,
-        var isActice : Boolean? = null
+        var isActive : Boolean? = null
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "id:$id; userName:$userName?"
     }
@@ -52,6 +52,15 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
                 "," + COLUMN_IS_ACTIVE + " INTEGER NOT NULL" +
                 ")"
     }
+
+    /*override fun getColumnNames(): List<String> {
+        val list = ArrayList<String>()
+        val iterator = Item::class.java.declaredFields
+        iterator.forEach {
+            list.add(it.name)
+        }
+        return list
+    }*/
 
     override fun select(where: String?, limit : Int?): ArrayList<Item>? {
         val resultList = ArrayList<Item>()
@@ -98,7 +107,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
                 retItem.fkUserId = cursor.getInt(ifkUserId)
                 retItem.userName = cursor.getString(iUserName)
                 retItem.userPassword = cursor.getString(iUserPassword)
-                retItem.isActice = cursor.getInt(iIsActive) == 1
+                retItem.isActive = cursor.getInt(iIsActive) == 1
 
                 resultList.add(retItem)
                 cursor.moveToNext();
@@ -130,13 +139,13 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
         values.put(COLUMN_USER_NAME, item.userName)
-        values.put(COLUMN_USER_NAME, item.userPassword)
+        values.put(COLUMN_PASSWORD, item.userPassword)
 
-        if (item.isActice == null) {
-            item.isActice = false
+        if (item.isActive == null) {
+            item.isActive = false
         }
 
-        if (item.isActice == true) {
+        if (item.isActive == true) {
             values.put(COLUMN_IS_ACTIVE, 1)
         } else
         {
@@ -182,10 +191,10 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         values.put(COLUMN_USER_NAME, item.userName)
         values.put(COLUMN_PASSWORD, item.userPassword)
 
-        if (item.isActice == null) {
-            item.isActice = false
+        if (item.isActive == null) {
+            item.isActive = false
         }
-        if (item.isActice == true) {
+        if (item.isActive == true) {
             values.put(COLUMN_IS_ACTIVE, 1)
         } else
         {

@@ -1,14 +1,20 @@
 package com.jvr.datovaschranka.activities
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.jvr.common.contracts.BaseActivityClass
 import com.jvr.datovaschranka.R
-import java.text.SimpleDateFormat
+import java.lang.reflect.Field
 import java.util.*
 
 abstract class BaseActivity: BaseActivityClass() {
@@ -130,6 +136,142 @@ abstract class BaseActivity: BaseActivityClass() {
             //logger.e(this, ex)
         }
     }
+
+    // region table
+    private fun initTopRowsInTable(tableLayout: TableLayout, columnsNames: List<String>,
+                                   textColor : Int) {
+        val tableRow = TableRow(this)
+
+        columnsNames.forEach{
+            val tableColumn = TextView(this)
+            tableColumn.text = it
+            tableColumn.height = 10
+            tableColumn.setTextColor(textColor)
+
+            tableRow.addView(tableColumn)
+        }
+
+        tableLayout.addView(tableRow)
+    }
+
+    // region fill table
+    // https://stackoverflow.com/questions/16966629/what-is-the-difference-between-getfields-and-getdeclaredfields-in-java-reflectio
+    private fun getField(clazz: Class<*>?, fieldName: String): Field? {
+        var innerClazz = clazz
+        var field: Field? = null
+        while (innerClazz != null && field == null) {
+            try {
+                field = innerClazz.getDeclaredField(fieldName)
+            } catch (e: Exception) {
+            }
+            innerClazz = innerClazz.superclass
+        }
+        return field
+    }
+
+    /**
+     *
+     */
+    fun <T> fillTable1(tableId: Int, columnNames: List<String>, tableData: List<T>
+                      , listener: View.OnClickListener?, KeyField: String?
+    ) {
+        //val propertyNames = UserTable.Item::class.primaryConstructor!!.parameters.map { it.name }
+        //println(propertyNames)
+        val textColor = Color.WHITE
+
+        val tableLayout = findViewById<TableLayout>(tableId)
+        tableLayout.removeAllViews()
+        initTopRowsInTable(tableLayout, columnNames, textColor)
+
+        for (dataField in tableData) {
+            if (dataField != null) {
+                val tableRow = TableRow(this)
+                tableRow.layoutParams = TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT
+                )
+
+                columnNames.forEach {
+                    val field = getField(dataField!!::class.java, it) as Field
+                    field.isAccessible = true
+                    val fieldValue = field.get(dataField)
+
+                    val text = TextView(this)
+                    if (fieldValue != null) {
+                        text.text = fieldValue.toString()
+                    }
+                    text.setTextColor(textColor)
+                    text.gravity = Gravity.CENTER
+                    if (listener != null) {
+                        text.setOnClickListener(listener)
+                    }
+                    text.id = View.generateViewId()
+                    text.layoutParams = TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.WRAP_CONTENT
+                    )
+                    tableRow.addView(text)
+                }
+                tableLayout.addView(tableRow)
+            }
+        }
+    }
+
+    //endregion
+    fun <T>fillTable(tableId: Int, columnNames: List<String>, data: List<T>
+                      , listener: View.OnClickListener?, KeyField: String?
+    ) {
+        val textColor = Color.WHITE
+        val tableLayout = findViewById<TableLayout>(tableId)
+        tableLayout.removeAllViews()
+        initTopRowsInTable(tableLayout, columnNames, textColor)
+        try {
+            for (dataField in data) {
+                val tableRow = TableRow(this)
+                tableRow.layoutParams = TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT
+                )
+
+                val clazz1: Class<*> = dataField!!::class.java
+                val clazz2 = dataField.javaClass
+
+                var keyValue: Any? = null
+                if (KeyField != null) {
+                    val keyField = clazz1.getField(KeyField)
+                    keyValue = keyField[dataField]
+                }
+                for (columnName in columnNames.indices) {
+                    val fieldName = columnNames[columnName]
+                    val field1 =
+                        clazz2.getField(fieldName) //Note, this can throw an exception if the field doesn't exist.
+                    val fieldValue = field1[dataField]
+
+                    val tv = TextView(this)
+                    if (fieldValue != null) {
+                        tv.text = fieldValue.toString()
+                    }
+                    tv.setTextColor(Color.WHITE)
+                    tv.gravity = Gravity.CENTER
+                    tv.setOnClickListener(listener)
+                    tv.id = View.generateViewId()
+                    if (keyValue != null) {
+                        tv.tag = keyValue
+                    }
+                    tv.layoutParams = TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.WRAP_CONTENT
+                    )
+                    tableRow.addView(tv)
+                }
+                tableLayout.addView(tableRow)
+            }
+        } catch (ex: java.lang.Exception) {
+            logger.e(this, ex)
+        }
+    }
+
+    //endregion
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     /*private val isoDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault())

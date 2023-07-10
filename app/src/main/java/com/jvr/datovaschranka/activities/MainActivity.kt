@@ -6,9 +6,13 @@ import androidx.activity.result.ActivityResult
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
+import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
+import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
+import java.lang.reflect.Field
 import java.util.*
+import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -37,13 +41,43 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun getField(clazz: Class<*>?, fieldName: String): Field? {
+        var innerClazz = clazz
+        var field: Field? = null
+        while (clazz != null && field == null) {
+            try {
+                field = clazz.getDeclaredField(fieldName)
+            } catch (e: Exception) {
+            }
+            innerClazz = clazz.superclass
+        }
+        return field
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)//https://www.youtube.com/watch?v=JxsJxuNIcMk&list=PL79lyfcua_t7yBuRfGu5wXD7ojFKNn1vG
         setContentView(binding.root)
 
-        binding.apply {
+        dbHelper= DbHelper(this, null)
 
+        binding.apply {
+            val users = dbHelper.getUserTable.selectAll()
+            /*if (users != null) {
+                for (dataField in users) {
+
+                    val id = getField(dataField::class.java, "id")
+                    if (id != null){
+                        id.isAccessible = true
+                        println(id.get(dataField))
+                    }
+                }
+            }*/
+
+            if (users != null) {
+                fillTable1(R.id.table_AccountList, listOf("id", "nickName")
+                    , users, null, null)
+            }
             btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
                 //val iItem = UserModel.Item(1,"","","")
@@ -61,26 +95,8 @@ class MainActivity : BaseActivity() {
             println("$it----------------------------")
         }
 
-        val l =
         val locale = getLocale()
         println(locale)
         setLocale(this, "cz")
 
-        val userModel = usersDBHelper.getUserModel
-        userModel. = "Jiri"
-
-        userModel.selectAll()
-            .forEach{f ->
-                println(f)
-            }
-        //userModel.insertUser()
-        val name = "jiri 2"
-        val entry = UserModel(name)
-        var result = usersDBHelper.insertUser(entry)
-
-        println(result.toString())
-
-        var all = usersDBHelper.readAllUsers()
-        all.forEach {
-            println(it)
         }*/

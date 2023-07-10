@@ -59,6 +59,15 @@ class TimeTable : ModelTable<TimeTable.Item>() {
                 ")"
     }
 
+    /*override fun getColumnNames(): List<String> {
+        val list = ArrayList<String>()
+        val iterator = Item::class.java.declaredFields
+        iterator.forEach {
+            list.add(it.name)
+        }
+        return list
+    }*/
+
     /*
     * https://medium.com/@manojbhadane/kotlin-converting-between-integers-and-enum-values-in-kotlin-eecb80270a4*/
     /*private inline fun <reified T : Enum<T>> Int.toEnum(): T? {

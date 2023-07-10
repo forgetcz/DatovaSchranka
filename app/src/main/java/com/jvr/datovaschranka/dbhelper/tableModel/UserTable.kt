@@ -1,12 +1,13 @@
 package com.jvr.datovaschranka.dbhelper.tableModel
 
+import kotlin.reflect.full.primaryConstructor
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
 import com.jvr.datovaschranka.constatns.Utils
 import kotlinx.parcelize.Parcelize
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 class UserTable : ModelTable<UserTable.Item>() {
     @Parcelize

@@ -43,7 +43,7 @@ class AddNewAccountActivity : BaseActivity() {
             fillFormData(userTableItem, namePassTableItem)
 
             btnOk.setOnClickListener {
-                btnOnOnClick()
+                btnOkClick()
             }
 
             btnCancel.setOnClickListener {
@@ -52,7 +52,7 @@ class AddNewAccountActivity : BaseActivity() {
         }
     }
 
-    private fun ActivityAddNewAccountBinding.btnOnOnClick() {
+    private fun ActivityAddNewAccountBinding.btnOkClick() {
         //region Check values
         var okCheck = true
         val nickName = txtNickName.text.toString()
@@ -93,7 +93,7 @@ class AddNewAccountActivity : BaseActivity() {
             thisNamePassModelTable.fkUserId = thisUserTableItem.id
             thisNamePassModelTable.userName = txtUserName.text.toString()
             thisNamePassModelTable.userPassword = txtPassword.text.toString()
-            //thisNamePassModelTable.testItem = chckTestAccount.isActivated
+            thisNamePassModelTable.testItem = chckTestAccount.isActivated
             if (namePassTableItem == null) {
                 dbHelper.getNamePasswordTable.insert(thisNamePassModelTable)
             } else {

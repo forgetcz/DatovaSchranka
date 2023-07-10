@@ -7,11 +7,11 @@ import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
 import java.util.ArrayList
 
-abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : ITableItem<*,*> {
+abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
     protected lateinit var db: SQLiteDatabase
     private lateinit var appContext: Context
 
-    override fun setContext(context: Context) {
+    override fun setContextToChildrenTables(context: Context) {
         appContext = context
     }
 
@@ -60,7 +60,7 @@ abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : 
         }
     }
 
-    override fun setDatabase(db: SQLiteDatabase) {
+    override fun setDatabaseToChildrenTables(db: SQLiteDatabase) {
         this.db = db
     }
 
