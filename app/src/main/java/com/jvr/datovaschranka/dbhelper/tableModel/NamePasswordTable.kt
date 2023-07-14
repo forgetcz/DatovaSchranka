@@ -15,7 +15,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
         override var testItem: Boolean? = null,
-        var fkUserId : Number? = null,
+        var fkUserId : Int? = null,
         var userName : String? = null,
         var userPassword : String? = null,
         var isActive : Boolean? = null
@@ -126,11 +126,12 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         val values = ContentValues()
 
         val created = Utils().currentDateTimeString()
-        values.put(COLUMN_DATE_CREATED, created)
 
         if (item.testItem == null) {
             item.testItem = false
         }
+
+        values.put(COLUMN_DATE_CREATED, created)
 
         if (item.testItem == true) {
             values.put(COLUMN_TEST_ITEM, 1)
@@ -138,6 +139,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         {
             values.put(COLUMN_TEST_ITEM, 0)
         }
+        values.put(COLUMN_FK_USER_ID, item.fkUserId)
         values.put(COLUMN_USER_NAME, item.userName)
         values.put(COLUMN_PASSWORD, item.userPassword)
 

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import java.util.ArrayList
 
-interface IModelTable <TItemType> where TItemType : ITableItem<*,*> {
+interface IModelTable <TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
     fun getTableName() : String
     fun getCreateModel() : String
 

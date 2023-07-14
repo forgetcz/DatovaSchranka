@@ -137,23 +137,6 @@ abstract class BaseActivity: BaseActivityClass() {
         }
     }
 
-    // region table
-    private fun initTopRowsInTable(tableLayout: TableLayout, columnsNames: List<String>,
-                                   textColor : Int) {
-        val tableRow = TableRow(this)
-
-        columnsNames.forEach{
-            val tableColumn = TextView(this)
-            tableColumn.text = it
-            tableColumn.height = 10
-            tableColumn.setTextColor(textColor)
-
-            tableRow.addView(tableColumn)
-        }
-
-        tableLayout.addView(tableRow)
-    }
-
     // region fill table
     // https://stackoverflow.com/questions/16966629/what-is-the-difference-between-getfields-and-getdeclaredfields-in-java-reflectio
     private fun getField(clazz: Class<*>?, fieldName: String): Field? {
@@ -172,7 +155,7 @@ abstract class BaseActivity: BaseActivityClass() {
     /**
      *
      */
-    fun <T> fillTable1(tableId: Int, columnNames: List<String>, tableData: List<T>
+    fun <T : Any> fillTable(tableId: Int, columnNames: List<String>, tableData: List<T>
                       , listener: View.OnClickListener?, KeyField: String?
     ) {
         //val propertyNames = UserTable.Item::class.primaryConstructor!!.parameters.map { it.name }
@@ -181,93 +164,66 @@ abstract class BaseActivity: BaseActivityClass() {
 
         val tableLayout = findViewById<TableLayout>(tableId)
         tableLayout.removeAllViews()
-        initTopRowsInTable(tableLayout, columnNames, textColor)
+
+        val tableRowHead = TableRow(this)
+        columnNames.forEach{
+            val tableColumn = TextView(this)
+            tableColumn.text = it
+            tableColumn.setTextColor(textColor)
+            //tableColumn.height = 10
+            tableColumn.gravity = Gravity.CENTER
+            tableColumn.id = View.generateViewId()
+            tableColumn.layoutParams = TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT
+            )
+
+            tableRowHead.addView(tableColumn)
+        }
+        tableLayout.addView(tableRowHead)
 
         for (dataField in tableData) {
-            if (dataField != null) {
-                val tableRow = TableRow(this)
-                tableRow.layoutParams = TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
+            val tableRow = TableRow(this)
+            tableRow.layoutParams = TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.WRAP_CONTENT
+            )
+
+            var keyValue: Any? = null
+            if (KeyField != null) {
+                val keyField = getField(dataField::class.java, KeyField) as Field
+                keyField.isAccessible = true
+                keyValue = keyField[dataField]
+            }
+
+            columnNames.forEach {
+                val field = getField(dataField::class.java, it) as Field
+                field.isAccessible = true
+                val fieldValue = field.get(dataField)
+
+                val tableColumn = TextView(this)
+                if (fieldValue != null) {
+                    tableColumn.text = fieldValue.toString()
+                }
+                tableColumn.setTextColor(textColor)
+                tableColumn.gravity = Gravity.CENTER
+                if (listener != null) {
+                    tableColumn.setOnClickListener(listener)
+                }
+                tableColumn.id = View.generateViewId()
+                tableColumn.layoutParams = TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT
                 )
 
-                columnNames.forEach {
-                    val field = getField(dataField!!::class.java, it) as Field
-                    field.isAccessible = true
-                    val fieldValue = field.get(dataField)
-
-                    val text = TextView(this)
-                    if (fieldValue != null) {
-                        text.text = fieldValue.toString()
-                    }
-                    text.setTextColor(textColor)
-                    text.gravity = Gravity.CENTER
-                    if (listener != null) {
-                        text.setOnClickListener(listener)
-                    }
-                    text.id = View.generateViewId()
-                    text.layoutParams = TableRow.LayoutParams(
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        TableRow.LayoutParams.WRAP_CONTENT
-                    )
-                    tableRow.addView(text)
+                if (keyValue != null) {
+                    tableColumn.tag = keyValue
                 }
-                tableLayout.addView(tableRow)
+
+                tableRow.addView(tableColumn)
+
             }
-        }
-    }
-
-    //endregion
-    fun <T>fillTable(tableId: Int, columnNames: List<String>, data: List<T>
-                      , listener: View.OnClickListener?, KeyField: String?
-    ) {
-        val textColor = Color.WHITE
-        val tableLayout = findViewById<TableLayout>(tableId)
-        tableLayout.removeAllViews()
-        initTopRowsInTable(tableLayout, columnNames, textColor)
-        try {
-            for (dataField in data) {
-                val tableRow = TableRow(this)
-                tableRow.layoutParams = TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-                )
-
-                val clazz1: Class<*> = dataField!!::class.java
-                val clazz2 = dataField.javaClass
-
-                var keyValue: Any? = null
-                if (KeyField != null) {
-                    val keyField = clazz1.getField(KeyField)
-                    keyValue = keyField[dataField]
-                }
-                for (columnName in columnNames.indices) {
-                    val fieldName = columnNames[columnName]
-                    val field1 =
-                        clazz2.getField(fieldName) //Note, this can throw an exception if the field doesn't exist.
-                    val fieldValue = field1[dataField]
-
-                    val tv = TextView(this)
-                    if (fieldValue != null) {
-                        tv.text = fieldValue.toString()
-                    }
-                    tv.setTextColor(Color.WHITE)
-                    tv.gravity = Gravity.CENTER
-                    tv.setOnClickListener(listener)
-                    tv.id = View.generateViewId()
-                    if (keyValue != null) {
-                        tv.tag = keyValue
-                    }
-                    tv.layoutParams = TableRow.LayoutParams(
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        TableRow.LayoutParams.WRAP_CONTENT
-                    )
-                    tableRow.addView(tv)
-                }
-                tableLayout.addView(tableRow)
-            }
-        } catch (ex: java.lang.Exception) {
-            logger.e(this, ex)
+            tableLayout.addView(tableRow)
         }
     }
 

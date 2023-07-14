@@ -34,8 +34,12 @@ class AddNewAccountActivity : BaseActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            if (extras.containsKey(UserTable.Item::class.java.toString())) {
-                userTableItem = extras.getParcelable(UserTable.Item::class.java.toString())
+            val userTableKey = UserTable.Item::class.java.toString()
+            if (extras.containsKey(userTableKey)) {
+                userTableItem = extras.getParcelable(userTableKey)
+                namePassTableItem = dbHelper.getNamePasswordTable
+                    .select("")
+                    ?.first()
             }
         }
 

@@ -2,6 +2,8 @@ package com.jvr.datovaschranka.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
@@ -10,13 +12,12 @@ import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
-import java.lang.reflect.Field
 import java.util.*
-import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbHelper: DbHelper
+    private lateinit var usersList : ArrayList<UserTable.Item>
 
     override val logger: ComplexLogger = ComplexLogger(
         listOf(
@@ -41,54 +42,54 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun getField(clazz: Class<*>?, fieldName: String): Field? {
-        var innerClazz = clazz
-        var field: Field? = null
-        while (clazz != null && field == null) {
-            try {
-                field = clazz.getDeclaredField(fieldName)
-            } catch (e: Exception) {
-            }
-            innerClazz = clazz.superclass
-        }
-        return field
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)//https://www.youtube.com/watch?v=JxsJxuNIcMk&list=PL79lyfcua_t7yBuRfGu5wXD7ojFKNn1vG
         setContentView(binding.root)
 
-        dbHelper= DbHelper(this, null)
+        dbHelper = DbHelper(this, null)
 
         binding.apply {
             val users = dbHelper.getUserTable.selectAll()
-            /*if (users != null) {
-                for (dataField in users) {
-
-                    val id = getField(dataField::class.java, "id")
-                    if (id != null){
-                        id.isAccessible = true
-                        println(id.get(dataField))
-                    }
-                }
-            }*/
 
             if (users != null) {
-                fillTable1(R.id.table_AccountList, listOf("id", "nickName")
-                    , users, null, null)
+                usersList = users
+                fillTable(
+                    tableId = R.id.table_AccountList, columnNames = listOf("id", "nickName")
+                    , tableData = usersList,   listener =  { view1 -> tableCellProcessClick(view1.id) }
+                    , "id")
             }
+
             btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
-                //val iItem = UserModel.Item(1,"","","")
-                //nextIntent.putExtra(UserModel.Item::class.java.toString())
                 startNextIntent(nextIntent)
             }
         }
     }
+
+    private fun tableCellProcessClick(viewId: Int) {
+        try {
+            val tv: TextView = findViewById(viewId)
+            val trow = tv.parent as TableRow
+            val keyRow = trow.getChildAt(0) as TextView
+            val tag = keyRow.tag
+            if (tag != null) {
+                val key = keyRow.tag.toString()
+                if (key.isNotEmpty()) {
+                    val userTableItem = usersList.first{ f -> f.id == key.toInt()}
+
+                    val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
+                    nextIntent.putExtra(UserTable.Item::class.java.toString(), userTableItem)
+                    startNextIntent(nextIntent)
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+            logger.e(this, ex)
+        }
+    }
 }
-    /*dbHelper = DbHelper(this, null)
-        val storeOwner = this@MainActivity
+
+    /*
         val viewModel: DbViewModel = ViewModelProvider(storeOwner)[DbViewModel::class.java]
         viewModel.getUserTableHash.observe(storeOwner) {
             //userTable.modelVersion(viewModel)
@@ -98,5 +99,4 @@ class MainActivity : BaseActivity() {
         val locale = getLocale()
         println(locale)
         setLocale(this, "cz")
-
-        }*/
+     */
