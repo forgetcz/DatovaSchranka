@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 class TimeTable : ModelTable<TimeTable.Item>() {
     @Parcelize
     data class Item(
-        override var id : Int? = null,
+        override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
         override var testItem: Boolean? = null,
@@ -22,9 +22,9 @@ class TimeTable : ModelTable<TimeTable.Item>() {
         var intervalUnit: TimeUnit? = null,/* NANOSECONDS,MICROSECONDS,MILLISECONDS,SECONDS,MINUTES,HOURS,DAYS */
         var mark : String? = null
     ) : ITableItem<Int,String>, Parcelable {
-        override fun toString(): String = "id:$id; period:$interval?,unit :$intervalUnit?"
+        override fun toString(): String = "id:$_id; $COLUMN_INTERVAL_UNIT:$interval?,$COLUMN_INTERVAL_UNIT :$intervalUnit?"
         fun insertAllowed(): Boolean {
-            return id == null && fkUserId != null && interval != null && intervalUnit != null
+            return _id == null && fkUserId != null && interval != null && intervalUnit != null
         }
     }
 
@@ -118,7 +118,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
-                retItem.id = cursor.getInt(iId)
+                retItem._id = cursor.getInt(iId)
                 retItem.fkUserId = cursor.getInt(iFkUserId)
                 retItem.dateCreated = cursor.getString(iDateCreated)
                 retItem.dateUpdated = cursor.getString(iDateUpdated)
@@ -152,7 +152,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
 
     override fun insert(item: Item): Boolean {
         // Create a new map of values, where column names are the keys
-        if (item.id != null) {
+        if (item._id != null) {
             logger.w(getTag(),"Element already created")
             return false
         }
@@ -189,7 +189,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
                 return false
             }
 
-            item.id = Integer.parseInt(newRowId.toString())
+            item._id = Integer.parseInt(newRowId.toString())
             item.dateCreated = created
             return newRowId != 0L
         } catch (e: Exception) {
@@ -202,7 +202,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
     override fun update(item: Item): Boolean {
         val values = ContentValues()
 
-        if (item.id == null) {
+        if (item._id == null) {
             logger.w(getTag(),"Element not yet exists!")
             return false
         }
@@ -219,7 +219,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "_id = ?", arrayOf(item.id.toString()))
+        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -229,7 +229,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
-        val selectionArgs = arrayOf(item.id.toString())
+        val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
         val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")

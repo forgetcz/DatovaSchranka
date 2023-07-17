@@ -1,6 +1,5 @@
 package com.jvr.datovaschranka.dbhelper.tableModel
 
-import kotlin.reflect.full.primaryConstructor
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
@@ -12,24 +11,24 @@ import kotlin.collections.ArrayList
 class UserTable : ModelTable<UserTable.Item>() {
     @Parcelize
     data class Item (
-        override var id: Int? = null,
+        override var _id: Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
         override var testItem: Boolean? = null,
         var nickName: String? = null,
         var mark : String? = null
     ) : ITableItem<Int,String>, Parcelable {
-        override fun toString(): String = "id : $id; nickname : $nickName"
+        override fun toString(): String = "$COLUMN_ID : $_id; $COLUMN_NICK_NAME : $nickName"
     }
 
     companion object {
         const val TABLE_NAME = "Users"
 
-        private const val COLUMN_ID = "_id"
+        const val COLUMN_ID = "_id"
         private const val COLUMN_DATE_CREATED = "dateCreated"
-        private const val COLUMN_DATE_UPDATED = "dateUpdated"
-        private const val COLUMN_TEST_ITEM = "testItem"
-        private const val COLUMN_NICK_NAME = "nickName"
+        const val COLUMN_DATE_UPDATED = "dateUpdated"
+        const val COLUMN_TEST_ITEM = "testItem"
+        const val COLUMN_NICK_NAME = "nickName"
         private const val COLUMN_MARK = "mark"
 
         fun getCreateModelStatic(): String {
@@ -89,7 +88,7 @@ class UserTable : ModelTable<UserTable.Item>() {
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
-                retItem.id = cursor.getInt(iId)
+                retItem._id = cursor.getInt(iId)
                 retItem.dateCreated = cursor.getString(iDateCreated)
                 retItem.dateUpdated = cursor.getString(iDateUpdated)
                 retItem.mark = cursor.getString(iMark)
@@ -121,7 +120,7 @@ class UserTable : ModelTable<UserTable.Item>() {
     override fun insert(item: Item): Boolean {
         // Create a new map of values, where column names are the keys
         logger.d(getTag(),"Insert called...")
-        if (item.id != null) {
+        if (item._id != null) {
             logger.w(getTag(),"Element already created")
             return false
         }
@@ -157,7 +156,7 @@ class UserTable : ModelTable<UserTable.Item>() {
             }
 
             logger.d(getTag(),"Insert column $newRowId")
-            item.id = Integer.parseInt(newRowId.toString())//getMaxUserId()
+            item._id = Integer.parseInt(newRowId.toString())//getMaxUserId()
             item.dateCreated = created
             return newRowId != 0L
         } catch (e: Exception) {
@@ -169,7 +168,7 @@ class UserTable : ModelTable<UserTable.Item>() {
     override fun update(item: Item): Boolean {
         val values = ContentValues()
 
-        if (item.id == null) {
+        if (item._id == null) {
             logger.w(getTag(),"Element not yet exists!")
             return false
         }
@@ -186,7 +185,7 @@ class UserTable : ModelTable<UserTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item.id.toString()))
+        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -196,7 +195,7 @@ class UserTable : ModelTable<UserTable.Item>() {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
-        val selectionArgs = arrayOf(item.id.toString())
+        val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
         val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")

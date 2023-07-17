@@ -1,10 +1,7 @@
 package com.jvr.datovaschranka
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jvr.datovaschranka.activities.BaseActivity
-import com.jvr.datovaschranka.activities.MainActivity
 import com.jvr.datovaschranka.constatns.Utils
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.TimeTable
@@ -48,7 +45,7 @@ class ExampleInstrumentedTest {
         val item  = UserTable.Item(nickName = newNickName, testItem = true)
         val testResult = userTable.insert(item)
         assertEquals(true, testResult)
-        assertNotNull(item.id)
+        assertNotNull(item._id)
     }
 
     @Test
@@ -57,7 +54,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val dbHelper = DbHelper(appContext, null)
         val userTable = dbHelper.getUserTable
-        val userTableItems = userTable.select("WHERE testItem = 1",1)//"WHERE nickname like 'nickName1'
+        val userTableItems = userTable.select("WHERE "+ UserTable.COLUMN_TEST_ITEM + " = 1",1)//"WHERE nickname like 'nickName1'
         assertNotNull(userTableItems)
         if (userTableItems != null && userTableItems.isNotEmpty()) {
             val created = Utils().currentDateTimeString()
@@ -99,7 +96,7 @@ class ExampleInstrumentedTest {
         val item = TimeTable.Item(interval = 1, intervalUnit = TimeUnit.MINUTES, fkUserId = 1, testItem = true )
         val insertResult = timeTable.insert(item)
         assertEquals(true,insertResult,)
-        assertNotNull(item.id)
+        assertNotNull(item._id)
         val timeTableItems = timeTable.selectAll()
         timeTableItems?.forEach{f ->
             println(f.toString())
@@ -116,7 +113,7 @@ class ExampleInstrumentedTest {
         assertNotNull(timeTableItems)
         if (timeTableItems != null && timeTableItems.isNotEmpty()) {
             val created = Utils().currentDateTimeString()
-            timeTableItems[0].mark = "New Mark : $created"
+            timeTableItems[0].mark = "New mark : $created"
             val updateResult = timeTable.update(timeTableItems[0])
             assertEquals(true, updateResult)
         }

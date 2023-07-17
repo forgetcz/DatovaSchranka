@@ -36,9 +36,23 @@ class MainActivity : BaseActivity() {
 
     override fun returnFromPreviousActivity(resultData: ActivityResult?) {
         //TODO("Not yet implemented")
-        val data = resultData?.data
-        if (data != null) {
-            logger.i(getTag(), "Back$data")
+        val resultCode = resultData?.resultCode
+        if (resultCode == RESULT_CANCELED) {
+            return
+        } else {
+            val data = resultData?.data
+            if (data != null) {
+                logger.d(getTag(), "Back $data")
+                val users = dbHelper.getUserTable.selectAll()
+                if (users != null) {
+                    usersList = users
+                    fillTable(
+                        tableId = R.id.table_AccountList, columnNames = listOf(UserTable.COLUMN_ID
+                            , UserTable.COLUMN_NICK_NAME), tableData = usersList
+                        ,   listener = { view1 -> tableCellProcessClick(view1.id) }
+                        , UserTable.COLUMN_ID)
+                }
+            }
         }
     }
 
@@ -55,9 +69,10 @@ class MainActivity : BaseActivity() {
             if (users != null) {
                 usersList = users
                 fillTable(
-                    tableId = R.id.table_AccountList, columnNames = listOf("id", "nickName")
-                    , tableData = usersList,   listener =  { view1 -> tableCellProcessClick(view1.id) }
-                    , "id")
+                    tableId = R.id.table_AccountList, columnNames = listOf(UserTable.COLUMN_ID
+                        , UserTable.COLUMN_NICK_NAME), tableData = usersList
+                    ,   listener = { view1 -> tableCellProcessClick(view1.id) }
+                    , UserTable.COLUMN_ID)
             }
 
             btnActivityMainAddNewAccount.setOnClickListener {
@@ -76,7 +91,7 @@ class MainActivity : BaseActivity() {
             if (tag != null) {
                 val key = keyRow.tag.toString()
                 if (key.isNotEmpty()) {
-                    val userTableItem = usersList.first{ f -> f.id == key.toInt()}
+                    val userTableItem = usersList.first{ f -> f._id == key.toInt()}
 
                     val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
                     nextIntent.putExtra(UserTable.Item::class.java.toString(), userTableItem)

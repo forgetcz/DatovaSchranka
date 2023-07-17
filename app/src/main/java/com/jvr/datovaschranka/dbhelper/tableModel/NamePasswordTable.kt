@@ -11,7 +11,7 @@ import java.util.ArrayList
 class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
     @Parcelize
     data class Item (
-        override var id : Int? = null,
+        override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
         override var testItem: Boolean? = null,
@@ -20,14 +20,14 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         var userPassword : String? = null,
         var isActive : Boolean? = null
     ) : ITableItem<Int, String>, Parcelable {
-        override fun toString(): String = "id:$id; userName:$userName?"
+        override fun toString(): String = "$COLUMN_ID:$_id; $COLUMN_USER_NAME:$userName?"
     }
 
     companion object {
         private const val TABLE_NAME = "NamePassword"
 
         private const val COLUMN_ID = "_id"
-        private const val COLUMN_FK_USER_ID = "fkUserId"
+        const val COLUMN_FK_USER_ID = "fkUserId"
         private const val COLUMN_DATE_CREATED = "dateCreated"
         private const val COLUMN_DATE_UPDATED = "dateUpdated"
         private const val COLUMN_USER_NAME = "userName"
@@ -100,7 +100,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
 
             if (!cursor.isAfterLast) {
                 val retItem = Item()
-                retItem.id = cursor.getInt(iId)
+                retItem._id = cursor.getInt(iId)
                 retItem.dateCreated = cursor.getString(iDateCreated)
                 retItem.dateUpdated = cursor.getString(iDateUpdated)
                 retItem.testItem = cursor.getInt(iTestItem) == 1
@@ -110,7 +110,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
                 retItem.isActive = cursor.getInt(iIsActive) == 1
 
                 resultList.add(retItem)
-                cursor.moveToNext();
+                cursor.moveToNext()
             }
         }
         return resultList
@@ -119,7 +119,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
     override fun insert(item: Item): Boolean {
         // Create a new map of values, where column names are the keys
         logger.d(getTag(),"Insert called...")
-        if (item.id != null) {
+        if (item._id != null) {
             logger.w(getTag(),"Element already created")
             return false
         }
@@ -164,7 +164,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
             }
 
             logger.d(getTag(),"Insert column $newRowId")
-            item.id = Integer.parseInt(newRowId.toString())//getMaxUserId()
+            item._id = Integer.parseInt(newRowId.toString())//getMaxUserId()
             item.dateCreated = created
             return newRowId != 0L
         } catch (e: Exception) {
@@ -176,7 +176,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
     override fun update(item: Item): Boolean {
         val values = ContentValues()
 
-        if (item.id == null) {
+        if (item._id == null) {
             logger.w(getTag(),"Element not yet exists!")
             return false
         }
@@ -203,7 +203,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
             values.put(COLUMN_IS_ACTIVE, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item.id.toString()))
+        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -213,7 +213,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
-        val selectionArgs = arrayOf(item.id.toString())
+        val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
         val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")

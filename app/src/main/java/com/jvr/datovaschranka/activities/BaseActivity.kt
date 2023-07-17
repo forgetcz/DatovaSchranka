@@ -166,12 +166,22 @@ abstract class BaseActivity: BaseActivityClass() {
         tableLayout.removeAllViews()
 
         val tableRowHead = TableRow(this)
-        columnNames.forEach{
+        columnNames.withIndex().forEach{
             val tableColumn = TextView(this)
-            tableColumn.text = it
+            tableColumn.text = it.value
             tableColumn.setTextColor(textColor)
             //tableColumn.height = 10
-            tableColumn.gravity = Gravity.CENTER
+            when (it.index) {
+                0 -> {
+                    tableColumn.gravity = Gravity.LEFT
+                }
+                columnNames.size - 1 -> {
+                    tableColumn.gravity = Gravity.RIGHT
+                }
+                else -> {
+                    tableColumn.gravity = Gravity.CENTER
+                }
+            }
             tableColumn.id = View.generateViewId()
             tableColumn.layoutParams = TableRow.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,

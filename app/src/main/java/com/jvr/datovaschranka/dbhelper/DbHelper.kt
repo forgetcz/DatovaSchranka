@@ -22,7 +22,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_NAME = "FeedReader.db"
-        const val DATABASE_VERSION = 2
+        const val DATABASE_VERSION = 1
     }
 
     private fun getTag(): String {

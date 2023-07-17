@@ -38,7 +38,7 @@ class AddNewAccountActivity : BaseActivity() {
             if (extras.containsKey(userTableKey)) {
                 userTableItem = extras.getParcelable(userTableKey)
                 namePassTableItem = dbHelper.getNamePasswordTable
-                    .select("")
+                    .select(NamePasswordTable.COLUMN_FK_USER_ID+ "=" + userTableItem?._id)
                     ?.first()
             }
         }
@@ -80,11 +80,18 @@ class AddNewAccountActivity : BaseActivity() {
             txtPassword.hint = "please enter password"
             txtPassword.error = "please enter password"
         }
+
+        val retypePass = txtRetypePassword.text.toString()
+        if (retypePass != password) {
+            okCheck = false
+            txtRetypePassword.hint = "password and retype password do not match"
+            txtRetypePassword.error = "password and retype password do not match"
+        }
         //endregion
 
         if (okCheck) {
             val thisUserTableItem = UserTable.Item()
-            thisUserTableItem.id = userTableItem?.id
+            thisUserTableItem._id = userTableItem?._id
             thisUserTableItem.nickName = txtNickName.text.toString()
             if (userTableItem == null) {
                 dbHelper.getUserTable.insert(thisUserTableItem)
@@ -93,8 +100,8 @@ class AddNewAccountActivity : BaseActivity() {
             }
 
             val thisNamePassModelTable = NamePasswordTable.Item()
-            thisNamePassModelTable.id = namePassTableItem?.id
-            thisNamePassModelTable.fkUserId = thisUserTableItem.id
+            thisNamePassModelTable._id = namePassTableItem?._id
+            thisNamePassModelTable.fkUserId = thisUserTableItem._id
             thisNamePassModelTable.userName = txtUserName.text.toString()
             thisNamePassModelTable.userPassword = txtPassword.text.toString()
             thisNamePassModelTable.testItem = chckTestAccount.isActivated
@@ -102,8 +109,9 @@ class AddNewAccountActivity : BaseActivity() {
                 dbHelper.getNamePasswordTable.insert(thisNamePassModelTable)
             } else {
                 dbHelper.getNamePasswordTable.update(thisNamePassModelTable)
-                myFinishActivity(RESULT_OK)
             }
+
+            myFinishActivity(RESULT_OK)
         }
     }
 
@@ -114,6 +122,9 @@ class AddNewAccountActivity : BaseActivity() {
         txtNickName.setText(userTableItem?.nickName)
         txtUserName.setText(namePassTableItem?.userName)
         txtPassword.setText(namePassTableItem?.userPassword)
-        txtPassword.setText(namePassTableItem?.userPassword)
+        txtRetypePassword.setText(namePassTableItem?.userPassword)
+        if (namePassTableItem?.testItem == true) {
+            chckTestAccount.isActivated = true
+        }
     }
 }
