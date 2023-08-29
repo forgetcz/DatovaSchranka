@@ -1,14 +1,17 @@
-package com.jvr.datovaschranka.dbhelper.tableModel
+package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.Utils
+import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
+import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
+import java.util.*
 import kotlin.collections.ArrayList
 
-class UserTable : ModelTable<UserTable.Item>() {
+class UsersTable : BaseTable<UsersTable.Item>() {
     @Parcelize
     data class Item (
         override var _id: Int? = null,
@@ -17,68 +20,39 @@ class UserTable : ModelTable<UserTable.Item>() {
         override var testItem: Boolean? = null,
         var nickName: String? = null,
         var mark : String? = null
-    ) : ITableItem<Int,String>, Parcelable {
+    ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID : $_id; $COLUMN_NICK_NAME : $nickName"
+        override fun insertAllowed(): Boolean {
+            return _id == null && nickName != null
+        }
     }
 
     companion object {
-        const val TABLE_NAME = "Users"
-
         const val COLUMN_ID = "_id"
         private const val COLUMN_DATE_CREATED = "dateCreated"
         const val COLUMN_DATE_UPDATED = "dateUpdated"
         const val COLUMN_TEST_ITEM = "testItem"
         const val COLUMN_NICK_NAME = "nickName"
         private const val COLUMN_MARK = "mark"
-
-        fun getCreateModelStatic(): String {
-            return "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" +
-                    "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
-                    "," + COLUMN_DATE_UPDATED + " TEXT" +
-                    "," + COLUMN_NICK_NAME + " TEXT NOT NULL UNIQUE" +
-                    "," + COLUMN_MARK + " TEXT NULL" +
-                    "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
-                    ")"
-        }
     }
 
-    override fun getTableName(): String {
-        return TABLE_NAME
-    }
 
     override fun getCreateModel(): String {
-        return getCreateModelStatic()
+        return "CREATE TABLE " + getTableName() + " (" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE" +
+                "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
+                "," + COLUMN_DATE_UPDATED + " TEXT" +
+                "," + COLUMN_NICK_NAME + " TEXT NOT NULL UNIQUE" +
+                "," + COLUMN_MARK + " TEXT NULL" +
+                "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
+                ")"
     }
 
     override fun select(where: String?, limit : Int?): ArrayList<Item>? {
         val resultList = ArrayList<Item>()
-        var cursor: Cursor? = null
-        try {
-            var sqlWhere = ""
-            if ((where != null) && where.isNotEmpty()){
-                if (!where.startsWith("WHERE")){
-                    sqlWhere = "WHERE $where"
-                } else {
-                    sqlWhere = where
-                }
-            }
+        val cursor = getCursor(where, limit)
 
-            var sqlLimit = ""
-            if (limit != null) {
-                sqlLimit = "LIMIT $limit"
-            }
-
-            val rawSql = "SELECT * FROM $TABLE_NAME $sqlWhere $sqlLimit"
-
-            cursor = db.rawQuery(rawSql, null)
-        } catch (e: SQLiteException) {
-            logger.e(getTag(), e)
-            cursor?.close()
-            return null
-        }
-
-        if (cursor!!.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
             val iDateUpdated = cursor.getColumnIndex(COLUMN_DATE_UPDATED)
@@ -97,16 +71,17 @@ class UserTable : ModelTable<UserTable.Item>() {
 
                 resultList.add(retItem)
                 cursor.moveToNext()
+                return resultList
             }
         }
-        return resultList
+        return null
     }
 
     fun getMaxUserId() : Int? {
         var cursor: Cursor? = null
         try {
             cursor = db.rawQuery("SELECT max($COLUMN_ID) + 1"
-                    + " AS maxId FROM $TABLE_NAME", null)
+                    + " AS maxId FROM ${getTableName()}", null)
             cursor?.moveToFirst()
             val id = cursor.getInt(0)
             return id
@@ -130,7 +105,7 @@ class UserTable : ModelTable<UserTable.Item>() {
         }
         val values = ContentValues()
 
-        val created = Utils().currentDateTimeString()
+        val created = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_CREATED, created)
         values.put(COLUMN_NICK_NAME, item.nickName.toString())
         values.put(COLUMN_MARK, item.mark.toString())
@@ -148,7 +123,7 @@ class UserTable : ModelTable<UserTable.Item>() {
 
         // Insert the new row, returning the primary key value of the new row
         try {
-            val newRowId = db.insert(TABLE_NAME, null, values)
+            val newRowId = db.insert(getTableName(), null, values)
 
             if (newRowId == -1L) {
                 logger.e(getTag(), java.lang.Exception("Error insert row"))
@@ -172,7 +147,7 @@ class UserTable : ModelTable<UserTable.Item>() {
             logger.w(getTag(),"Element not yet exists!")
             return false
         }
-        val dateUpdated = Utils().currentDateTimeString()
+        val dateUpdated = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark)
@@ -185,7 +160,7 @@ class UserTable : ModelTable<UserTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
+        val updated = db.update(getTableName(), values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -197,7 +172,7 @@ class UserTable : ModelTable<UserTable.Item>() {
         // Specify arguments in placeholder order.
         val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
-        val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
+        val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
     }

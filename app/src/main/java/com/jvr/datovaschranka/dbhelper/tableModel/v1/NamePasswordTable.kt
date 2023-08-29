@@ -1,14 +1,16 @@
-package com.jvr.datovaschranka.dbhelper.tableModel
+package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.Utils
+import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
+import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
-import java.util.ArrayList
+import java.util.*
 
-class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
+class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
     @Parcelize
     data class Item (
         override var _id : Int? = null,
@@ -21,11 +23,12 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         var isActive : Boolean? = null
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID:$_id; $COLUMN_USER_NAME:$userName?"
+        override fun insertAllowed(): Boolean {
+            return _id == null && fkUserId != null && userName != null && isActive != null
+        }
     }
 
     companion object {
-        private const val TABLE_NAME = "NamePassword"
-
         private const val COLUMN_ID = "_id"
         const val COLUMN_FK_USER_ID = "fkUserId"
         private const val COLUMN_DATE_CREATED = "dateCreated"
@@ -36,13 +39,9 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         private const val COLUMN_IS_ACTIVE = "isActive"
     }
 
-    override fun getTableName(): String {
-        return TABLE_NAME
-    }
-
     override fun getCreateModel(): String {
-        return "CREATE TABLE " + TABLE_NAME + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" +
+        return "CREATE TABLE " + getTableName() + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE" +
                 "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
                 "," + COLUMN_DATE_UPDATED + " TEXT" +
                 "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
@@ -64,31 +63,9 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
 
     override fun select(where: String?, limit : Int?): ArrayList<Item>? {
         val resultList = ArrayList<Item>()
-        var cursor: Cursor? = null
-        try {
-            var sqlWhere = ""
-            if ((where != null) && where.isNotEmpty()){
-                if (!where.startsWith("WHERE")){
-                    sqlWhere = "WHERE $where"
-                } else {
-                    sqlWhere = where
-                }
-            }
+        val cursor: Cursor? = getCursor(where, limit)
 
-            var sqlLimit = ""
-            if (limit != null) {
-                sqlLimit = "LIMIT $limit"
-            }
-
-            val rawSql = "SELECT * FROM $TABLE_NAME $sqlWhere $sqlLimit"
-
-            cursor = db.rawQuery(rawSql, null)
-        } catch (e: SQLiteException) {
-            cursor?.close()
-            return null
-        }
-
-        if (cursor!!.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
             val iDateUpdated = cursor.getColumnIndex(COLUMN_DATE_UPDATED)
@@ -112,8 +89,9 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
                 resultList.add(retItem)
                 cursor.moveToNext()
             }
+            return resultList
         }
-        return resultList
+        return null
     }
 
     override fun insert(item: Item): Boolean {
@@ -125,7 +103,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         }
         val values = ContentValues()
 
-        val created = Utils().currentDateTimeString()
+        val created = TimeUtils.currentDateTimeString(Date())
 
         if (item.testItem == null) {
             item.testItem = false
@@ -156,7 +134,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
 
         // Insert the new row, returning the primary key value of the new row
         try {
-            val newRowId = db.insert(TABLE_NAME, null, values)
+            val newRowId = db.insert(getTableName(), null, values)
 
             if (newRowId == -1L) {
                 logger.e(getTag(), java.lang.Exception("Error insert row"))
@@ -180,7 +158,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
             logger.w(getTag(),"Element not yet exists!")
             return false
         }
-        val dateUpdated = Utils().currentDateTimeString()
+        val dateUpdated = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         if (item.testItem != null && item.testItem == true) {
             item.testItem = true
@@ -203,7 +181,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
             values.put(COLUMN_IS_ACTIVE, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
+        val updated = db.update(getTableName(), values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -215,7 +193,7 @@ class NamePasswordTable: ModelTable<NamePasswordTable.Item>() {
         // Specify arguments in placeholder order.
         val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
-        val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
+        val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
     }

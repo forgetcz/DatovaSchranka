@@ -18,7 +18,7 @@ import androidx.core.util.Supplier;
  * 2 - progress bar -> U SQL neni mozne zavest
  * 3 - Vystupni parametry
  */
-public class RunCommandAsync<T> extends AsyncTask<Void, Void, T> {
+public class RunCommandAsyncJava<T> extends AsyncTask<Void, Void, T> {
     private ProgressDialog dialog;
     private Supplier<T> method;
     private Consumer<T> callback;
@@ -26,7 +26,7 @@ public class RunCommandAsync<T> extends AsyncTask<Void, Void, T> {
     private Boolean showMessage;
     public Boolean finished;
 
-    public RunCommandAsync(@Nullable Context activity, @Nullable String message
+    public RunCommandAsyncJava(@Nullable Context activity, @Nullable String message
             , @NonNull Supplier<T> mainMethod
             , @Nullable Consumer<T> callback) {
         super();

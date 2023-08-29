@@ -7,21 +7,20 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
-import com.jvr.common.lib.logger.HistoryLogger
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
-import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 import java.util.*
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbHelper: DbHelper
-    private lateinit var usersList : ArrayList<UserTable.Item>
+    private lateinit var usersList : ArrayList<UsersTable.Item>
 
     override val logger: ComplexLogger = ComplexLogger(
         listOf(
-            BasicLogger(), HistoryLogger()
+            BasicLogger()//, HistoryLogger()
         )
     )
 
@@ -47,10 +46,11 @@ class MainActivity : BaseActivity() {
                 if (users != null) {
                     usersList = users
                     fillTable(
-                        tableId = R.id.table_AccountList, columnNames = listOf(UserTable.COLUMN_ID
-                            , UserTable.COLUMN_NICK_NAME), tableData = usersList
+                        tableId = R.id.table_AccountList, columnNames = listOf(
+                            UsersTable.COLUMN_ID
+                            , UsersTable.COLUMN_NICK_NAME), tableData = usersList
                         ,   listener = { view1 -> tableCellProcessClick(view1.id) }
-                        , UserTable.COLUMN_ID)
+                        , UsersTable.COLUMN_ID)
                 }
             }
         }
@@ -61,6 +61,8 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//https://www.youtube.com/watch?v=JxsJxuNIcMk&list=PL79lyfcua_t7yBuRfGu5wXD7ojFKNn1vG
         setContentView(binding.root)
 
+        //logger.d(getTag(), TimeUtils.currentDateTimeString())
+
         dbHelper = DbHelper(this, null)
 
         binding.apply {
@@ -69,13 +71,14 @@ class MainActivity : BaseActivity() {
             if (users != null) {
                 usersList = users
                 fillTable(
-                    tableId = R.id.table_AccountList, columnNames = listOf(UserTable.COLUMN_ID
-                        , UserTable.COLUMN_NICK_NAME), tableData = usersList
+                    tableId = R.id.table_AccountList, columnNames = listOf(
+                        UsersTable.COLUMN_ID
+                        , UsersTable.COLUMN_NICK_NAME), tableData = usersList
                     ,   listener = { view1 -> tableCellProcessClick(view1.id) }
-                    , UserTable.COLUMN_ID)
+                    , UsersTable.COLUMN_ID)
             }
-
-            btnActivityMainAddNewAccount.setOnClickListener {
+            //val fileContent = this::class.java.getResource("/html/file.html").readText()
+           btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
                 startNextIntent(nextIntent)
             }
@@ -94,7 +97,7 @@ class MainActivity : BaseActivity() {
                     val userTableItem = usersList.first{ f -> f._id == key.toInt()}
 
                     val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
-                    nextIntent.putExtra(UserTable.Item::class.java.toString(), userTableItem)
+                    nextIntent.putExtra(UsersTable.Item::class.java.toString(), userTableItem)
                     startNextIntent(nextIntent)
                 }
             }

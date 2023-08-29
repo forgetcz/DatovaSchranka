@@ -1,16 +1,18 @@
-package com.jvr.datovaschranka.dbhelper.tableModel
+package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.Utils
+import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
+import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class TimeTable : ModelTable<TimeTable.Item>() {
+class TimeTable : BaseTable<TimeTable.Item>() {
     @Parcelize
     data class Item(
         override var _id : Int? = null,
@@ -21,15 +23,14 @@ class TimeTable : ModelTable<TimeTable.Item>() {
         var interval: Number? = null,
         var intervalUnit: TimeUnit? = null,/* NANOSECONDS,MICROSECONDS,MILLISECONDS,SECONDS,MINUTES,HOURS,DAYS */
         var mark : String? = null
-    ) : ITableItem<Int,String>, Parcelable {
+    ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "id:$_id; $COLUMN_INTERVAL_UNIT:$interval?,$COLUMN_INTERVAL_UNIT :$intervalUnit?"
-        fun insertAllowed(): Boolean {
+        override fun insertAllowed(): Boolean {
             return _id == null && fkUserId != null && interval != null && intervalUnit != null
         }
     }
 
     companion object {
-        private const val TABLE_NAME = "Times"
 
         private const val COLUMN_ID = "_id"
         private const val COLUMN_FK_USER_ID = "fkUserId"
@@ -42,13 +43,9 @@ class TimeTable : ModelTable<TimeTable.Item>() {
         private const val TEST_ITEM = "testItem"
     }
 
-    override fun getTableName(): String {
-        return TABLE_NAME
-    }
-
     override fun getCreateModel(): String {
-        return "CREATE TABLE " + TABLE_NAME + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" +
+        return "CREATE TABLE " +getTableName() + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE" +
                 "," + COLUMN_FK_USER_ID + " INTEGER NOT NULL" +
                 "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
                 "," + COLUMN_DATE_UPDATED + " TEXT" +
@@ -81,32 +78,9 @@ class TimeTable : ModelTable<TimeTable.Item>() {
 
     override fun select(where: String?, limit : Int?): ArrayList<Item>? {
         val resultList = ArrayList<Item>()
-        var cursor: Cursor? = null
-        try {
-            var sqlWhere = ""
-            if ((where != null) && where.isNotEmpty()){
-                if (!where.startsWith("WHERE")){
-                    sqlWhere = "WHERE $where"
-                } else {
-                    sqlWhere = where
-                }
-            }
+        val cursor: Cursor? = getCursor(where, limit)
 
-            var sqlLimit = ""
-            if (limit != null) {
-                sqlLimit = "LIMIT $limit"
-            }
-
-            val rawSql = "SELECT * FROM $TABLE_NAME $sqlWhere $sqlLimit"
-
-            cursor = db.rawQuery(rawSql, null)
-        } catch (e: SQLiteException) {
-            logger.e(getTag(), e)
-            cursor?.close()
-            return null
-        }
-
-        if (cursor!!.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iFkUserId = cursor.getColumnIndex(COLUMN_FK_USER_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
@@ -145,8 +119,10 @@ class TimeTable : ModelTable<TimeTable.Item>() {
                     retItem.intervalUnit = myEnumValue
                 }*/
             }
+
+            return resultList
         }
-        return resultList
+        return null
 
     }
 
@@ -163,7 +139,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
 
         val values = ContentValues()
 
-        val created = Utils().currentDateTimeString()
+        val created = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_CREATED, created)
         values.put(COLUMN_FK_USER_ID, item.fkUserId.toString())
         values.put(COLUMN_INTERVAL, item.interval.toString())
@@ -183,7 +159,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
 
         // Insert the new row, returning the primary key value of the new row
         try {
-            val newRowId = db.insert(TABLE_NAME, null, values)
+            val newRowId = db.insert(getTableName(), null, values)
             if (newRowId == -1L) {
                 logger.e(getTag(), java.lang.Exception("Error insert row"))
                 return false
@@ -207,7 +183,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
             return false
         }
 
-        val dateUpdated = Utils().currentDateTimeString()
+        val dateUpdated = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         values.put(COLUMN_INTERVAL, item.interval.toString())
         values.put(COLUMN_INTERVAL_UNIT, item.intervalUnit?.ordinal)
@@ -219,7 +195,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        val updated = db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
+        val updated = db.update(getTableName(), values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated
         return true
@@ -231,7 +207,7 @@ class TimeTable : ModelTable<TimeTable.Item>() {
         // Specify arguments in placeholder order.
         val selectionArgs = arrayOf(item._id.toString())
         // Issue SQL statement.
-        val deleteResult = db.delete(TABLE_NAME, selection, selectionArgs)
+        val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
     }

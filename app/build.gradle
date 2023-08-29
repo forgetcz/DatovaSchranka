@@ -79,4 +79,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'org.apache.commons:commons-lang3:3.6'//NEPOVYSOVAT na 3.12.0 !!! prestane to jet !!!!
+    //implementation 'org.apache.commons:commons-text:1.10.0'
 }

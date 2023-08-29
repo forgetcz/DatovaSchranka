@@ -5,15 +5,15 @@ import androidx.activity.result.ActivityResult
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.databinding.ActivityAddNewAccountBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
-import com.jvr.datovaschranka.dbhelper.tableModel.NamePasswordTable
-import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 import java.util.*
 
 class AddNewAccountActivity : BaseActivity() {
     private lateinit var binding: ActivityAddNewAccountBinding
     private lateinit var dbHelper: DbHelper
 
-    private var userTableItem: UserTable.Item? = null
+    private var userTableItem: UsersTable.Item? = null
     private var namePassTableItem: NamePasswordTable.Item? = null
 
     override fun processTimerEvent(inputDate: Date): Boolean {
@@ -34,7 +34,7 @@ class AddNewAccountActivity : BaseActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            val userTableKey = UserTable.Item::class.java.toString()
+            val userTableKey = UsersTable.Item::class.java.toString()
             if (extras.containsKey(userTableKey)) {
                 userTableItem = extras.getParcelable(userTableKey)
                 namePassTableItem = dbHelper.getNamePasswordTable
@@ -90,7 +90,7 @@ class AddNewAccountActivity : BaseActivity() {
         //endregion
 
         if (okCheck) {
-            val thisUserTableItem = UserTable.Item()
+            val thisUserTableItem = UsersTable.Item()
             thisUserTableItem._id = userTableItem?._id
             thisUserTableItem.nickName = txtNickName.text.toString()
             if (userTableItem == null) {
@@ -116,7 +116,7 @@ class AddNewAccountActivity : BaseActivity() {
     }
 
     private fun ActivityAddNewAccountBinding.fillFormData(
-        userTableItem: UserTable.Item?,
+        userTableItem: UsersTable.Item?,
         namePassTableItem: NamePasswordTable.Item?
     ) {
         txtNickName.setText(userTableItem?.nickName)

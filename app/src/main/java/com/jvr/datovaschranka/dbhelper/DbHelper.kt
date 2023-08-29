@@ -7,10 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
-import com.jvr.datovaschranka.dbhelper.tableModel.ModelTable
-import com.jvr.datovaschranka.dbhelper.tableModel.NamePasswordTable
-import com.jvr.datovaschranka.dbhelper.tableModel.TimeTable
-import com.jvr.datovaschranka.dbhelper.tableModel.UserTable
+import com.jvr.datovaschranka.dbhelper.tableModel.*
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.AppSettingsTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.TimeTable
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 
 /**
  * https://www.geeksforgeeks.org/android-sqlite-database-in-kotlin/
@@ -19,12 +20,16 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
     //: SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
+    //  /data/data/com.jvr.datovaschranka/databases
+    //  right clik -> upload
+    //  select file from C:\Users\jiriv\OneDrive\Plocha\..
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_NAME = "FeedReader.db"
         const val DATABASE_VERSION = 1
     }
 
+    @Suppress("UnnecessaryVariable")
     private fun getTag(): String {
         val className = javaClass.name
         val stack = Thread.currentThread().stackTrace
@@ -33,21 +38,22 @@ class DbHelper(context: Context, factory: CursorFactory?) :
         return tagResult
     }
 
-    private val userTable = UserTable()
-    private val timeTable = TimeTable()
+    private val userTable = UsersTable()
+    private val timesTable = TimeTable()
     private val namePasswordTable = NamePasswordTable()
+    private val appSettingsTable = AppSettingsTable()
 
-    private val modelTables: List<ModelTable<*>> =
-        listOf(userTable, timeTable, namePasswordTable)
+    private val modelTables: List<BaseTable<*>> =
+        listOf(userTable, timesTable, namePasswordTable, appSettingsTable)
 
-    val getUserTable: UserTable
+    val getUserTable: UsersTable
         get() {
             return userTable
         }
 
     val getTimeTable: TimeTable
         get() {
-            return timeTable
+            return timesTable
         }
 
     val getNamePasswordTable: NamePasswordTable
@@ -55,6 +61,11 @@ class DbHelper(context: Context, factory: CursorFactory?) :
             return namePasswordTable
         }
 
+    @Suppress("UnnecessaryVariable", "UnnecessaryVariable")
+    val getAppSettingsTable: AppSettingsTable
+        get() {
+            return appSettingsTable
+        }
 
     private val logger: ComplexLogger = ComplexLogger(
         listOf(
@@ -76,7 +87,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        //db.execSQL("DROP TABLE IF EXISTS " + NamePasswordModel.TABLE_NAME)
+        // db.execSQL("DROP TABLE IF EXISTS " + NamePasswordModel.TABLE_NAME)
         modelTables.forEach { fe -> fe.onUpgradeTable(db, oldVersion, newVersion) }
 
         logger.i(getTag(), "onUpgrade:old:$oldVersion,new:$newVersion")

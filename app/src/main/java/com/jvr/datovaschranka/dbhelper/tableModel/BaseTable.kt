@@ -1,13 +1,15 @@
 package com.jvr.datovaschranka.dbhelper.tableModel
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
 import java.util.ArrayList
 
-abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
+abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
     protected lateinit var db: SQLiteDatabase
     private lateinit var appContext: Context
 
@@ -16,7 +18,7 @@ abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : 
     }
 
     /**
-     * Return full class & method name
+     * Return full class & method name for logging
      */
     @Suppress("UnnecessaryVariable")
     protected fun getTag(): String {
@@ -33,9 +35,44 @@ abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : 
         )
     )
 
+    fun getCursor(where: String?, limit: Int?): Cursor? {
+        var cursor: Cursor? = null
+        try {
+            var sqlWhere = ""
+            if ((where != null) && where.isNotEmpty()){
+                if (!where.startsWith("WHERE")){
+                    sqlWhere = "WHERE $where"
+                } else {
+                    sqlWhere = where
+                }
+            }
+
+            var sqlLimit = ""
+            if (limit != null) {
+                sqlLimit = "LIMIT $limit"
+            }
+
+            val rawSql = "SELECT * FROM ${getTableName()} $sqlWhere $sqlLimit"
+
+            cursor = db.rawQuery(rawSql, null)
+            return cursor
+        } catch (e: SQLiteException) {
+            logger.e(getTag(), e)
+            cursor?.close()
+            return null
+        }
+    }
+
+    @Suppress("UnnecessaryVariable")
+    override fun getTableName(): String {
+        val name = javaClass.simpleName.replace("Table","")
+        return name
+    }
+
     override fun onCreateTable(db: SQLiteDatabase) {
         try {
-            db.execSQL(getCreateModel())
+            val createTableScript = getCreateModel()
+            db.execSQL(createTableScript)
             //val s1 = this::onCreateElement.name
             //val s2 = ::onCreateElement.name
             //val s3 = (object{}.javaClass.enclosingMethod?.name ?: "")
@@ -48,7 +85,8 @@ abstract class ModelTable<TItemType> : IModelTable<TItemType> where TItemType : 
 
     override fun onUpgradeTable(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         try {
-            db.execSQL("DROP TABLE IF EXISTS ${getTableName()}")
+            val tableName = getTableName()
+            db.execSQL("DROP TABLE IF EXISTS $tableName")
             onCreateTable(db)
             //val s1 = this::onUpgradeElement.name
             //val s2 = ::onUpgradeElement.name
