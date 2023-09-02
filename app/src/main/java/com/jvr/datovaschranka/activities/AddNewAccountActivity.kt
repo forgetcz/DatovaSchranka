@@ -1,8 +1,17 @@
 package com.jvr.datovaschranka.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Bundle
+import android.text.Html
+import android.util.Log
 import androidx.activity.result.ActivityResult
+import androidx.appcompat.app.AppCompatActivity
+import com.jvr.common.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.R
+import com.jvr.datovaschranka.api.DsApi
 import com.jvr.datovaschranka.databinding.ActivityAddNewAccountBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
@@ -12,7 +21,7 @@ import java.util.*
 class AddNewAccountActivity : BaseActivity() {
     private lateinit var binding: ActivityAddNewAccountBinding
     private lateinit var dbHelper: DbHelper
-
+    private lateinit var myActvitiyContext: AppCompatActivity
     private var userTableItem: UsersTable.Item? = null
     private var namePassTableItem: NamePasswordTable.Item? = null
 
@@ -29,6 +38,7 @@ class AddNewAccountActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNewAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        myActvitiyContext = this
 
         dbHelper= DbHelper(this, null)
 
@@ -50,13 +60,21 @@ class AddNewAccountActivity : BaseActivity() {
                 btnOkClick()
             }
 
+            btnTest.setOnClickListener {
+                btnTestClick()
+            }
+
             btnCancel.setOnClickListener {
                 myFinishActivity(RESULT_CANCELED)
+            }
+
+            btnDelete.setOnClickListener{
+                btnDeleteClick()
             }
         }
     }
 
-    private fun ActivityAddNewAccountBinding.btnOkClick() {
+    private fun ActivityAddNewAccountBinding.checkInput() : Boolean {
         //region Check values
         var okCheck = true
         val nickName = txtNickName.text.toString()
@@ -88,11 +106,16 @@ class AddNewAccountActivity : BaseActivity() {
             txtRetypePassword.error = "password and retype password do not match"
         }
         //endregion
+        return okCheck
+    }
 
+    private fun ActivityAddNewAccountBinding.btnOkClick() {
+        val okCheck = checkInput()
         if (okCheck) {
             val thisUserTableItem = UsersTable.Item()
             thisUserTableItem._id = userTableItem?._id
             thisUserTableItem.nickName = txtNickName.text.toString()
+            thisUserTableItem.testItem = chckTestAccount.isChecked
             if (userTableItem == null) {
                 dbHelper.getUserTable.insert(thisUserTableItem)
             } else {
@@ -104,7 +127,7 @@ class AddNewAccountActivity : BaseActivity() {
             thisNamePassModelTable.fkUserId = thisUserTableItem._id
             thisNamePassModelTable.userName = txtUserName.text.toString()
             thisNamePassModelTable.userPassword = txtPassword.text.toString()
-            thisNamePassModelTable.testItem = chckTestAccount.isActivated
+            thisNamePassModelTable.testItem = chckTestAccount.isChecked
             if (namePassTableItem == null) {
                 dbHelper.getNamePasswordTable.insert(thisNamePassModelTable)
             } else {
@@ -112,6 +135,68 @@ class AddNewAccountActivity : BaseActivity() {
             }
 
             myFinishActivity(RESULT_OK)
+        }
+    }
+
+    private fun ActivityAddNewAccountBinding.btnTestClick() {
+        val okCheck = checkInput()
+        if (okCheck) {
+            val userName = txtUserName.text.toString()
+            val password = txtPassword.text.toString()
+            val checkTest = chckTestAccount.isChecked
+
+            RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(myActvitiyContext
+                , "Check user connection"
+                , {
+                    try {
+                        val stringRes = DsApi.getOwnerInfoFromLogin2(userName, password, checkTest)
+                        it?.runOnUiThread{
+                            if (stringRes != null) {
+                                txtNickName.setTextColor(Color.GREEN)
+                                txtUserName.setTextColor(Color.GREEN)
+                                AlertDialog.Builder(it)
+                                    .setTitle(":)") //<font color='#e9e91e'>"
+                                    .setMessage(Html.fromHtml("<font color='green'>Connect ok</font>"))
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK") {
+                                            dialog: DialogInterface,
+                                            _: Int -> dialog.dismiss()
+                                    }
+                                    .create()
+                                    .show()
+                            } else {
+                                txtNickName.setTextColor(Color.RED)
+                                txtUserName.setTextColor(Color.RED)
+                                AlertDialog.Builder(it)
+                                    .setTitle(":(") //<font color='#e9e91e'>"
+                                    .setMessage(Html.fromHtml("<font color='red'>Connect failed</font>"))
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK") {
+                                            dialog: DialogInterface,
+                                            _: Int -> dialog.dismiss()
+                                    }
+                                    .create()
+                                    .show()
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e(logger.getTag(), ex.message!!)
+                    }
+                }, null ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myActvitiyContext);
+        }
+    }
+
+    private fun ActivityAddNewAccountBinding.btnDeleteClick() {
+        yesNoDialog(true) {
+            if (it) {
+                if (namePassTableItem != null) {
+                    dbHelper.getNamePasswordTable.delete(namePassTableItem!!)
+                }
+                if (userTableItem != null) {
+                    dbHelper.getUserTable.delete(userTableItem!!)
+                }
+                myFinishActivity(RESULT_OK)
+            }
         }
     }
 
@@ -123,8 +208,6 @@ class AddNewAccountActivity : BaseActivity() {
         txtUserName.setText(namePassTableItem?.userName)
         txtPassword.setText(namePassTableItem?.userPassword)
         txtRetypePassword.setText(namePassTableItem?.userPassword)
-        if (namePassTableItem?.testItem == true) {
-            chckTestAccount.isActivated = true
-        }
+        chckTestAccount.isChecked = userTableItem?.testItem == true
     }
 }

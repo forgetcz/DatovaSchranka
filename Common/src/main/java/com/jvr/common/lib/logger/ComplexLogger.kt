@@ -52,10 +52,10 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
             RunCommandAsyncJava(context, "", label@{
                 try {
                     logger.i(context, message)
-                    return@label true
+                    //return@label true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
-                    return@label false
+                    //return@label false
                 }
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
@@ -65,10 +65,10 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
             RunCommandAsyncJava(null, "", {
                 try {
                     logger.i(tag, message)
-                    true
+                    //true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
-                    false
+                    //false
                 }
             }) { }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
@@ -78,10 +78,10 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
             RunCommandAsyncJava(context, "", {
                 try {
                     logger.w(context, message)
-                    true
+                    //true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
-                    false
+                    //false
                 }
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }

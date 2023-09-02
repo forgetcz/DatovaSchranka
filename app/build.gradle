@@ -80,7 +80,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
 
-    implementation 'org.apache.commons:commons-text:1.10.0'
-    implementation 'org.apache.commons:commons-lang3:3.6'//NEPOVYSOVAT na 3.12.0 !!! prestane to jet !!!!
+    //Base64 : https://stackoverflow.com/questions/62446253/cannot-resolve-symbol-base64-while-importing-apache-commons-codec
+    implementation 'commons-codec:commons-codec:1.14'
+    // XML https://commons.apache.org/proper/commons-configuration/dependency-info.html
+    implementation'org.apache.commons:commons-configuration2:2.9.0'
+    //implementation 'org.apache.commons:commons-text:1.10.0'
+    //implementation 'org.apache.commons:commons-lang3:3.6'//NEPOVYSOVAT na 3.12.0 !!! prestane to jet !!!!
     //implementation 'org.apache.commons:commons-text:1.10.0'
 }

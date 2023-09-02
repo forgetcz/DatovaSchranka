@@ -106,4 +106,8 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
         return true
     }
 
+    override fun insertDefaultTableData() {
+        TODO("Not yet implemented")
+    }
+
 }

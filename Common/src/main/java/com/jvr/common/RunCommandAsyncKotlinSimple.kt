@@ -7,9 +7,10 @@ import android.util.Log
 import androidx.core.util.Consumer
 import androidx.core.util.Supplier
 
-public class RunCommandAsyncKotlinSimple<T>(activity: Context?, message: String?
-                                               , mainMethod: Supplier<T>
-                                               , callback : Consumer<T>?)
+public class RunCommandAsyncKotlinSimple<T>(
+    activity: Context?, message: String?
+    , mainMethod: Supplier<T>
+    , callback: Consumer<T>?)
     : AsyncTask<Void, Void, T>() {
 
     private lateinit var dialog: ProgressDialog

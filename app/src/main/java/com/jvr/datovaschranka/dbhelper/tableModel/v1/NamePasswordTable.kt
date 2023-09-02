@@ -197,4 +197,10 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
     }
+
+    override fun insertDefaultTableData() {
+        val item = Item(testItem = true, fkUserId = 0, userName = "h63c6h"
+            , userPassword = "5CPOMFtsrX8yfejMnKlO9A", isActive = true)
+        insert(item)
+    }
 }

@@ -212,4 +212,7 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         return deleteResult == 0
     }
 
+    override fun insertDefaultTableData() {
+    }
+
 }

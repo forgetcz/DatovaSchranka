@@ -73,6 +73,7 @@ abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, T
         try {
             val createTableScript = getCreateModel()
             db.execSQL(createTableScript)
+            insertDefaultTableData()
             //val s1 = this::onCreateElement.name
             //val s2 = ::onCreateElement.name
             //val s3 = (object{}.javaClass.enclosingMethod?.name ?: "")

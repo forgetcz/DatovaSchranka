@@ -1,3 +1,5 @@
+@file:Suppress("LiftReturnOrAssignment")
+
 package com.jvr.common
 
 import android.app.ProgressDialog
@@ -5,20 +7,24 @@ import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 
-class RunCommandAsyncKotlin<T, K, M>(activity: Context?, message: String?
-                                     , mainMethod: ((input : K?) -> T?)?//Supplier<T>
-                                     , callback : ((input:T?) -> M?)?)//Consumer<T?>?
+/*
+*  K - Typ parametru pro hlavni lambda funkci
+*  T - Typ navratu z hlavni lambda funkce
+*  M - Typ navratu z call backu
+* */
+class RunCommandAsyncKotlin<K, T , M>(activity: Context?, message: String?
+                                     , mainMethod: (input : K?) -> T?//Supplier<T>
+                                     , callback : ((input:T?) -> M)?)//Consumer<T?>?
     : AsyncTask<K, Long, T>() {
 
     private var dialog: ProgressDialog? = null
-    private var method: ((input : K?) -> T?)?
-    private var callback: ((input:T?) -> M?)?
+    private var method: (input : K?) -> T?
+    private var callback: ((input:T?) -> M)?
     private var message: String? = null
     private var showProgressBar: Boolean = false
-    //private var finished: Boolean = false
 
     init {
-        showProgressBar = activity != null && message != null && message.isNotEmpty()
+        showProgressBar = (activity != null) && (message != null) && message.isNotEmpty()
 
         if (showProgressBar) {
             dialog = ProgressDialog(activity, ProgressDialog.STYLE_HORIZONTAL)
@@ -29,8 +35,6 @@ class RunCommandAsyncKotlin<T, K, M>(activity: Context?, message: String?
         this.method = mainMethod
         this.callback = callback
         this.message = message
-        //this.finished = false
-
     }
 
     /**
@@ -50,24 +54,17 @@ class RunCommandAsyncKotlin<T, K, M>(activity: Context?, message: String?
      * @return T
      */
     @Deprecated("Deprecated in Java")
-    override fun doInBackground(vararg p0: K?): T? {
-        //return voids[0].get();
-        return try {
-            //method.get()
-            if (method != null) {
-                if (p0.isNotEmpty()) {
-                    method!!(p0[0]);
-                } else {
-                    method!!(null)
-                }
+    override fun doInBackground(vararg p0: K): T? {
+        try {
+            if (p0.isNotEmpty()) {
+                return method(p0[0]);
             } else {
-                return null
+                return method(null);
             }
         } catch (ex: Exception) {
             Log.e("", ex.message!!)
             throw ex
         }
-        //publishProgress(); -> call onProgressUpdate
     }
 
     /**
@@ -90,7 +87,6 @@ class RunCommandAsyncKotlin<T, K, M>(activity: Context?, message: String?
         if (callback != null) {
             callback?.invoke(result)
         }
-        //finished = true
     }
 
     /**

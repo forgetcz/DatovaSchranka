@@ -90,7 +90,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
         // db.execSQL("DROP TABLE IF EXISTS " + NamePasswordModel.TABLE_NAME)
         modelTables.forEach { fe -> fe.onUpgradeTable(db, oldVersion, newVersion) }
 
-        logger.i(getTag(), "onUpgrade:old:$oldVersion,new:$newVersion")
+        //logger.i(getTag(), "onUpgrade:old:$oldVersion,new:$newVersion")
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

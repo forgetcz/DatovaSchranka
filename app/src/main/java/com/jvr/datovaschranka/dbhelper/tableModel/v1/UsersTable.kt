@@ -9,6 +9,7 @@ import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class UsersTable : BaseTable<UsersTable.Item>() {
@@ -71,8 +72,9 @@ class UsersTable : BaseTable<UsersTable.Item>() {
 
                 resultList.add(retItem)
                 cursor.moveToNext()
-                return resultList
+
             }
+            return resultList
         }
         return null
     }
@@ -151,12 +153,12 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark)
-        if (item.testItem != null && item.testItem == true) {
+        if (item.testItem == null) {
             item.testItem = true
+        }
+        if (item.testItem == true) {
             values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            item.testItem = false
+        } else {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
@@ -175,5 +177,10 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
+    }
+
+    override fun insertDefaultTableData() {
+        val item = UsersTable.Item(nickName = "Jiri Vrabec", testItem = true)
+        insert(item)
     }
 }

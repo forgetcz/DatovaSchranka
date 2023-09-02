@@ -15,6 +15,7 @@ interface ITable <TItemType> where TItemType : Any, TItemType : ITableItem<*,*> 
     fun onCreateTable(db: SQLiteDatabase)
     // vola se pri create database
     fun onUpgradeTable(db: SQLiteDatabase, oldVersion: Int, newVersion: Int)
+    fun insertDefaultTableData()
 
     fun select(where : String?, limit : Int? = 1): ArrayList<TItemType>?
     fun insert(item : TItemType): Boolean

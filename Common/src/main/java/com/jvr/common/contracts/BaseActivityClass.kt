@@ -1,10 +1,14 @@
 package com.jvr.common.contracts
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.preference.PreferenceManager
+import android.text.InputType
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
@@ -52,7 +56,7 @@ abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
         //this.setContentView(R.layout.main)
     }
 
-    fun getLocale(): Locale? {
+    fun getLocale(): Locale {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(baseContext)
         var lang = sharedPreferences.getString("language", "en")
         when (lang) {
@@ -60,5 +64,35 @@ abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
             "Spanish" -> lang = "es"
         }
         return Locale(lang)
+    }
+
+    open fun yesNoDialog(cancelable: Boolean, callBack : ((result:Boolean)->Any)?) {
+        /*val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_TEXT //| InputType.TYPE_TEXT_VARIATION_PASSWORD
+        if (defaultText != null && defaultText.isNotEmpty()) {
+            input.setText(defaultText)
+        }*/
+
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure?")
+            //.setView(input) //.setMessage("(CODE-93)")//Html.fromHtml("<font color='#e9e91e'></font>")
+            .setCancelable(cancelable)
+            .setPositiveButton("Yes") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+                if (callBack != null) {
+                    callBack(true)
+                }
+            }
+            .setNegativeButton(
+                "No"
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss() //cancel()
+                if (callBack != null) {
+                    callBack(false)
+                }
+            }
+            .create()
+            .show()
+
     }
 }
