@@ -2,7 +2,6 @@
 
 package com.jvr.datovaschranka.api
 
-import android.text.BoringLayout
 import android.util.Log
 import org.apache.commons.codec.binary.Base64
 import org.w3c.dom.Document

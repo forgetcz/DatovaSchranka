@@ -1,4 +1,4 @@
-package com.jvr.common;
+package com.jvr.common.lib.async;
 
 import android.app.ProgressDialog;
 import android.content.Context;

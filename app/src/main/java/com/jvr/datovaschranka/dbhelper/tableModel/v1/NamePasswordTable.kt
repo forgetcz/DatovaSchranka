@@ -2,8 +2,8 @@ package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
-import android.database.sqlite.SQLiteException
 import android.os.Parcelable
+import com.jvr.common.lib.crypto.Rsa
 import com.jvr.datovaschranka.constatns.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
@@ -16,15 +16,15 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean? = null,
+        override var testItem: Boolean = false,
         var fkUserId : Int? = null,
-        var userName : String? = null,
-        var userPassword : String? = null,
+        var userName : String = "",
+        var userPassword : String = "",
         var isActive : Boolean? = null
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID:$_id; $COLUMN_USER_NAME:$userName?"
         override fun insertAllowed(): Boolean {
-            return _id == null && fkUserId != null && userName != null && isActive != null
+            return _id == null && fkUserId != null && isActive != null
         }
     }
 
@@ -65,6 +65,8 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         val resultList = ArrayList<Item>()
         val cursor: Cursor? = getCursor(where, limit)
 
+        val rsa = Rsa(appContext)
+
         if (cursor != null && cursor.moveToFirst()) {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
@@ -82,8 +84,8 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
                 retItem.dateUpdated = cursor.getString(iDateUpdated)
                 retItem.testItem = cursor.getInt(iTestItem) == 1
                 retItem.fkUserId = cursor.getInt(ifkUserId)
-                retItem.userName = cursor.getString(iUserName)
-                retItem.userPassword = cursor.getString(iUserPassword)
+                retItem.userName = rsa.decCrypt(cursor.getString(iUserName))
+                retItem.userPassword = rsa.decCrypt(cursor.getString(iUserPassword))
                 retItem.isActive = cursor.getInt(iIsActive) == 1
 
                 resultList.add(retItem)
@@ -105,21 +107,21 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
 
         val created = TimeUtils.currentDateTimeString(Date())
 
-        if (item.testItem == null) {
-            item.testItem = false
-        }
-
         values.put(COLUMN_DATE_CREATED, created)
 
-        if (item.testItem == true) {
+        if (item.testItem) {
+            item.testItem = false
+        }
+        if (item.testItem) {
             values.put(COLUMN_TEST_ITEM, 1)
         } else
         {
             values.put(COLUMN_TEST_ITEM, 0)
         }
+        val rsa = Rsa(appContext)
         values.put(COLUMN_FK_USER_ID, item.fkUserId)
-        values.put(COLUMN_USER_NAME, item.userName)
-        values.put(COLUMN_PASSWORD, item.userPassword)
+        values.put(COLUMN_USER_NAME, rsa.crypt(item.userName))
+        values.put(COLUMN_PASSWORD, rsa.crypt(item.userPassword))
 
         if (item.isActive == null) {
             item.isActive = false
@@ -160,7 +162,7 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         }
         val dateUpdated = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
-        if (item.testItem != null && item.testItem == true) {
+        if (item.testItem) {
             item.testItem = true
             values.put(COLUMN_TEST_ITEM, 1)
         } else
@@ -168,8 +170,10 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
             item.testItem = false
             values.put(COLUMN_TEST_ITEM, 0)
         }
-        values.put(COLUMN_USER_NAME, item.userName)
-        values.put(COLUMN_PASSWORD, item.userPassword)
+
+        val rsa = Rsa(appContext)
+        values.put(COLUMN_USER_NAME, rsa.crypt(item.userName))
+        values.put(COLUMN_PASSWORD, rsa.crypt(item.userPassword))
 
         if (item.isActive == null) {
             item.isActive = false
@@ -199,8 +203,11 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
     }
 
     override fun insertDefaultTableData() {
-        val item = Item(testItem = true, fkUserId = 0, userName = "h63c6h"
+        val item1 = Item(testItem = true, fkUserId = 1, userName = "h63c6h"
             , userPassword = "5CPOMFtsrX8yfejMnKlO9A", isActive = true)
-        insert(item)
+        insert(item1)
+        val item2 = Item(testItem = true, fkUserId = 2, userName = "epej7m"
+            , userPassword = "2QuW&]a6T1=7Ih~rzn", isActive = true)
+        insert(item2)
     }
 }

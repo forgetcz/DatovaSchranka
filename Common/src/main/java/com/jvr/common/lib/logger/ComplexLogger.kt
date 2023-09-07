@@ -2,8 +2,8 @@ package com.jvr.common.lib.logger
 
 import android.os.AsyncTask
 import android.util.Log
-import com.jvr.common.RunCommandAsyncJava
-import com.jvr.common.RunCommandAsyncKotlin
+import com.jvr.common.lib.async.RunCommandAsyncJava
+import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.common.contracts.BaseActivityClass
 import com.jvr.common.contracts.ILogger
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -109,7 +109,7 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
                     Log.e(logger.getTag(), ex.message!!)
                     return@label false
                 }
-            },null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            }, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
     override fun e(context: BaseActivityClass, message: Exception) {

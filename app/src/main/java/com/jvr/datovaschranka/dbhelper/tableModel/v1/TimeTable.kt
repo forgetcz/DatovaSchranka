@@ -18,7 +18,7 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean? = null,
+        override var testItem: Boolean = false,
         var fkUserId : Int? = null,
         var interval: Number? = null,
         var intervalUnit: TimeUnit? = null,/* NANOSECONDS,MICROSECONDS,MILLISECONDS,SECONDS,MINUTES,HOURS,DAYS */

@@ -22,14 +22,14 @@ private String generateVersionName() {
     if (ext.versionClassifier != null) {
         versionName += "-" + ext.versionClassifier
     }*/
-    return versionName;
+    return versionName
 }
 
 android {
     compileSdk 32
 
     defaultConfig {
-        minSdk 21
+        minSdk 23 // poviseno z 21 na 23 kvuli sifrovani
         targetSdk 32
 
         versionCode generateVersionCode()       // An integer value that represents the version of the application code, relative to other versions.
@@ -69,4 +69,7 @@ dependencies {
     // javax.mail.Authenticator -> GMAIL
     implementation 'com.sun.mail:android-mail:1.6.0' //com.sun.mail:android-mail:1.6.0 NEPOVYSOVAT !!!!
     implementation 'com.sun.mail:android-activation:1.6.7'
+
+    // crypto -> androidx.security.crypto.MasterKey
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
 }

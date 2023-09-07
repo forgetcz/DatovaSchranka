@@ -1,15 +1,17 @@
+@file:Suppress("LiftReturnOrAssignment", "UnnecessaryVariable")
+
 package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
+import com.jvr.common.lib.crypto.Rsa
 import com.jvr.datovaschranka.constatns.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class UsersTable : BaseTable<UsersTable.Item>() {
@@ -18,13 +20,14 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         override var _id: Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean? = null,
-        var nickName: String? = null,
-        var mark : String? = null
+        override var testItem: Boolean = false,
+        var nickName: String = "",
+        var mark : String? = null,
+        var active : Boolean? = null,
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID : $_id; $COLUMN_NICK_NAME : $nickName"
         override fun insertAllowed(): Boolean {
-            return _id == null && nickName != null
+            return _id == null
         }
     }
 
@@ -34,6 +37,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         const val COLUMN_DATE_UPDATED = "dateUpdated"
         const val COLUMN_TEST_ITEM = "testItem"
         const val COLUMN_NICK_NAME = "nickName"
+        const val COLUMN_IS_ACTIVE = "isActive"
         private const val COLUMN_MARK = "mark"
     }
 
@@ -46,6 +50,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
                 "," + COLUMN_NICK_NAME + " TEXT NOT NULL UNIQUE" +
                 "," + COLUMN_MARK + " TEXT NULL" +
                 "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
+                "," + COLUMN_IS_ACTIVE + " INTEGER NOT NULL" +
                 ")"
     }
 
@@ -60,6 +65,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
             val iMark = cursor.getColumnIndex(COLUMN_MARK)
             val iName = cursor.getColumnIndex(COLUMN_NICK_NAME)
             val iTestItem = cursor.getColumnIndex(COLUMN_TEST_ITEM)
+            val iActive = cursor.getColumnIndex(COLUMN_IS_ACTIVE)
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
@@ -69,10 +75,10 @@ class UsersTable : BaseTable<UsersTable.Item>() {
                 retItem.mark = cursor.getString(iMark)
                 retItem.nickName = cursor.getString(iName)
                 retItem.testItem = cursor.getInt(iTestItem) == 1
+                retItem.active = cursor.getInt(iActive) == 1
 
                 resultList.add(retItem)
                 cursor.moveToNext()
-
             }
             return resultList
         }
@@ -101,26 +107,26 @@ class UsersTable : BaseTable<UsersTable.Item>() {
             logger.w(getTag(),"Element already created")
             return false
         }
-        if (item.nickName == null) {
-            logger.w(getTag(),"Element nickName can't be empty")
-            return false
-        }
         val values = ContentValues()
 
         val created = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_CREATED, created)
-        values.put(COLUMN_NICK_NAME, item.nickName.toString())
+        values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark.toString())
 
-        if (item.testItem == null) {
-            item.testItem = false
+        if (item.testItem) {
+            values.put(COLUMN_TEST_ITEM, 1)
+        } else {
+            values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        if (item.testItem == true) {
-            values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            values.put(COLUMN_TEST_ITEM, 0)
+        if (item.active == null) {
+            item.active = true
+        }
+        if (item.active == true) {
+            values.put(COLUMN_IS_ACTIVE, 1)
+        } else {
+            values.put(COLUMN_IS_ACTIVE, 0)
         }
 
         // Insert the new row, returning the primary key value of the new row
@@ -153,10 +159,8 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark)
-        if (item.testItem == null) {
-            item.testItem = true
-        }
-        if (item.testItem == true) {
+
+        if (item.testItem) {
             values.put(COLUMN_TEST_ITEM, 1)
         } else {
             values.put(COLUMN_TEST_ITEM, 0)
@@ -180,7 +184,9 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     }
 
     override fun insertDefaultTableData() {
-        val item = UsersTable.Item(nickName = "Jiri Vrabec", testItem = true)
-        insert(item)
+        val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true )
+        insert(item1)
+        val item2 = Item(nickName = "Jiri Vrabec - Live", testItem = false, active = true )
+        insert(item2)
     }
 }

@@ -9,7 +9,7 @@ import android.text.Html
 import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
-import com.jvr.common.RunCommandAsyncKotlin
+import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.api.DsApi
 import com.jvr.datovaschranka.databinding.ActivityAddNewAccountBinding

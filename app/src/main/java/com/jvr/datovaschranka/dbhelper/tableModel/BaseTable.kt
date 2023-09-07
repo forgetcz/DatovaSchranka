@@ -11,7 +11,7 @@ import java.util.ArrayList
 
 abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
     protected lateinit var db: SQLiteDatabase
-    private lateinit var appContext: Context
+    lateinit var appContext: Context
 
     override fun setContextToChildrenTables(context: Context) {
         appContext = context

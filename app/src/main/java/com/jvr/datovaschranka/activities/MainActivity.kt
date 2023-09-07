@@ -97,8 +97,7 @@ class MainActivity : BaseActivity() {
                 usersList = users
                 fillTable(
                     tableId = R.id.table_AccountList, columnNames = listOf(
-                        UsersTable.COLUMN_ID
-                        , UsersTable.COLUMN_NICK_NAME), tableData = usersList
+                        UsersTable.COLUMN_ID, UsersTable.COLUMN_NICK_NAME), tableData = usersList
                     ,   listener = { view1 -> tableCellProcessClick(view1.id) }
                     , UsersTable.COLUMN_ID)
             }

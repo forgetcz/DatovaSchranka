@@ -26,7 +26,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_NAME = "FeedReader.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 3
     }
 
     @Suppress("UnnecessaryVariable")
@@ -74,13 +74,15 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     )
 
     init {
-        modelTables.forEach { fe -> fe.setDatabaseToChildrenTables(writableDatabase) }
+        //val db = writableDatabase
         modelTables.forEach { fe -> fe.setContextToChildrenTables(context) }
+        modelTables.forEach { fe -> fe.setDatabaseToChildrenTables(writableDatabase) }
         //val store = DbPreferences(context)
         //val tokenText = store.getAccessToken.collect(initial = "")
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        modelTables.forEach { fe -> fe.setDatabaseToChildrenTables(db) }
         modelTables.forEach { fe -> fe.onCreateTable(db) }
     }
 
@@ -88,6 +90,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         // db.execSQL("DROP TABLE IF EXISTS " + NamePasswordModel.TABLE_NAME)
+        modelTables.forEach { fe -> fe.setDatabaseToChildrenTables(db) }
         modelTables.forEach { fe -> fe.onUpgradeTable(db, oldVersion, newVersion) }
 
         //logger.i(getTag(), "onUpgrade:old:$oldVersion,new:$newVersion")

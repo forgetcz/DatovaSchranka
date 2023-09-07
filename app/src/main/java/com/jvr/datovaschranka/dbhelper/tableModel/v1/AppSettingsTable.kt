@@ -1,3 +1,5 @@
+@file:Suppress("UnnecessaryVariable")
+
 package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.database.Cursor
@@ -14,13 +16,13 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : Date? = null,
         override var dateUpdated : Date? = null,
-        override var testItem: Boolean? = null,
-        var name : String = "",
-        var value: String = "",
+        override var testItem: Boolean = false,
+        var settingsName : String = "",
+        var settingsValue: String = "",
     ) : ITableItem<Int, Date>, Parcelable {
-        override fun toString(): String = "id:$_id; $COLUMN_NAME:$name?,$COLUMN_VALUE :${value.substring(0,10)} $?"
+        override fun toString(): String = "id:$_id; $COLUMN_SETTINGS_NAME:$settingsName?,$COLUMN_SETTINGS_VALUE :${settingsValue.substring(0,10)} $?"
         override fun insertAllowed(): Boolean {
-            return _id == null &&  name.isNotEmpty()
+            return _id == null &&  settingsName.isNotEmpty()
         }
     }
 
@@ -29,8 +31,8 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
         private const val COLUMN_DATE_CREATED = "dateCreated"
         private const val COLUMN_DATE_UPDATED = "dateUpdated"
 
-        private const val COLUMN_NAME = "name"
-        private const val COLUMN_VALUE = "value"
+        private const val COLUMN_SETTINGS_NAME = "settingsName"
+        private const val COLUMN_SETTINGS_VALUE = "settingsValue"
     }
 
     override fun getCreateModel(): String {
@@ -39,9 +41,9 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
             	"$COLUMN_ID"	INTEGER NOT NULL UNIQUE,
             	"$COLUMN_DATE_CREATED"	TEXT NOT NULL,
             	"$COLUMN_DATE_UPDATED"	TEXT,
-            	"$COLUMN_NAME"	TEXT UNIQUE,
-            	"$COLUMN_VALUE"	TEXT,
-            	PRIMARY KEY("$COLUMN_NAME")
+            	"$COLUMN_SETTINGS_NAME"	TEXT UNIQUE,
+            	"$COLUMN_SETTINGS_VALUE"	TEXT,
+            	PRIMARY KEY("$COLUMN_SETTINGS_NAME")
             )
         """.trimIndent()
     }
@@ -55,8 +57,8 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
             val iDateUpdated = cursor.getColumnIndex(COLUMN_DATE_UPDATED)
-            val iName = cursor.getColumnIndex(COLUMN_NAME)
-            val iValue = cursor.getColumnIndex(COLUMN_VALUE)
+            val iName = cursor.getColumnIndex(COLUMN_SETTINGS_NAME)
+            val iValue = cursor.getColumnIndex(COLUMN_SETTINGS_VALUE)
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
@@ -65,8 +67,8 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
                 val sDateUpdated = cursor.getString(iDateUpdated)
                 retItem.dateUpdated = TimeUtils.getDateFromString(sDateUpdated)
 
-                retItem.name = cursor.getString(iName)
-                retItem.value = cursor.getString(iValue)
+                retItem.settingsName = cursor.getString(iName)
+                retItem.settingsValue = cursor.getString(iValue)
 
                 resultList.add(retItem)
                 cursor.moveToNext()
@@ -83,7 +85,7 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
 
         val items = select("name = 'FindDataBox2'",1) as ArrayList<Item>
         val sFindDataBox2 : Item = items[0]
-        var sResultValue = sFindDataBox2.value
+        val sResultValue = sFindDataBox2.settingsValue
 
         /*val values: MutableMap<String, String> = HashMap()
         values["dbType"] = "OVM"
@@ -107,7 +109,7 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
     }
 
     override fun insertDefaultTableData() {
-        TODO("Not yet implemented")
+
     }
 
 }

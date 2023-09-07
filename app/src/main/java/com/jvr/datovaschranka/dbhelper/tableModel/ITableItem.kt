@@ -4,6 +4,6 @@ interface ITableItem<TInteger, TDate> {
   val _id: TInteger?
   val dateCreated : TDate?
   val dateUpdated : TDate?
-  val testItem : Boolean?
+  val testItem : Boolean
   fun insertAllowed(): Boolean
 }
