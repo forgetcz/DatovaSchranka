@@ -12,6 +12,14 @@ import android.util.Log
 *  T - Typ navratu z hlavni lambda funkce
 *  M - Typ navratu z call backu
 * */
+/*
+ There are some issues with AsyncTask, for example, they are not aware of the activity or fragment
+ lifecycle and so it is the programmer's responsibility to handle the AsyncTasks behaviour when the
+ activity is destroyed. This means that they are not the best option for long running operations and
+ also, if the app is in the background and the app is terminated by Android, your background
+ processing is also terminated.
+* https://medium.com/android-news/8-ways-to-do-asynchronous-processing-in-android-and-counting-f634dc6fae4e
+* */
 class RunCommandAsyncKotlin<K, T , M>(activity: Context?, message: String?
                                      , mainMethod: (input : K?) -> T?//Supplier<T>
                                      , callback : ((input:T?) -> M)?)//Consumer<T?>?

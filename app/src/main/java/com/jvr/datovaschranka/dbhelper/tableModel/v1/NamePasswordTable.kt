@@ -206,8 +206,10 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         val item1 = Item(testItem = true, fkUserId = 1, userName = "h63c6h"
             , userPassword = "5CPOMFtsrX8yfejMnKlO9A", isActive = true)
         insert(item1)
-        val item2 = Item(testItem = true, fkUserId = 2, userName = "epej7m"
-            , userPassword = "2QuW&]a6T1=7Ih~rzn", isActive = true)
-        insert(item2)
+
+        val item3 = Item(testItem = true, fkUserId = 3, userName = "45tej9"
+            , userPassword = "gudYaNRz3E8Yx3xs4UXMyB", isActive = true)
+        insert(item3)
+
     }
 }

@@ -6,7 +6,6 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.common.lib.crypto.Rsa
 import com.jvr.datovaschranka.constatns.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
@@ -23,7 +22,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         override var testItem: Boolean = false,
         var nickName: String = "",
         var mark : String? = null,
-        var active : Boolean? = null,
+        var active : Boolean = true,
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID : $_id; $COLUMN_NICK_NAME : $nickName"
         override fun insertAllowed(): Boolean {
@@ -120,10 +119,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
-        if (item.active == null) {
-            item.active = true
-        }
-        if (item.active == true) {
+        if (item.active) {
             values.put(COLUMN_IS_ACTIVE, 1)
         } else {
             values.put(COLUMN_IS_ACTIVE, 0)
@@ -186,7 +182,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     override fun insertDefaultTableData() {
         val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true )
         insert(item1)
-        val item2 = Item(nickName = "Jiri Vrabec - Live", testItem = false, active = true )
-        insert(item2)
+        val item3 = Item(nickName = "Navratil - test", testItem = false, active = true )
+        insert(item3)
     }
 }

@@ -18,7 +18,7 @@ import java.util.*
 
 abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
 
-    open val logger: ComplexLogger = ComplexLogger(
+    open val logger: ILogger = ComplexLogger(
         listOf(
             BasicLogger(), HistoryLogger()
         )

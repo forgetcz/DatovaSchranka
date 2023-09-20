@@ -3,10 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_add_new_account.xml" value="0.25" />
-        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_main.xml" value="0.4" />
-        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_main_account_item.xml" value="0.6" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/drawable-v24/ic_baseline_info_24.xml" value="0.169" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_add_new_account.xml" value="0.1" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_main_account_item.xml" value="0.264" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/activity_main_menu_item.xml" value="0.536" />
         <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/ds.xml" value="0.18541666666666667" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/item_contact.xml" value="0.21920289855072464" />
+        <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/layout/text_row_item.xml" value="0.253125" />
         <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/menu/option_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/jiriv/AndroidStudioProjects/DatovaSchranka/app/src/main/res/xml/find_data_box2.xml" value="0.19157608695652173" />
       </map>
