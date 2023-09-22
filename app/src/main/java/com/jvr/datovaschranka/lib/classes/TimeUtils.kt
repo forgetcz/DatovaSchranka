@@ -1,4 +1,4 @@
-package com.jvr.datovaschranka.constatns
+package com.jvr.datovaschranka.lib.classes
 
 import java.text.SimpleDateFormat
 import java.util.*

@@ -2,7 +2,7 @@ package com.jvr.datovaschranka
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.lib.classes.TimeUtils
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.TimeTable
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable

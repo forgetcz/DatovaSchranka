@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.os.Parcelable
 import com.jvr.common.lib.crypto.Rsa
-import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.lib.classes.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
@@ -207,9 +207,9 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
             , userPassword = "5CPOMFtsrX8yfejMnKlO9A", isActive = true)
         insert(item1)
 
-        val item3 = Item(testItem = true, fkUserId = 3, userName = "45tej9"
+        val item2 = Item(testItem = true, fkUserId = 2, userName = "45tej9"
             , userPassword = "gudYaNRz3E8Yx3xs4UXMyB", isActive = true)
-        insert(item3)
+        insert(item2)
 
     }
 }

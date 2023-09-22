@@ -38,8 +38,8 @@ class AddNewAccountActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNewAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        myActvitiyContext = this
 
+        Log.d("", parent.toString())
         dbHelper= DbHelper(this, null)
 
         val extras = intent.extras
@@ -149,7 +149,7 @@ class AddNewAccountActivity : BaseActivity() {
                 , "Check user connection"
                 , {
                     try {
-                        val stringRes = DsApi.getOwnerInfoFromLogin2(userName, password, checkTest)
+                        val stringRes = DsApi().getOwnerInfoFromLogin2(userName, password, checkTest)
                         it?.runOnUiThread{
                             if (stringRes != null) {
                                 txtNickName.setTextColor(Color.GREEN)

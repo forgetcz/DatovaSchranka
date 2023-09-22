@@ -14,7 +14,7 @@
         android:scrollbars="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="5" />
+        />
 
     <Button
         android:id="@+id/btn_activity_main_add_new_account"

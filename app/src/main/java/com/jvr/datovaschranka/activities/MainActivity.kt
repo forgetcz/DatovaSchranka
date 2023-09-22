@@ -15,11 +15,13 @@ import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
 import com.jvr.datovaschranka.R
-import com.jvr.datovaschranka.lib.classes.CustomAdapter
+import com.jvr.datovaschranka.api.DsApi
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
+import com.jvr.datovaschranka.lib.classes.CustomAdapter
 import com.jvr.datovaschranka.lib.services.NotificationService
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : BaseActivity() {
@@ -36,12 +38,13 @@ class MainActivity : BaseActivity() {
     )
 
     override fun processTimerEvent(inputDate: Date): Boolean {
-        try {
+        return true
+        /*try {
 
         } catch (ex: Exception) {
 
-        }
-        return true
+        }*/
+
     }
 
     override fun returnFromPreviousActivity(resultData: ActivityResult?) {
@@ -59,17 +62,8 @@ class MainActivity : BaseActivity() {
                     customAdapter = CustomAdapter(usersList) { view: View?, position: Int
                         -> onItemClick(view, position) }
                     recyclerView.adapter = customAdapter
-                //customAdapter.notifyDataSetChanged()
-                    // prepareItems(10)
-                    /*val menuAdapter = MainMenuActivityAdapter(
-                        this, R.layout.activity_main_account_item, usersList
-                    ) { view: View?, position: Int -> onItemClick(view!!, position) }
-
-                    val recyclerView: RecyclerView = findViewById(R.id.main_menu_item_list)
-                    recyclerView.layoutManager = LinearLayoutManager(this)
-                    recyclerView.itemAnimator = DefaultItemAnimator()
-                    recyclerView.adapter = menuAdapter
-*/
+                    //customAdapter.notifyDataSetChanged()
+                    //recyclerView.itemAnimator = DefaultItemAnimator()
                     /*fillTable(
                         tableId = R.id.table_AccountList, columnNames = listOf(
                             UsersTable.COLUMN_ID
@@ -81,25 +75,12 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    /*private fun onItemClick(iview:View, position: Int ) {
-        val l = iview.findViewById<TextView>(R.id.activity_main_item_lblNickName)
-        Log.d("", l.text.toString())
-        Log.d(getTag(),position.toString())
-    }*/
-
     private fun onItemClick(iview: View?, position: Int ) {
         val currentSelectedUser = usersList[position]
         val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
         nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
         startNextIntent(nextIntent)
     }
-
-    /*private fun prepareItems(count : Int) {
-        for (i in 1..count) {
-            itemsList.add("Item $i")
-        }
-        customAdapter.notifyDataSetChanged()
-    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +90,10 @@ class MainActivity : BaseActivity() {
 
         val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        //logger.d(getTag(), TimeUtils.currentDateTimeString())
+        val curFormater = SimpleDateFormat("dd/MM/yyyy")
+        val dateObj = curFormater.parse("14/09/2023")
+        DsApi().getListOfReceivedMessages("h63c6h","5CPOMFtsrX8yfejMnKlO9A"
+            , true,dateObj, Date());
         /*val testXml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n" +
                 "    <SOAP-ENV:Body>\n" +
@@ -136,8 +120,6 @@ class MainActivity : BaseActivity() {
         binding.apply {
             val users = dbHelper.getUserTable.selectAll()
 
-
-
             if (users != null && users.size > 0) {
                 usersList = users
 
@@ -146,47 +128,27 @@ class MainActivity : BaseActivity() {
 
                 val layoutManager = LinearLayoutManager(applicationContext)
                 val recyclerView: RecyclerView = findViewById(R.id.activity_main_user_list_recycler)
-                //recyclerView.itemAnimator = DefaultItemAnimator()
                 recyclerView.layoutManager = layoutManager
                 recyclerView.adapter = customAdapter
-                //customAdapter.notifyDataSetChanged()
-
-                //prepareItems(5)
-                /*val menuAdapter = MainMenuActivityAdapter(
-                    s, R.layout.activity_main_account_item, usersList
-                ) { view: View?, position: Int -> onItemClick(view!!, position) }
-
-                val recyclerView: RecyclerView = findViewById(R.id.main_menu_item_list)
-                recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-                recyclerView.itemAnimator = DefaultItemAnimator()
-                recyclerView.adapter = menuAdapter
-                */
-                /*fillTable(
-
-                    tableId = R.id.table_AccountList,
-                    columnNames = listOf(
-                        UsersTable.COLUMN_ID, UsersTable.COLUMN_NICK_NAME
-                    ),
-                    tableData = usersList,
-                    listener = { view1 -> tableCellProcessClick(view1.id) },
-                    UsersTable.COLUMN_ID)*/
             }
 
-            // val fileContent = this::class.java.getResource("/html/file.html").readText()
             btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
                 startNextIntent(nextIntent)
             }
 
+            btnStartStopService.text = "Start service"
             btnStartStopService.setOnClickListener{
                 if (!serviceStatus) {
-                    (it as Button).text = "Start service"
-                    val i = Intent(this@MainActivity, NotificationService::class.java)
-                    //i.putExtra("Par1","Val1")
+                    serviceStatus = true
+                    (it as Button).text = "Stop service"
+                    val i = Intent(applicationContext, NotificationService::class.java)
+                    i.putExtra("Par1","Val1")
                     startService(i)
                 }
                 else {
-                    (it as Button).text = "Stop service"
+                    serviceStatus = false
+                    (it as Button).text = "Start service"
                     stopService(Intent(this@MainActivity, NotificationService::class.java))
                 }
             }

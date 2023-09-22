@@ -4,7 +4,7 @@ package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.database.Cursor
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.lib.classes.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize

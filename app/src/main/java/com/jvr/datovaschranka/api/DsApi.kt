@@ -2,7 +2,7 @@
 
 package com.jvr.datovaschranka.api
 
-import android.util.Log
+import android.text.format.DateFormat
 import org.apache.commons.codec.binary.Base64
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
+import kotlin.collections.ArrayList
 
 
 class DsApi {
@@ -36,101 +37,8 @@ class DsApi {
             return url
         }
 
-        fun getOwnerInfoFromLogin2(userName: String, password : String, testItem : Boolean)
-        : GetOwnerInfoFromLogin2Response? {
-            val soapXmlString = StringBuilder().run {
-                appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
-                appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
-                appendLine("    <soap:Body>")
-                appendLine("        <GetOwnerInfoFromLogin2 xmlns=\"http://isds.czechpoint.cz/v20\">")
-                appendLine("            <dbDummy />")
-                appendLine("         </GetOwnerInfoFromLogin2>")
-                appendLine("    </soap:Body>")
-                appendLine("</soap:Envelope>")
-                toString()
-            }
-
-            var url = "https://${getUrl(testItem)}/DS/DsManage"
-            //url = "https://ws1.czebox.cz/DS/DsManage"
-            val response = getResponse(soapXmlString, ""
-                ,url, userName, password)
-            //Log.d("", response.toString())
-            if (response.responseStatus) {
-                val cls = GetOwnerInfoFromLogin2Response.fromString(response.responseText)
-                return cls
-            } else {
-                return null
-            }
-        }
-
-        fun getOwnerInfoFromLogin2Response(userName: String, password : String, testItem : Boolean): String {
-            val soapXmlString = StringBuilder().run {
-                appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
-                appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
-                appendLine("    <soap:Body>")
-                appendLine("        <GetOwnerInfoFromLogin2Response xmlns=\"http://isds.czechpoint.cz/v20\">")
-                appendLine("            <dbDummy />")
-                appendLine("         </GetOwnerInfoFromLogin2Response>")
-                appendLine("    </soap:Body>")
-                appendLine("</soap:Envelope>")
-                toString()
-            }
-
-            val response = getResponse(soapXmlString, ""
-                ,"https://${getUrl(testItem)}/DS/DsManage", userName, password)
-            Log.d("", response.toString())
-            return response.toString()
-        }
-
-        fun  findDataBox2(userName: String, password : String, firmName : String, testItem : Boolean
-                          ,  dbType: ApiDbType): String {
-            val soapXmlString = StringBuilder().run {
-                appendLine("""<?xml version="1.0" encoding="utf-8"?>
-                    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                        <soap:Body>
-                            <FindDataBox2 xmlns="http://isds.czechpoint.cz/v20">
-                                <dbOwnerInfo>
-                                    <dbID />
-                                    <dbType>${dbType}</dbType>
-                                    <ic />
-                                    <pnGivenNames />
-                                    <pnLastName />
-                                    <firmName>${firmName}</firmName>
-                                    <biDate xsi:nil="true" />
-                                    <biCity />
-                                    <biCounty />
-                                    <biState />
-                                    <adCode xsi:nil="true" />
-                                    <adCity />
-                                    <adDistrict xsi:nil="true" />
-                                    <adStreet />
-                                    <adNumberInStreet />
-                                    <adNumberInMunicipality />
-                                    <adZipCode />
-                                    <adState />
-                                    <nationality />
-                                    <dbIdOVM xsi:nil="true" />
-                                    <dbState xsi:nil="true" />
-                                    <dbOpenAddressing xsi:nil="true" />
-                                    <dbUpperID xsi:nil="true" />
-                                </dbOwnerInfo>
-                            </FindDataBox2>
-                        </soap:Body>
-                    </soap:Envelope>
-                """
-                )
-
-                toString()
-            }
-
-            val response = getResponse(soapXmlString, ""
-                ,"https://${getUrl(testItem)}/DS/DsManage", userName, password)
-            Log.d("", response.toString())
-            return response.toString()
-        }
-
         @Throws(IOException::class)
-        fun convertInputStreamToString(ins: InputStream): String {
+        private fun convertInputStreamToString(ins: InputStream): String {
             val result = ByteArrayOutputStream()
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
             var length: Int
@@ -158,7 +66,7 @@ class DsApi {
             //return result.toString(StandardCharsets.UTF_8);
         }
 
-        class Res(responseStatus : Boolean,responseText: String) {
+        private class Res(responseStatus : Boolean,responseText: String) {
             var responseStatus = false
             var responseText = ""
 
@@ -224,11 +132,188 @@ class DsApi {
                 Res(false, "")
             }
         }
+
+        /*fun getOwnerInfoFromLogin2Response(userName: String, password : String, testItem : Boolean): String {
+            val soapXmlString = StringBuilder().run {
+                appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
+                appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
+                appendLine("    <soap:Body>")
+                appendLine("        <GetOwnerInfoFromLogin2Response xmlns=\"http://isds.czechpoint.cz/v20\">")
+                appendLine("            <dbDummy />")
+                appendLine("         </GetOwnerInfoFromLogin2Response>")
+                appendLine("    </soap:Body>")
+                appendLine("</soap:Envelope>")
+                toString()
+            }
+
+            val response = getResponse(soapXmlString, ""
+                ,"https://${getUrl(testItem)}/DS/DsManage", userName, password)
+            Log.d("", response.toString())
+            return response.toString()
+        }
+
+        fun  findDataBox2(userName: String, password : String, firmName : String, testItem : Boolean
+                          ,  dbType: ApiDbType): String {
+            val soapXmlString = StringBuilder().run {
+                appendLine("""<?xml version="1.0" encoding="utf-8"?>
+                    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <soap:Body>
+                            <FindDataBox2 xmlns="http://isds.czechpoint.cz/v20">
+                                <dbOwnerInfo>
+                                    <dbID />
+                                    <dbType>${dbType}</dbType>
+                                    <ic />
+                                    <pnGivenNames />
+                                    <pnLastName />
+                                    <firmName>${firmName}</firmName>
+                                    <biDate xsi:nil="true" />
+                                    <biCity />
+                                    <biCounty />
+                                    <biState />
+                                    <adCode xsi:nil="true" />
+                                    <adCity />
+                                    <adDistrict xsi:nil="true" />
+                                    <adStreet />
+                                    <adNumberInStreet />
+                                    <adNumberInMunicipality />
+                                    <adZipCode />
+                                    <adState />
+                                    <nationality />
+                                    <dbIdOVM xsi:nil="true" />
+                                    <dbState xsi:nil="true" />
+                                    <dbOpenAddressing xsi:nil="true" />
+                                    <dbUpperID xsi:nil="true" />
+                                </dbOwnerInfo>
+                            </FindDataBox2>
+                        </soap:Body>
+                    </soap:Envelope>
+                """
+                )
+
+                toString()
+            }
+
+            val response = getResponse(soapXmlString, ""
+                ,"https://${getUrl(testItem)}/DS/DsManage", userName, password)
+            Log.d("", response.toString())
+            return response.toString()
+        }*/
+    }
+
+    fun getOwnerInfoFromLogin2(userName: String, password : String, testItem : Boolean)
+            : GetOwnerInfoFromLogin2Response? {
+        val soapXmlString = StringBuilder().run {
+            appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
+            appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
+            appendLine("    <soap:Body>")
+            appendLine("        <GetOwnerInfoFromLogin2 xmlns=\"http://isds.czechpoint.cz/v20\">")
+            appendLine("            <dbDummy />")
+            appendLine("         </GetOwnerInfoFromLogin2>")
+            appendLine("    </soap:Body>")
+            appendLine("</soap:Envelope>")
+            toString()
+        }
+
+        val url = "https://${getUrl(testItem)}/DS/DsManage"
+        //url = "https://ws1.czebox.cz/DS/DsManage"
+        val response = getResponse(soapXmlString, ""
+            ,url, userName, password)
+        //Log.d("", response.toString())
+        if (response.responseStatus) {
+            val cls = GetOwnerInfoFromLogin2Response.fromString(response.responseText)
+            return cls
+        } else {
+            return null
+        }
+    }
+
+    fun getListOfReceivedMessages(userName: String, password : String, testItem : Boolean
+                                  , fromDate : Date, toDate: Date, offset : Int = 1, limit : Int = 100)
+            : List<GetListOfReceivedMessagesResponse>? {
+        val df = DateFormat()
+
+
+        val soapXmlString = StringBuilder().run {
+            appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
+            appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
+            appendLine("    <soap:Body>")
+            appendLine("        <GetListOfReceivedMessages xmlns=\"http://isds.czechpoint.cz/v20\">")
+            appendLine("            <dmFromTime>${DateFormat.format("yyyy-MM-dd", fromDate)}T00:00:00</dmFromTime>")
+            appendLine("            <dmToTime>${DateFormat.format("yyyy-MM-dd", toDate)}T23:59:59</dmToTime>")
+            appendLine("            <dmRecipientOrgUnitNum xsi:nil=\"true\" />")
+            appendLine("            <dmStatusFilter>-1</dmStatusFilter>")
+            appendLine("            <dmOffset>${offset}</dmOffset>")
+            appendLine("            <dmLimit>${limit}</dmLimit>")
+            appendLine("         </GetListOfReceivedMessages>")
+            appendLine("    </soap:Body>")
+            appendLine("</soap:Envelope>")
+            toString()
+        }
+
+        val url = "https://${getUrl(testItem)}/DS/dx"
+        val response = getResponse(soapXmlString, ""
+            ,url, userName, password)
+
+        if (response.responseStatus) {
+            val cls = GetListOfReceivedMessagesResponse.fromString(response.responseText)
+            return cls
+        } else {
+            return null
+        }
+    }
+
+
+    class GetListOfReceivedMessagesResponse {
+        companion object {
+            fun fromString(inputXml : String) : List<GetListOfReceivedMessagesResponse> {
+                val finalResultList : ArrayList<GetListOfReceivedMessagesResponse> = ArrayList()
+                val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+                val builder: DocumentBuilder = factory.newDocumentBuilder()
+                val ins = InputSource(StringReader(inputXml))
+                val doc: Document = builder.parse(ins)
+
+                val xPath: XPath = XPathFactory.newInstance().newXPath()
+                val dbIDCompile = xPath.compile("/Envelope/Body/GetListOfReceivedMessagesResponse/dmRecords")
+
+                val dmRecords = dbIDCompile.evaluate(doc, XPathConstants.NODESET) as NodeList
+                val n2 = dmRecords.item(0)
+                val element2: Element = n2 as Element
+
+                val lines  = element2.childNodes
+                var counterRow = 0
+                while (counterRow < lines.length ){
+                    val oneItem = GetListOfReceivedMessagesResponse()
+                    val oneRow = lines.item(counterRow)
+                    val elements = oneRow.childNodes
+                    var counterElements = 0
+                    var allFound = false
+                    while (!allFound && counterElements < elements.length ) {
+                        val item = elements.item(counterElements)
+
+                        if (item.nodeName == "q:dbIDSender") {
+                            oneItem.dbIDSender = item.firstChild.nodeValue
+                        } else if (item.nodeName == "q:dmAnnotation") {
+                            oneItem.dmAnnotation = item.firstChild.nodeValue
+                        }
+                        allFound = (oneItem.dbIDSender.isNotEmpty()
+                                && oneItem.dmAnnotation.isNotEmpty())
+
+                        counterElements++
+                    }
+                    finalResultList.add(oneItem)
+                    counterRow++
+                }
+                return finalResultList
+            }
+        }
+
+        private var dbIDSender = ""
+        private var dmAnnotation = ""
     }
 
     class GetOwnerInfoFromLogin2Response {
         companion object {
-            fun fromString(inputXml : String) : GetOwnerInfoFromLogin2Response{
+            fun fromString(inputXml : String) : GetOwnerInfoFromLogin2Response {
                 val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
                 val builder: DocumentBuilder = factory.newDocumentBuilder()
                 val ins = InputSource(StringReader(inputXml))

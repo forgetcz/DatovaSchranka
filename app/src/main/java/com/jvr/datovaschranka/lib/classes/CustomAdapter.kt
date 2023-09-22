@@ -24,12 +24,13 @@ internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
 
     override fun onBindViewHolder(holder: TreeViewHolder, position: Int) {
         val item = itemsList[position]
-        holder.itemTextView.text = item.nickName
+        holder.lblNickName.text = item.nickName
         if (item.active) {
-            holder.active.text = context!!.resources.getString(R.string.account_active)
+            holder.lblActive.text = context!!.resources.getString(R.string.account_active)
         } else {
-            holder.active.text = context!!.resources.getString(R.string.account_in_active)
+            holder.lblActive.text = context!!.resources.getString(R.string.account_in_active)
         }
+        holder.lblAccountType.text = item.testItem.toString()
     }
 
     override fun getItemCount(): Int {
@@ -37,17 +38,23 @@ internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
     }
 
     internal inner class TreeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var itemTextView: TextView
-        var active : TextView
+        var lblNickName: TextView
+        var lblActive : TextView
+        var lblAccountType : TextView
 
         init {
-            itemTextView = view.findViewById(R.id.activity_main_item_lblNickName)
-            itemTextView.setOnClickListener{
+            lblNickName = view.findViewById(R.id.activity_main_item_lblNickName)
+            lblNickName.setOnClickListener{
                 onItemClickListener?.invoke(it, layoutPosition)
             }
 
-            active = view.findViewById(R.id.activity_main_item_lblActive)
-            active.setOnClickListener{
+            lblActive = view.findViewById(R.id.activity_main_item_lblActive)
+            lblActive.setOnClickListener{
+                onItemClickListener?.invoke(it, layoutPosition)
+            }
+
+            lblAccountType = view.findViewById(R.id.activity_main_item_lblAccountType)
+            lblAccountType.setOnClickListener{
                 onItemClickListener?.invoke(it, layoutPosition)
             }
         }

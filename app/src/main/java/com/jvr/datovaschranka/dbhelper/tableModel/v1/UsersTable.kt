@@ -6,7 +6,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.lib.classes.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
@@ -182,7 +182,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     override fun insertDefaultTableData() {
         val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true )
         insert(item1)
-        val item3 = Item(nickName = "Navratil - test", testItem = false, active = true )
-        insert(item3)
+        val item2 = Item(nickName = "Navratil - test", testItem = false, active = true )
+        insert(item2)
     }
 }

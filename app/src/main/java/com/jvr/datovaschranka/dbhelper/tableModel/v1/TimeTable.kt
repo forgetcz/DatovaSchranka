@@ -2,9 +2,8 @@ package com.jvr.datovaschranka.dbhelper.tableModel.v1
 
 import android.content.ContentValues
 import android.database.Cursor
-import android.database.sqlite.SQLiteException
 import android.os.Parcelable
-import com.jvr.datovaschranka.constatns.TimeUtils
+import com.jvr.datovaschranka.lib.classes.TimeUtils
 import com.jvr.datovaschranka.dbhelper.tableModel.ITableItem
 import com.jvr.datovaschranka.dbhelper.tableModel.BaseTable
 import kotlinx.parcelize.Parcelize
