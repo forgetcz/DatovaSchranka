@@ -16,7 +16,6 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : Date? = null,
         override var dateUpdated : Date? = null,
-        override var testItem: Boolean = false,
         var settingsName : String = "",
         var settingsValue: String = "",
     ) : ITableItem<Int, Date>, Parcelable {

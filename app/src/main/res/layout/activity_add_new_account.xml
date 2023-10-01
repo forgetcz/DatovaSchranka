@@ -140,12 +140,12 @@
         android:id="@+id/chckTestAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/test_account"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numEchMinute" />
+        app:layout_constraintTop_toBottomOf="@+id/txtRetypePassword" />
 
     <CheckBox
         android:id="@+id/chckActive"
@@ -157,30 +157,6 @@
         android:text="Aktivni"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chckTestAccount" />
-
-    <TextView
-        android:id="@+id/lblEach"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/starts_each_minute"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtRetypePassword" />
-
-    <EditText
-        android:id="@+id/numEchMinute"
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:ems="10"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:text="@string/numEchMinute"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblEach" />
 
     <Button
         android:id="@+id/btnDelete"

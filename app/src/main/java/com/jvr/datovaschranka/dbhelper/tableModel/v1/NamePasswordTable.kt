@@ -16,7 +16,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean = false,
         var fkUserId : Int? = null,
         var userName : String = "",
         var userPassword : String = "",
@@ -35,7 +34,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         private const val COLUMN_DATE_UPDATED = "dateUpdated"
         private const val COLUMN_USER_NAME = "userName"
         private const val COLUMN_PASSWORD = "Password"
-        private const val COLUMN_TEST_ITEM = "testItem"
         private const val COLUMN_IS_ACTIVE = "isActive"
     }
 
@@ -44,7 +42,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE" +
                 "," + COLUMN_DATE_CREATED + " TEXT NOT NULL" +
                 "," + COLUMN_DATE_UPDATED + " TEXT" +
-                "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
                 "," + COLUMN_FK_USER_ID + " INTEGER NOT NULL" +
                 "," + COLUMN_USER_NAME + " TEXT NOT NULL" +
                 "," + COLUMN_PASSWORD + " TEXT NOT NULL" +
@@ -71,7 +68,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
             val iId = cursor.getColumnIndex(COLUMN_ID)
             val iDateCreated = cursor.getColumnIndex(COLUMN_DATE_CREATED)
             val iDateUpdated = cursor.getColumnIndex(COLUMN_DATE_UPDATED)
-            val iTestItem = cursor.getColumnIndex(COLUMN_TEST_ITEM)
             val ifkUserId = cursor.getColumnIndex(COLUMN_FK_USER_ID)
             val iUserName = cursor.getColumnIndex(COLUMN_USER_NAME)
             val iUserPassword = cursor.getColumnIndex(COLUMN_PASSWORD)
@@ -82,7 +78,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
                 retItem._id = cursor.getInt(iId)
                 retItem.dateCreated = cursor.getString(iDateCreated)
                 retItem.dateUpdated = cursor.getString(iDateUpdated)
-                retItem.testItem = cursor.getInt(iTestItem) == 1
                 retItem.fkUserId = cursor.getInt(ifkUserId)
                 retItem.userName = rsa.decCrypt(cursor.getString(iUserName))
                 retItem.userPassword = rsa.decCrypt(cursor.getString(iUserPassword))
@@ -109,15 +104,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
 
         values.put(COLUMN_DATE_CREATED, created)
 
-        if (item.testItem) {
-            item.testItem = false
-        }
-        if (item.testItem) {
-            values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            values.put(COLUMN_TEST_ITEM, 0)
-        }
         val rsa = Rsa(appContext)
         values.put(COLUMN_FK_USER_ID, item.fkUserId)
         values.put(COLUMN_USER_NAME, rsa.crypt(item.userName))
@@ -162,14 +148,6 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         }
         val dateUpdated = TimeUtils.currentDateTimeString(Date())
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
-        if (item.testItem) {
-            item.testItem = true
-            values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            item.testItem = false
-            values.put(COLUMN_TEST_ITEM, 0)
-        }
 
         val rsa = Rsa(appContext)
         values.put(COLUMN_USER_NAME, rsa.crypt(item.userName))
@@ -191,7 +169,7 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         return true
     }
 
-    override fun delete(item: Item): Boolean {
+    /*override fun delete(item: Item): Boolean {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
@@ -200,16 +178,15 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
         val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
-    }
+    }*/
 
     override fun insertDefaultTableData() {
-        val item1 = Item(testItem = true, fkUserId = 1, userName = "h63c6h"
+        val item1 = Item(fkUserId = 1, userName = "h63c6h"
             , userPassword = "5CPOMFtsrX8yfejMnKlO9A", isActive = true)
         insert(item1)
 
-        val item2 = Item(testItem = true, fkUserId = 2, userName = "45tej9"
+        val item2 = Item(fkUserId = 2, userName = "45tej9"
             , userPassword = "gudYaNRz3E8Yx3xs4UXMyB", isActive = true)
         insert(item2)
-
     }
 }

@@ -17,7 +17,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         override var _id : Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean = false,
         var fkUserId : Int? = null,
         var interval: Number? = null,
         var intervalUnit: TimeUnit? = null,/* NANOSECONDS,MICROSECONDS,MILLISECONDS,SECONDS,MINUTES,HOURS,DAYS */
@@ -35,7 +34,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         private const val COLUMN_FK_USER_ID = "fkUserId"
         private const val COLUMN_DATE_CREATED = "dateCreated"
         private const val COLUMN_DATE_UPDATED = "dateUpdated"
-        private const val COLUMN_TEST_ITEM = "testItem"
         private const val COLUMN_INTERVAL = "interval"
         private const val COLUMN_INTERVAL_UNIT = "intervalUnit"
         private const val COLUMN_MARK = "mark"
@@ -51,7 +49,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
                 "," + COLUMN_INTERVAL + " INTEGER NOT NULL" +
                 "," + COLUMN_INTERVAL_UNIT + " INTEGER NOT NULL" +
                 "," + COLUMN_MARK + " TEXT NULL UNIQUE" +
-                "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
                 ")"
     }
 
@@ -87,7 +84,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
             val iInterval = cursor.getColumnIndex(COLUMN_INTERVAL)
             val iIntervalUnit = cursor.getColumnIndex(COLUMN_INTERVAL_UNIT)
             val iMark = cursor.getColumnIndex(COLUMN_MARK)
-            val iTestItem = cursor.getColumnIndex(COLUMN_TEST_ITEM)
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
@@ -99,10 +95,9 @@ class TimeTable : BaseTable<TimeTable.Item>() {
                 val intervalUnit = cursor.getInt(iIntervalUnit)
                 retItem.intervalUnit = TimeUnit.values()[intervalUnit]
                 retItem.mark = cursor.getString(iMark)
-                retItem.testItem = cursor.getInt(iTestItem) == 1
 
                 resultList.add(retItem)
-                cursor.moveToNext();
+                cursor.moveToNext()
                 /*val valI = cursor.getInt(iIntervalUnit)
                 println(valI)
                 val myEnumValue: TimeUnit? = 1.toEnum<TimeUnit>()
@@ -145,17 +140,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         values.put(COLUMN_INTERVAL_UNIT, item.intervalUnit?.ordinal)
         values.put(COLUMN_MARK, item.mark)
 
-        if (item.testItem == null) {
-            item.testItem = false
-        }
-
-        if (item.testItem == true) {
-            values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            values.put(COLUMN_TEST_ITEM, 0)
-        }
-
         // Insert the new row, returning the primary key value of the new row
         try {
             val newRowId = db.insert(getTableName(), null, values)
@@ -187,12 +171,6 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         values.put(COLUMN_INTERVAL, item.interval.toString())
         values.put(COLUMN_INTERVAL_UNIT, item.intervalUnit?.ordinal)
         values.put(COLUMN_MARK, item.mark)
-        if (item.testItem != null && item.testItem == true) {
-            values.put(COLUMN_TEST_ITEM, 1)
-        } else
-        {
-            values.put(COLUMN_TEST_ITEM, 0)
-        }
 
         val updated = db.update(getTableName(), values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
@@ -200,7 +178,7 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         return true
     }
 
-    override fun delete(item: Item): Boolean {
+    /*override fun delete(item: Item): Boolean {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
@@ -209,7 +187,7 @@ class TimeTable : BaseTable<TimeTable.Item>() {
         val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
-    }
+    }*/
 
     override fun insertDefaultTableData() {
     }

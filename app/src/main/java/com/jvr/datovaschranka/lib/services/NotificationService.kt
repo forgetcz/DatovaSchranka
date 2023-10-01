@@ -8,14 +8,21 @@ import android.graphics.Color
 import android.os.*
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.activities.MainActivity
+import com.jvr.datovaschranka.api.DsApi
+import com.jvr.datovaschranka.api.GetListOfReceivedMessages
+import com.jvr.datovaschranka.dbhelper.DbHelper
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 // https://medium.com/@huseyinozkoc/android-services-tutorial-with-example-fa329e6a5b4b
 class NotificationService: Service() {
@@ -23,22 +30,51 @@ class NotificationService: Service() {
     private var executor: ScheduledThreadPoolExecutor = ScheduledThreadPoolExecutor(1)
     private var schedule: ScheduledFuture<*>? = null
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var dbHelper: DbHelper
+    //private val handler = Handler(Looper.getMainLooper())
+
+    // https://github.com/ezatpanah/Notifications-Youtube/blob/master/app/src/main/java/com/ezatpanah/notificationsyoutube/MainActivity.kt
+    private val channelId = "channelID"
+    private val channelName = "channelName"
+    private var notificationId = 0
 
     private val runnableCode: Runnable = Runnable {
         try {
             val time = Calendar.getInstance().time
-            val current = formatter.format(time)
-            Log.d("Handlers", "$current: Called on main thread")
+            //val current = formatter.format(time)
 
-            handler.post {
+            RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(applicationContext, null
+                ,{
+                    val users = dbHelper.getUserTable.selectAll()
+                    users?.forEach {  userItem ->
+                        val namePassTableItem = dbHelper.getNamePasswordTable
+                            .select(NamePasswordTable.COLUMN_FK_USER_ID+ "=" + userItem._id)
+                            ?.first()
+                        if (namePassTableItem != null) {
+                            val user = namePassTableItem.userName
+                            val pass = namePassTableItem.userPassword
+                            val result = GetListOfReceivedMessages().getListOfReceivedMessages(
+                                userItem._id!!, user, pass, userItem.testItem, DsApi.addDay(Date(), -7)!!, Date())
+
+                        }
+                    }
+                    /*Log.d("Handlers", "$time ($current): Called on main thread - start")
+                    Thread.sleep(20000);
+                    Log.d("Handlers", "$time ($current): Called on main thread - end")*/
+                    return@RunCommandAsyncKotlin
+                }, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            //sendNotification(notificationId)
+            /*handler.post {
                 /*Toast.makeText(
                     applicationContext,
                     "$current I poop on you",
                     Toast.LENGTH_SHORT
                 ).show()*/
-                sendNotification(notificationId)
-            }
+                Log.d("Handlers", "$time ($current): Called on main thread - start")
+                Thread.sleep(20000);
+                Log.d("Handlers", "$time ($current): Called on main thread - end")
+                //sendNotification(notificationId)
+            }*/
 
             /*Looper.prepare()
             Toast.makeText(applicationContext, "I poop on you", Toast.LENGTH_LONG).show()
@@ -51,11 +87,6 @@ class NotificationService: Service() {
         // 'this' is referencing the Runnable object
         //handler.postDelayed(this, 2000)
     }
-
-    // https://github.com/ezatpanah/Notifications-Youtube/blob/master/app/src/main/java/com/ezatpanah/notificationsyoutube/MainActivity.kt
-    private val channelId = "channelID"
-    private val channelName = "channelName"
-    private var notificationId = 0
 
     /*
         https://developer.android.com/develop/ui/views/notifications/build-notification
@@ -143,8 +174,13 @@ class NotificationService: Service() {
         notificationManager.notify(0, builder.build())
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        dbHelper = DbHelper(this, null)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val extras: Bundle? = intent!!.extras
+        val extras: Bundle? = intent?.extras
         if (extras != null) {
             if (extras.containsKey("Par1")) {
                 val val1 = extras.getString("Par1")
@@ -153,12 +189,15 @@ class NotificationService: Service() {
                 }
             }
         }
-        //sendNotification(notificationId)
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show()
 
-        runnableCode.run()
-        //val period: Long = 60 // the period between successive executions
-        //schedule = exec.scheduleAtFixedRate(runnableCode, 0, period, TimeUnit.SECONDS)
+        // Scheduling the first task which will execute after 0 seconds and then repeats periodically with
+        // a period of 120 seconds https://www.geeksforgeeks.org/scheduledthreadpoolexecutor-class-in-java/
+        schedule = executor.scheduleAtFixedRate(runnableCode, 0, 120,TimeUnit.SECONDS);
+        return START_STICKY
+
+        //runnableCode.run()
+        //sendNotification(notificationId)
+        //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show()
 
         //run this task after 5 seconds, non block for task3
         //exec.schedule(runnableCode, 5, TimeUnit.SECONDS);
@@ -190,7 +229,7 @@ class NotificationService: Service() {
         }
         */
 
-        return START_STICKY
+
         //return super.onStartCommand(intent, flags, startId)
     }
 

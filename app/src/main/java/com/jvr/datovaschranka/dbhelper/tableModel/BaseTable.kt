@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
+import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
 import java.util.ArrayList
 
 abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, TItemType : ITableItem<*,*> {
@@ -113,11 +114,22 @@ abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, T
         }
     }
 
+    override fun delete(item: TItemType): Boolean {
+        // Define 'where' part of query.
+        val selection = "_id LIKE ? "
+        // Specify arguments in placeholder order.
+        val selectionArgs = arrayOf(item._id.toString())
+        // Issue SQL statement.
+        val deleteResult = db.delete(getTableName(), selection, selectionArgs)
+        logger.d(getTag(),"Delete column $deleteResult")
+        return deleteResult == 0
+    }
+
     override fun delete(idsList : Array<String>): Boolean {
         // Define 'where' part of query.
         val selection = "_id LIKE ? "
         // Specify arguments in placeholder order.
-        //val selectionArgs = arrayOf(ids.toString())
+        // val selectionArgs = arrayOf(idsList.toString())
         // Issue SQL statement.
         val deleteResult = db.delete(getTableName(), selection, idsList)
         logger.d(getTag(),"Delete column $deleteResult")

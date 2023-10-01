@@ -26,7 +26,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_NAME = "FeedReader.db"
-        const val DATABASE_VERSION = 3
+        const val DATABASE_VERSION = 4
     }
 
     @Suppress("UnnecessaryVariable")

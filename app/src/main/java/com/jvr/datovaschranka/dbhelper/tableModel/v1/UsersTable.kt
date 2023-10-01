@@ -19,7 +19,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         override var _id: Int? = null,
         override var dateCreated : String? = null,
         override var dateUpdated : String? = null,
-        override var testItem: Boolean = false,
+        var testItem: Boolean = false,
         var nickName: String = "",
         var mark : String? = null,
         var active : Boolean = true,
@@ -168,7 +168,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         return true
     }
 
-    override fun delete(item: Item): Boolean {
+    /*override fun delete(item: Item): Boolean {
         // Define 'where' part of query.
         val selection = "$COLUMN_ID LIKE ? "
         // Specify arguments in placeholder order.
@@ -177,7 +177,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         val deleteResult = db.delete(getTableName(), selection, selectionArgs)
         logger.d(getTag(),"Delete column $deleteResult")
         return deleteResult == 0
-    }
+    }*/
 
     override fun insertDefaultTableData() {
         val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true )

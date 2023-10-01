@@ -11,7 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.R
-import com.jvr.datovaschranka.api.DsApi
+import com.jvr.datovaschranka.api.GetOwnerInfoFromLogin2
 import com.jvr.datovaschranka.databinding.ActivityAddNewAccountBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
@@ -21,7 +21,7 @@ import java.util.*
 class AddNewAccountActivity : BaseActivity() {
     private lateinit var binding: ActivityAddNewAccountBinding
     private lateinit var dbHelper: DbHelper
-    private lateinit var myActvitiyContext: AppCompatActivity
+    private lateinit var myActivityContext: AppCompatActivity
     private var userTableItem: UsersTable.Item? = null
     private var namePassTableItem: NamePasswordTable.Item? = null
 
@@ -39,7 +39,9 @@ class AddNewAccountActivity : BaseActivity() {
         binding = ActivityAddNewAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Log.d("", parent.toString())
+        if (parent != null) {
+            Log.d("", parent.toString())
+        }
         dbHelper= DbHelper(this, null)
 
         val extras = intent.extras
@@ -127,7 +129,6 @@ class AddNewAccountActivity : BaseActivity() {
             thisNamePassModelTable.fkUserId = thisUserTableItem._id
             thisNamePassModelTable.userName = txtUserName.text.toString()
             thisNamePassModelTable.userPassword = txtPassword.text.toString()
-            thisNamePassModelTable.testItem = chckTestAccount.isChecked
             if (namePassTableItem == null) {
                 dbHelper.getNamePasswordTable.insert(thisNamePassModelTable)
             } else {
@@ -145,11 +146,11 @@ class AddNewAccountActivity : BaseActivity() {
             val password = txtPassword.text.toString()
             val checkTest = chckTestAccount.isChecked
 
-            RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(myActvitiyContext
+            RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(myActivityContext
                 , "Check user connection"
                 , {
                     try {
-                        val stringRes = DsApi().getOwnerInfoFromLogin2(userName, password, checkTest)
+                        val stringRes = GetOwnerInfoFromLogin2().getOwnerInfoFromLogin2(userName, password, checkTest)
                         it?.runOnUiThread{
                             if (stringRes != null) {
                                 txtNickName.setTextColor(Color.GREEN)
@@ -182,7 +183,7 @@ class AddNewAccountActivity : BaseActivity() {
                     } catch (ex: Exception) {
                         Log.e(logger.getTag(), ex.message!!)
                     }
-                }, null ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myActvitiyContext);
+                }, null ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myActivityContext)
         }
     }
 

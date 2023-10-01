@@ -1,0 +1,469 @@
+VÌTŠÍ ZMÌNY POPISU WS
+=====================
+
+Datum nasazení: TEST 27.11.2010, PRODUKCE: 18.12.2010
+verze WSDL a XSD: 2.10
+-------------------------
+
+WS pro vyhledávání:
+1) nová WS GetDataBoxList - stažení seznamu datových schránek 
+
+WS pro zprávy:
+1) nová WS GetMessageStateChanges - stažení seznamu odeslaných zpráv, u kterých došlo ke zmìnì stavu 
+2) event EV0 u doruèenky, texty eventù
+3) omezený pøístup do znepøístupnìné schránky
+7) SDZ 7 - 10
+
+Datum nasazení: TEST 18.12.2010, PRODUKCE: 5.2.2011
+verze WSDL a XSD: 2.11
+---------------------------
+WS pro vyhledávání:
+1) nový seznam zkratek státù
+
+WS pro zprávy:
+1) nová WS GetMessageAuthor
+2) zmìna Create[Multiple]Message 
+3) nové eventy u doruèenky
+4) nové pøípony a MIME typy
+
+
+Datum nasazení: PRODUKCE: 5.2.2011
+verze WSDL a XSD: 2.11
+---------------------------
+omezení v GetOwnerInfoFromLogin
+nové texty v dodejce a doruèence
+
+WS pro zprávy:
+
+
+Datum nasazení: PRODUKCE: 16.4.2011
+verze WSDL a XSD: 2.11
+---------------------------
+- pøidány informace o URL na testovacím prostøedí
+WS pro zprávy:
+1) èasové razítko do podpisu zprávy
+
+
+Datum nasazení: PRODUKCE: 15.5.2011
+verze WSDL a XSD: 2.12
+---------------------------
+- pøidány informace o likvidátorech
+- pøidána informace o nové systémové DZ typu 11
+
+
+Datum nasazení: 30.7.2011 (verze 2.20)
+verze WSDL a XSD: 2.12
+---------------------------
+- pøidána informace o schránkách pro daòové poradce
+- opravy a formulace
+
+
+Datum nasazení: 17.9.2011 (verze 2.21)
+verze WSDL a XSD: 2.13
+---------------------------
+- pøidán popis WS se statistikou zpráv
+- doplnìní popisu XML struktury systémových zpráv
+
+
+Datum nasazení: 16.10.2011   (veøejný test 17.9.)
+verze WSDL a XSD: 2.14
+-----------------------------
+- zmìna hesla pro úèty s OTP pøihlašováním
+
+
+Datum nasazení:  27.11.2010  (veøejný test 16.10.)
+verze WSDL a XSD: 2.15
+-----------------------------
+- zmìny v doruèování PDZ
+- nové podtypy PDZ   (iniciaèní a odpovìdní zprávy, dotované zprávy)   
+- zpøesnìní výbìru zpráv do seznamu došlých
+
+
+Verze 2.25
+Datum nasazení: 28.1.2012 
+verze WSDL a XSD: 2.15
+--------------------------------
+- zpøesnìní popisu PDZInfo (kap. 1.5 - Vyhledávání)
+- zavedení dotovaných iniciaèních zpráv, nové podtypy PDZ (kap. 1.15 a další - Zprávy)
+- zpøesnìní popisu nakládání s lhùtou 90 dnù pro smazání zpráv (kap. 1.4 - Zprávy)
+
+
+Verze 2.26
+Datum nasazení: 17.3.2012 
+verze WSDL a XSD: 2.15
+--------------------------------
+- informace o zavedení chyby pøi dlouhotrvajícím doruèování (kap. 1.5 - Zprávy)
+- zpøesnìní popisu ovìøování zpráv po zavedení CAdES archivace (kap. 2.3.1 - Zprávy)
+
+   
+Verze 2.27
+Datum nasazení: 21.4.2012 
+verze WSDL a XSD: 2.15
+--------------------------------
+- zmìny v znepøístupnování schránek pøi pøerušení èinnosti (kap. 2.9 a 2.11 - Schránky)
+
+
+Verze 2.28
+Datum nasazení: -- (na TEST 25.6.2012)
+verze WSDL a XSD: 2.16
+--------------------------------
+- zavedení WS EraseMessage (kap. 1.16 a 2.10 - Zprávy)
+- zrušení oprávnìní schránkového uživatele PRIVIL_READ_VAULT (kap. 1.3 - Zprávy)
+
+
+Verze 2.32 
+Datum nasazení: 20.10.2012 (na TEST 7.10.2012)
+verze WSDL a XSD: 2.17
+--------------------------------
+- zavedení WS Re-signISDSDocument (kap. 1.17 a 2.3.3 - Zprávy)
+   
+Verze 2.35
+Datum nasazení: 20.4.2013 (na TEST 18.11.2012)
+verze WSDL a XSD: 2.18
+--------------------------------
+- zavedení WS DataBoxCreditInfo (kap. 1.6 - Vyhledávání)
+- úprava WS PDZInfo (kap. 1.6 - Vyhledávání)
+- zavedení kreditních PDZ
+- zavedení kreditního datových trezorù
+
+
+Verze 2.37
+Datum nasazení: 25.1.2014 
+verze WSDL a XSD: 2.18a
+--------------------------------
+- Pøevážnì jen drobné formulaèní úpravy a zpøesnìní
+- pojem Systémová datová zpráva -> Systémová zpráva
+Manipulace se zprávami:
+- nahrazení informací o napojení na ISEO na ROS
+- odstranìní popisu systémové zprávy typu 11
+- zpøesnìní popisu razítek (CAdES)
+- zpøesnìní popisu parametrù pro WS na získání seznamu zpráv 
+Správa schránek:
+- odstranìní popisu nepoužívané WS CreateDataBoxPFOInfo
+
+
+Verze 2.38      (pouze pro VT)
+Datum nasazení na Veøejný test: 13.4.2014
+verze WSDL a XSD: 2.18a
+--------------------------------
+Manipulace se zprávami:
+- zavedení nové verze èasových razítek v CAdES podpisu stažené DZ (kap. 2.4.2.2)
+
+
+Verze 2.39       (verze pro TEST a PROD se liší)
+Datum nasazení na Veøejný test: (žádná viditelná zmìna)
+Datum nasazení na Produkci: 1.6.2014 (žádná viditelná zmìna) 
+verze WSDL a XSD: 2.18a
+--------------------------------
+Manipulace se zprávami:
+- zpøesnìní popisu používání aributu dmFileMetaType v kap. 2.1
+
+
+Verze 2.40 (sjednocuje VT a PROD) 
+Datum platnosti: 13.9.2014
+verze WSDL a XSD: 2.18a
+--------------------------------
+Manipulace se zprávami:
+- zavedení nové verze èasových razítek v CAdES podpisu stažené DZ (kap. 2.4.2.2)
+
+
+Verze 2.41 (stejné pro VT i PROD)
+Datum platnosti: 13.12.2014
+verze WSDL a XSD: 2.19
+---------------------------------
+Manipulace se zprávami:
+- jen popis zmìn
+Vyhledávání:
+- zavedení WS ISDSSearch2
+Správa schránek:
+- povolení SetOpenAddressing a ClearOpenAddressing pro schránkové uživatele
+
+
+Verze 2.42 (pro PROD)
+Datum platnosti: 12.4.2014
+verze WSDL a XSD: 2.19
+---------------------------------
+Manipulace se zprávami:
+- jen drobné úpravy
+Vyhledávání:
+- popis GetDataBoxList s parametrem POA
+Správa schránek:
+- odstranìní WS NewAccessData z veøejné dokumentace, úpravy kvùli ROS 
+
+
+Verze 2.43 (pro TEST)
+Datum platnosti: 12.4.2015
+verze WSDL a XSD: 2.19
+---------------------------------
+Zmìny v používání rodného pøíjmení na rùzných místech
+- Vyhledávání
+- Pøístup
+
+ 
+Verze 2.44 (pro PROD)  
+Datum platnosti: 12.6.2015
+verze WSDL a XSD: 2.19
+---------------------------------
+Zmìny v používání rodného pøíjmení na rùzných místech
+- Vyhledávání
+- Pøístup
+Upozornìní na omezování nadmìrného provozu
+ - Maniupulace se zprávami, nová kap. 1.7
+
+
+Verze 2.45 (pro PROD i TEST)  
+Datum platnosti: 8.8.2015
+verze WSDL a XSD: 2.20
+---------------------------------
+Pøidány doporuèené postupy pøi zpracování velkého poètu zpráv
+- Manipulace se zprávami, nová kap. 1.8
+Zmìna v mazání nedoruèených PDZ
+- Manipulace se zprávami, kap. 1.5, kap. 1.9.1 
+Nová služba pro zjištìní stavu schránky v minulosti
+- Vyhledávání, nová kap. 2.7 
+
+
+Verze 2.46 (pro PROD i TEST)   
+Datum platnosti: 12.9.2015
+verze WSDL a XSD: 2.20
+---------------------------------
+Zpøesnìní popisu u MessageEnvelopeDownload
+- Manipulace se zprávami, kap. 2.4.4
+Zpøesnìní popisu práv u GetDataBoxList a GetDataBoxActivityStatus
+- Vyhledávání, kap. 2.4 a 2.7 
+
+
+Verze 2.47    
+Datum platnosti PROD: 11.10.2015; pro TEST od 23.9.2015
+verze WSDL a XSD: 2.21
+---------------------------------
+Nová služba pro pro zjištìní informací o držitel schránky FO FindPersonalDataBox
+- Vyhledávání, nová kap. 2.3
+Nová XML podoba systémové zprávy è. 3
+- Manipulace se zprávami, kap. 1.9.1.1  
+
+                                          
+Verze 2.48    
+Datum platnosti PROD: 8.11.2015; pro TEST od 8.11.2015
+verze WSDL a XSD: 2.22
+---------------------------------                
+Pøidána hodnota OVM_MAIN parametru searchScope u služby ISDSSearch2
+- Vyhledávání, nová kap. 2.2
+Doplnìno vysvìtlení k možným prázdným adresním elementùm u popisù nalezených schránek typu FO
+- Vyhledávání, kap. 2.1, 2.2, 2.3
+Zpøesnìní hodnoty parametru dmMessageStatus u stažené doruèenky
+- Manipulace se zprávami, kap. 2.7.1  
+Zapnutí emailových notifikací pøi vytvoøení schránky
+- Správa schránek, kap. 2.1
+
+
+Verze 2.49    
+Datum platnosti PROD: 7.2.2016
+verze WSDL a XSD: 2.23
+---------------------------------                
+Popsána zámìna znakù na vstupu WS
+- Manipulace se zprávami, kap. 1.3.2
+Zmìna limitu pøíloh na 20 MB
+- Manipulace se zprávami, kap. 2.1
+Rozšíøení adresních elementù na vstupu WS pro správu schránek
+- Správa schránek
+
+
+Verze 2.50  (pouze TEST)  
+Datum platnosti TEST: 7.2.2016
+verze WSDL a XSD: 2.23
+---------------------------------                
+Zmìna v doruèování dodaných zpráv
+- Manipulace se zprávami
+ 
+                                       
+Verze 2.51    
+Datum platnosti TEST i PROD: 10.4.2016
+verze WSDL a XSD: 2.24
+---------------------------------                
+Zmìna v doruèování dodaných zpráv
+- Manipulace se zprávami, kap. 1.6 
+Nová systémová zpráva  
+- Manipulace se zprávami, kap. 1.9.1  
+Nová služba DTInfo 
+-  Vyhledávání, kap. 2.8
+Zpøesnìní délky nìkterých polí v opisu schránky
+- Správa schránek, kap. 1.6.1                                        
+
+
+Verze 2.52    
+Datum platnosti TEST i PROD: 15.5.2016
+verze WSDL a XSD: 2.24
+---------------------------------                
+Zvìtšení intervalu pro vyhledání kreditních transakcí
+- Vyhledávání, kap. 2.7
+Zpøesnìní popisu, co je zpráva, co je ZFO apod.
+- Manipulace se zprávami, kap. 2.4.2, 2.4.3, 2.7.2
+
+
+Verze 2.53    
+Datum platnosti pro TEST i PROD: 5.6.2016
+verze WSDL a XSD: 2.24
+---------------------------------
+Omezení poètu pøíloh datové zprávy 
+- Manipulace se zprávami, kap. 2.1 
+                
+
+Verze 2.54    
+Datum platnosti pro TEST i PROD: 11.9.2016
+verze WSDL a XSD: 2.25
+---------------------------------
+Lepší vyhledávání schránek osob s druhým køestním jménem (FindDataBox)
+- Vyhledávání, kap. 2.1
+Nová WS PDZSendInfo
+- Vyhledávání, kap. 2.7                
+Popis algoritmu výpoètu kontrolního znaku ID schránky
+-  Manipulace se zprávami, kap. 1.3.3.1
+
+
+Verze 2.55    
+Datum platnosti pro TEST i PROD: 4.12.2016
+verze WSDL a XSD: 2.25
+---------------------------------
+Jen textové úpravy a zpøesnìní 
+-  Manipulace se zprávami, kap. 1.3.3.1
+
+
+Verze 2.56    
+Datum platnosti pro TEST i PROD: 5.3.2017
+verze WSDL a XSD: 2.26
+---------------------------------
+Pøidání interního oprávnìní PRIVIL_AUDITOR
+- Správa schránek, Pøíloha A + mnoho míst 
+Pøidání nového typu schránky PFO_AUDITOR
+- Správa schránek, Vyhledávání
+Pøidání nových typù uživatelù Opatrovník PO a Nucený správce
+- Správa schránek, WS související s pøístupem
+Zatøídìní zprávy odmítnuté antivirem v seznamu odeslaných 
+- Manipulace se zprávami, kap. 2.8.2
+Nová událost dodejky EV8 pro zprávy ve stavu 3
+- Manipulace se zprávami, kap. 2.7.1
+
+
+Verze 2.57
+Datum platnosti pro TEST i PROD: 4.6.2017
+verze WSDL a XSD: 2.26
+---------------------------------
+FindDataBox vrací nový stav 0009
+- Vyhledávání, kap. 2.1
+
+
+Verze 2.58    
+Datum platnosti pro TEST: 5.7.2017, platnost proi PROD: 10.9.2017
+verze WSDL a XSD: 2.27
+---------------------------------
+Zavedení nových typù schránek OVM_PO (16), OVM_PFO (15), OVM_FO (14), zrušení typù PO_ZAK (konverze na PO), OVM_NOTAR a OVM_EXEKUT (konverze na OVM_PFO);
+- rùzná místa dokuemtace
+Zrušení povyšování schránek na OVM podle pùvodního § 5a: již neexistují povýšené neOVM schránky, stávající byly konvertovány
+- Manipulace se zprávami, kap. 2.1 a další
+Zmìny v konverzi znakù na vstupu webových služeb
+- Manipulace se zprávami, kap. 1.3.4
+Zmìny ve vyhledávání schránek po zavedení nových typù (FindDataBox i ISDSSerch2) 
+– Vyhledávání kap. 2.1, 2.2 a další
+
+
+Verze 2.59
+Datum platnosti pro TEST i PROD: 10.9.2017
+verze WSDL a XSD: 2.27
+---------------------------------
+Volba placení PDZ
+- Manipulace se zprávami, kap. 2.1
+
+==================================================================================================
+ISDS 2018+
+==================================================================================================
+
+Verze 2.60
+Datum platnosti pro TEST i PROD: 2.2. 2018
+verze WSDL a XSD: 2.27
+---------------------------------
+oznaèení klas. znaèkou Veøejný dokument
+
+Zrušení služeb pro nastavení povyšování
+- Správa schránek
+Pøidání hodnot identifier a registryCode pro GetOwnerInfoFromLogin
+- WS související s pøístupem
+Zpøesnìní popisu služby pro stažení doruèenky a další formulaèní a terminologické úpravy 
+- Manipulace se zprávami
+Samostatná kap. o pøístupu do znepøístupnìné schránky
+- Manipulace se zprávami, kap. 1.6
+Kapitola s odkazem na veøejné rozhraní aplikace Seznam datových schránek
+- Vyhledávání schránek
+
+Verze 2.61
+Datum platnosti pro TEST 13.5.2018; 
+verze WSDL a XSD: 2.28
+---------------------------------
+Pøidání popisu služby GetDataBoxUsers2
+- WS pro správu schránek
+
+Verze 2.62
+Datum platnosti - jen interní zmìna
+verze WSDL a XSD: 2.28
+---------------------------------
+Pøejmenování souborù a odkazù na nì.
+
+Verze 2.63
+Datum platnosti pro TEST 15.7.2018; pro PROD 2.9.2018
+verze WSDL a XSD: 2.28  (2.29 pro CzP)
+---------------------------------
+Zpøesnìní formulací u CAdES podpisù
+- Manipulace se zprávami, kap. 2.4.2
+Popis mazání zpráv po 3 letech, kap. 1.7
+- Manipulace se zprávami 
+
+
+Verze 2.64
+Datum platnosti pro TEST 6.9.2018;   
+verze WSDL a XSD: 2.31
+---------------------------------
+Velká zmìna ve struktuøe pro popis schránky (OwnerInfo) a uživatele (UserInfo)
+- Vyhledávání schránek
+- Správa schránek
+- Pøístup 
+Staré verze služeb zùstávají platné, jen nejsou obsaženy v pøíruèkách. 
+Zmìny jsou popsány v rozeslané informaci pro vývojáøe ze záøí 2018.
+
+
+Verze 2.65
+Datum platnosti pro TEST i PROD 4.11.2018;   
+verze WSDL a XSD: 2.31
+---------------------------------
+Zmìny ve strukturách WS pøeneseny z prostøedí TESTu i do produkèního prostøedí.
+
+
+Verze 2.66
+Datum platnosti pro TEST 21.11.2018, pro PROD 20.1.2019;   
+verze WSDL a XSD: 2.31
+---------------------------------
+Pøidání CSV mezi povolené formáty pøíloh datové zprávy.
+- Manipulace se zprávami, kap. 3
+Povolení mezery v hesle zadávaném webovou službou ChangeISDSPassword
+- Pøístup, kap.1.9
+Nahrazení UserID z textu XML pøíloh systémových zpráv elementem a hodnotou IsdsID 
+- Manipulace se zprávami, kap. 1.11.1.1
+
+Verze 2.67
+Datum platnosti pro TEST i PROD 3.3.2019;   
+verze WSDL a XSD: 2.31
+---------------------------------
+Pøidání JSON mezi povolené formáty pøíloh datové zprávy.
+- Manipulace se zprávami, kap. 3
+Zákaz editace referenèních údajù ztotožnìných uživatelù
+- Správa schránek, kap. 2.6
+Zpøesnìní popisu ftx. vyhledávání
+- Vyhledávání schránek, kap. 2.2
+Plus mnohé drobné úpravy a zpøesnìní, vèetnì aktualizace pøíkladù
+
+Verze 2.68
+Datum platnosti pro TEST 5.5.2019,  PROD ?.?.2019;   
+verze WSDL a XSD: 2.31
+---------------------------------
+Zmìna v oznaèování stavu 7 u odeslaných zpráv
+- Manipulace se zprávami
+
