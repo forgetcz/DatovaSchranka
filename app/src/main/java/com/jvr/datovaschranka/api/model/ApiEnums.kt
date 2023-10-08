@@ -1,4 +1,4 @@
-package com.jvr.datovaschranka.api
+package com.jvr.datovaschranka.api.model
 
 class ApiEnums {
 
@@ -65,7 +65,6 @@ class ApiEnums {
         FO {
             override fun asInt(): Int = 40
             override fun asDescriptionString(): String = "DS fyzické osoby"
-
         };
 
         abstract fun asInt(): Int

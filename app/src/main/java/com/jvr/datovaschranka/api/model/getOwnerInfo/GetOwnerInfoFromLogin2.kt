@@ -1,46 +1,40 @@
 @file:Suppress("LiftReturnOrAssignment", "UnnecessaryVariable")
 
-package com.jvr.datovaschranka.api
+package com.jvr.datovaschranka.api.model.getOwnerInfo
 
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.NodeList
-import org.xml.sax.InputSource
-import java.io.StringReader
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathFactory
+import com.jvr.datovaschranka.api.DsApi
+import org.simpleframework.xml.core.Persister
 
 class GetOwnerInfoFromLogin2 {
     fun getOwnerInfoFromLogin2(userName: String, password : String, testItem : Boolean)
-            : GetOwnerInfoFromLogin2Response? {
-        val soapXmlString = StringBuilder().run {
-            appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
-            appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
-            appendLine("    <soap:Body>")
-            appendLine("        <GetOwnerInfoFromLogin2 xmlns=\"http://isds.czechpoint.cz/v20\">")
-            appendLine("            <dbDummy />")
-            appendLine("         </GetOwnerInfoFromLogin2>")
-            appendLine("    </soap:Body>")
-            appendLine("</soap:Envelope>")
-            toString()
-        }
+            : GetOwnerInfoResponse? {
+
+        val soapXmlRequestString = GetOwnerInfoRequest().getSoapXML()
 
         val url = "https://${DsApi.getUrl(testItem)}/DS/DsManage"
+
         val response = DsApi.getResponse(
-            soapXmlString, "", url, userName, password
+            soapXmlRequestString, "", url, userName, password
         )
+
         if (response.responseStatus) {
-            val cls = GetOwnerInfoFromLogin2Response.fromXmlString(response.responseText)
-            return cls
+            val deserializer = Persister()
+            try {
+                val container = GetOwnerInfoResponse().deserialize<GetOwnerInfoResponse>(response.responseText)
+                //val container = deserializer.read(GetOwnerInfoResponse ::class.java, response.responseText)
+                return container
+            } catch (ex : Exception) {
+                throw ex
+            }
+
+            //val cls = GetOwnerInfoFromLogin2Response.fromXmlString(response.responseText)
+            //return cls
         } else {
             return null
         }
     }
 
-    class GetOwnerInfoFromLogin2Response {
+    /*class GetOwnerInfoFromLogin2Response {
         companion object {
             fun fromXmlString(inputXml : String) : GetOwnerInfoFromLogin2Response {
                 val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
@@ -66,10 +60,9 @@ class GetOwnerInfoFromLogin2 {
         private var PnGivenNames = ""
         private var PnLastName = ""
 
-        var dbID: String
-            get() = dbID
+        var dbID: String = ""
             set(value) {
-                dbID = value
+                field = value
             }
-    }
+    }*/
 }

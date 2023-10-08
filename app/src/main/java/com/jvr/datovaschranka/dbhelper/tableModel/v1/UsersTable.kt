@@ -23,6 +23,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         var nickName: String = "",
         var mark : String? = null,
         var active : Boolean = true,
+        var dbId : String = ""
     ) : ITableItem<Int, String>, Parcelable {
         override fun toString(): String = "$COLUMN_ID : $_id; $COLUMN_NICK_NAME : $nickName"
         override fun insertAllowed(): Boolean {
@@ -37,6 +38,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         const val COLUMN_TEST_ITEM = "testItem"
         const val COLUMN_NICK_NAME = "nickName"
         const val COLUMN_IS_ACTIVE = "isActive"
+        const val COLUMN_DB_ID = "dbId"
         private const val COLUMN_MARK = "mark"
     }
 
@@ -50,6 +52,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
                 "," + COLUMN_MARK + " TEXT NULL" +
                 "," + COLUMN_TEST_ITEM + " INTEGER NOT NULL" +
                 "," + COLUMN_IS_ACTIVE + " INTEGER NOT NULL" +
+                "," + COLUMN_DB_ID + " TEXT NOT NULL" +
                 ")"
     }
 
@@ -65,6 +68,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
             val iName = cursor.getColumnIndex(COLUMN_NICK_NAME)
             val iTestItem = cursor.getColumnIndex(COLUMN_TEST_ITEM)
             val iActive = cursor.getColumnIndex(COLUMN_IS_ACTIVE)
+            val idbId = cursor.getColumnIndex(COLUMN_DB_ID)
 
             while (!cursor.isAfterLast) {
                 val retItem = Item()
@@ -75,6 +79,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
                 retItem.nickName = cursor.getString(iName)
                 retItem.testItem = cursor.getInt(iTestItem) == 1
                 retItem.active = cursor.getInt(iActive) == 1
+                retItem.dbId = cursor.getString(idbId)
 
                 resultList.add(retItem)
                 cursor.moveToNext()
@@ -112,6 +117,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         values.put(COLUMN_DATE_CREATED, created)
         values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark.toString())
+        values.put(COLUMN_DB_ID, item.dbId)
 
         if (item.testItem) {
             values.put(COLUMN_TEST_ITEM, 1)
@@ -155,6 +161,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
         values.put(COLUMN_DATE_UPDATED, dateUpdated)
         values.put(COLUMN_NICK_NAME, item.nickName)
         values.put(COLUMN_MARK, item.mark)
+        values.put(COLUMN_DB_ID, item.dbId)
 
         if (item.testItem) {
             values.put(COLUMN_TEST_ITEM, 1)
@@ -180,9 +187,9 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     }*/
 
     override fun insertDefaultTableData() {
-        val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true )
+        val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true, dbId = "jptjjj9" )
         insert(item1)
-        val item2 = Item(nickName = "Navratil - test", testItem = false, active = true )
+        val item2 = Item(nickName = "Navratil - test", testItem = false, active = true, dbId = "uuyjmzh" )
         insert(item2)
     }
 }

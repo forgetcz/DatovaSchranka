@@ -1,8 +1,10 @@
 @file:Suppress("UnnecessaryVariable", "LiftReturnOrAssignment")
 
-package com.jvr.datovaschranka.api
+package com.jvr.datovaschranka.api.model.getListOfReceivedMessages
 
 import android.text.format.DateFormat
+import com.jvr.datovaschranka.api.DsApi
+import com.jvr.datovaschranka.api.model.ApiEnums
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
@@ -19,7 +21,7 @@ import kotlin.collections.ArrayList
 class GetListOfReceivedMessages {
 
     companion object {
-        val lastMessages: MutableMap<Int, List<GetListOfReceivedMessages>> = HashMap()
+        val lastMessages: MutableMap<Int, GetListOfReceivedMessagesResponseRoot?> = HashMap()
         var lastReadDate : Date = Date(0)
     }
 
@@ -82,7 +84,7 @@ class GetListOfReceivedMessages {
     fun getListOfReceivedMessages(userId : Int, userName: String, password : String, testItem : Boolean
                                   , fromDate : Date, toDate: Date, offset : Int = 1
                                   , limit : Int = 100)
-            : List<GetListOfReceivedMessages>? {
+            : GetListOfReceivedMessagesResponseRoot? {
 
         val soapXmlString = StringBuilder().run {
             appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
@@ -100,6 +102,9 @@ class GetListOfReceivedMessages {
             appendLine("</soap:Envelope>")
             toString()
         }
+        val container = GetListOfReceivedMessagesResponseRoot()
+            .deserialize<GetListOfReceivedMessagesResponseRoot>(GetListOfReceivedMessagesResponseRoot.example)
+        println(container)
 
         val url = "https://${DsApi.getUrl(testItem)}/DS/dx"
         val response = DsApi.getResponse(
@@ -108,8 +113,8 @@ class GetListOfReceivedMessages {
 
         if (response.responseStatus) {
             lastReadDate = Date()
-            val currentMessages = fromXmlString(response.responseText)
-            lastMessages[userId] = currentMessages
+            val container = GetListOfReceivedMessagesResponseRoot().deserialize<GetListOfReceivedMessagesResponseRoot>(response.responseText)
+            lastMessages[userId] = container
             return lastMessages[userId]
         } else {
             return null

@@ -1,4 +1,4 @@
-package com.jvr.datovaschranka.lib.services
+package com.jvr.datovaschranka.services
 
 import android.annotation.SuppressLint
 import android.app.*
@@ -12,10 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.jvr.common.lib.async.RunCommandAsyncKotlin
-import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.activities.MainActivity
 import com.jvr.datovaschranka.api.DsApi
-import com.jvr.datovaschranka.api.GetListOfReceivedMessages
+import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
 import java.text.SimpleDateFormat

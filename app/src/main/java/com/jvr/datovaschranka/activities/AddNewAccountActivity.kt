@@ -11,7 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.R
-import com.jvr.datovaschranka.api.GetOwnerInfoFromLogin2
+import com.jvr.datovaschranka.api.model.getOwnerInfo.GetOwnerInfoFromLogin2
 import com.jvr.datovaschranka.databinding.ActivityAddNewAccountBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
@@ -24,6 +24,7 @@ class AddNewAccountActivity : BaseActivity() {
     private lateinit var myActivityContext: AppCompatActivity
     private var userTableItem: UsersTable.Item? = null
     private var namePassTableItem: NamePasswordTable.Item? = null
+    private var dbId :String? = null
 
     override fun processTimerEvent(inputDate: Date): Boolean {
         //TODO("Not yet implemented")
@@ -49,12 +50,14 @@ class AddNewAccountActivity : BaseActivity() {
             val userTableKey = UsersTable.Item::class.java.toString()
             if (extras.containsKey(userTableKey)) {
                 userTableItem = extras.getParcelable(userTableKey)
+                dbId = userTableItem?.dbId
                 namePassTableItem = dbHelper.getNamePasswordTable
                     .select(NamePasswordTable.COLUMN_FK_USER_ID+ "=" + userTableItem?._id)
                     ?.first()
             }
         }
 
+        myActivityContext = this
         binding.apply {
             fillFormData(userTableItem, namePassTableItem)
 
@@ -76,48 +79,57 @@ class AddNewAccountActivity : BaseActivity() {
         }
     }
 
-    private fun ActivityAddNewAccountBinding.checkInput() : Boolean {
+    private fun ActivityAddNewAccountBinding.checkInput(dbIdChek : Boolean) : String {
         //region Check values
-        var okCheck = true
+        val okCheck : StringBuilder = StringBuilder()
+
         val nickName = txtNickName.text.toString()
         if (nickName == "") {
-            okCheck = false
             val pleaseEnterNickname = resources.getString(R.string.please_enter_nickname)
             txtNickName.hint = pleaseEnterNickname
             txtNickName.error = pleaseEnterNickname
+            okCheck.appendLine(pleaseEnterNickname)
         }
 
         val userName = txtUserName.text.toString()
         if (userName == "") {
-            okCheck = false
             txtUserName.hint = "please enter user name"
             txtUserName.error = "please enter user name"
+            okCheck.appendLine("please enter user name")
         }
 
         val password = txtPassword.text.toString()
         if (password == "") {
-            okCheck = false
             txtPassword.hint = "please enter password"
             txtPassword.error = "please enter password"
+            okCheck.appendLine("please enter password")
         }
 
         val retypePass = txtRetypePassword.text.toString()
         if (retypePass != password) {
-            okCheck = false
             txtRetypePassword.hint = "password and retype password do not match"
             txtRetypePassword.error = "password and retype password do not match"
+            okCheck.appendLine("password and retype password do not match")
         }
         //endregion
-        return okCheck
+
+        if (dbIdChek) {
+            if (dbId == null) {
+                okCheck.appendLine("Not tested account !")
+            }
+        }
+        return okCheck.toString()
     }
 
     private fun ActivityAddNewAccountBinding.btnOkClick() {
-        val okCheck = checkInput()
-        if (okCheck) {
+        val okCheck = checkInput(true)
+        if (okCheck.isEmpty()) {
             val thisUserTableItem = UsersTable.Item()
             thisUserTableItem._id = userTableItem?._id
             thisUserTableItem.nickName = txtNickName.text.toString()
             thisUserTableItem.testItem = chckTestAccount.isChecked
+            thisUserTableItem.dbId = dbId!!
+            
             if (userTableItem == null) {
                 dbHelper.getUserTable.insert(thisUserTableItem)
             } else {
@@ -140,8 +152,8 @@ class AddNewAccountActivity : BaseActivity() {
     }
 
     private fun ActivityAddNewAccountBinding.btnTestClick() {
-        val okCheck = checkInput()
-        if (okCheck) {
+        val okCheck = checkInput(false)
+        if (okCheck.isEmpty()) {
             val userName = txtUserName.text.toString()
             val password = txtPassword.text.toString()
             val checkTest = chckTestAccount.isChecked
@@ -150,9 +162,11 @@ class AddNewAccountActivity : BaseActivity() {
                 , "Check user connection"
                 , {
                     try {
-                        val stringRes = GetOwnerInfoFromLogin2().getOwnerInfoFromLogin2(userName, password, checkTest)
+                        val ownerResponse = GetOwnerInfoFromLogin2().getOwnerInfoFromLogin2(userName, password, checkTest)
+                        dbId = ownerResponse?.getOwnerInfoBody?.getOwnerInfoFromLogin2Response?.getOwnerInfoDbOwnerInfo?.dbID
                         it?.runOnUiThread{
-                            if (stringRes != null) {
+                            if (ownerResponse != null
+                                    && ownerResponse.getOwnerInfoBody.getOwnerInfoFromLogin2Response.getOwnerInfoDbOwnerInfo.dbID != "") {
                                 txtNickName.setTextColor(Color.GREEN)
                                 txtUserName.setTextColor(Color.GREEN)
                                 AlertDialog.Builder(it)
@@ -184,6 +198,17 @@ class AddNewAccountActivity : BaseActivity() {
                         Log.e(logger.getTag(), ex.message!!)
                     }
                 }, null ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myActivityContext)
+        } else {
+            AlertDialog.Builder(myActivityContext)
+                .setTitle(":(") //<font color='#e9e91e'>"
+                .setMessage(Html.fromHtml("<font color='red'>Not tested account !</font>"))
+                .setCancelable(false)
+                .setPositiveButton("OK") {
+                        dialog: DialogInterface,
+                        _: Int -> dialog.dismiss()
+                }
+                .create()
+                .show()
         }
     }
 

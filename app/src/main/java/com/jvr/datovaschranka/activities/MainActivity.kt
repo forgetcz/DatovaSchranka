@@ -15,14 +15,12 @@ import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
 import com.jvr.datovaschranka.R
-import com.jvr.datovaschranka.api.DsApi
-import com.jvr.datovaschranka.api.GetListOfReceivedMessages
+import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
-import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 import com.jvr.datovaschranka.lib.classes.CustomAdapter
-import com.jvr.datovaschranka.lib.services.NotificationService
+import com.jvr.datovaschranka.services.NotificationService
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,11 +90,12 @@ class MainActivity : BaseActivity() {
 
         val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+
         val curFormatter = SimpleDateFormat("dd/MM/yyyy")
         val dateObj = curFormatter.parse("14/09/2023")
-        GetListOfReceivedMessages().getListOfReceivedMessages(1, "h63c6h"
+        /*GetListOfReceivedMessages().getListOfReceivedMessages(1, "h63c6h"
             ,"5CPOMFtsrX8yfejMnKlO9A"
-            , true,dateObj, Date());
+            , true,dateObj, Date());*/
 
         /*val testXml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n" +
