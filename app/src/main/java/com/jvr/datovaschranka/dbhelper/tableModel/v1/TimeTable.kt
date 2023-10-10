@@ -29,11 +29,7 @@ class TimeTable : BaseTable<TimeTable.Item>() {
     }
 
     companion object {
-
-        private const val COLUMN_ID = "_id"
         private const val COLUMN_FK_USER_ID = "fkUserId"
-        private const val COLUMN_DATE_CREATED = "dateCreated"
-        private const val COLUMN_DATE_UPDATED = "dateUpdated"
         private const val COLUMN_INTERVAL = "interval"
         private const val COLUMN_INTERVAL_UNIT = "intervalUnit"
         private const val COLUMN_MARK = "mark"

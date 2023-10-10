@@ -32,9 +32,6 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     }
 
     companion object {
-        const val COLUMN_ID = "_id"
-        private const val COLUMN_DATE_CREATED = "dateCreated"
-        const val COLUMN_DATE_UPDATED = "dateUpdated"
         const val COLUMN_TEST_ITEM = "testItem"
         const val COLUMN_NICK_NAME = "nickName"
         const val COLUMN_IS_ACTIVE = "isActive"
@@ -189,7 +186,7 @@ class UsersTable : BaseTable<UsersTable.Item>() {
     override fun insertDefaultTableData() {
         val item1 = Item(nickName = "Jiri Vrabec - TEST", testItem = true, active = true, dbId = "jptjjj9" )
         insert(item1)
-        val item2 = Item(nickName = "Navratil - test", testItem = false, active = true, dbId = "uuyjmzh" )
+        val item2 = Item(nickName = "Navratil - test", testItem = true, active = true, dbId = "uuyjmzh" )
         insert(item2)
     }
 }

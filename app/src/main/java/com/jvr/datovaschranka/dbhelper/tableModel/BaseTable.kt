@@ -18,6 +18,11 @@ abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, T
         appContext = context
     }
 
+    companion object {
+        const val COLUMN_ID = "_id"
+        const val COLUMN_DATE_CREATED = "dateCreated"
+        const val COLUMN_DATE_UPDATED = "dateUpdated"
+    }
     /**
      * Return full class & method name for logging
      */

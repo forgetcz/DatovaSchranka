@@ -26,10 +26,6 @@ class AppSettingsTable : BaseTable<AppSettingsTable.Item>() {
     }
 
     companion object {
-        private const val COLUMN_ID = "_id"
-        private const val COLUMN_DATE_CREATED = "dateCreated"
-        private const val COLUMN_DATE_UPDATED = "dateUpdated"
-
         private const val COLUMN_SETTINGS_NAME = "settingsName"
         private const val COLUMN_SETTINGS_VALUE = "settingsValue"
     }

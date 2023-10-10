@@ -129,7 +129,7 @@ class AddNewAccountActivity : BaseActivity() {
             thisUserTableItem.nickName = txtNickName.text.toString()
             thisUserTableItem.testItem = chckTestAccount.isChecked
             thisUserTableItem.dbId = dbId!!
-            
+
             if (userTableItem == null) {
                 dbHelper.getUserTable.insert(thisUserTableItem)
             } else {

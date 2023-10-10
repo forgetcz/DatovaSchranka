@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    android:background="#8EAF9E">
+    android:id="@+id/activity_main_item_layout">
 
     <TextView
         android:id="@+id/activity_main_item_lblNickName"
@@ -20,36 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/activity_main_item_lblActive"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:text="Active"
-        android:textColor="#000000"
-
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/activity_main_item_lblNickName"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/activity_main_item_lblAccountType"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center_vertical"
-        android:text="Test"
-
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/activity_main_item_lblActive"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <View
         android:id="@+id/activity_main_item_separator"
         android:layout_width="fill_parent"
@@ -60,7 +30,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_main_item_lblNickName" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

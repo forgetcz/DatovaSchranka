@@ -28,10 +28,7 @@ class NamePasswordTable: BaseTable<NamePasswordTable.Item>() {
     }
 
     companion object {
-        private const val COLUMN_ID = "_id"
         const val COLUMN_FK_USER_ID = "fkUserId"
-        private const val COLUMN_DATE_CREATED = "dateCreated"
-        private const val COLUMN_DATE_UPDATED = "dateUpdated"
         private const val COLUMN_USER_NAME = "userName"
         private const val COLUMN_PASSWORD = "Password"
         private const val COLUMN_IS_ACTIVE = "isActive"

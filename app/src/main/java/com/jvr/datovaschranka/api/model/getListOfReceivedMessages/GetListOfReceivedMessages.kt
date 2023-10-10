@@ -102,9 +102,9 @@ class GetListOfReceivedMessages {
             appendLine("</soap:Envelope>")
             toString()
         }
-        val container = GetListOfReceivedMessagesResponseRoot()
+        /*val container = GetListOfReceivedMessagesResponseRoot()
             .deserialize<GetListOfReceivedMessagesResponseRoot>(GetListOfReceivedMessagesResponseRoot.example)
-        println(container)
+        println(container)*/
 
         val url = "https://${DsApi.getUrl(testItem)}/DS/dx"
         val response = DsApi.getResponse(

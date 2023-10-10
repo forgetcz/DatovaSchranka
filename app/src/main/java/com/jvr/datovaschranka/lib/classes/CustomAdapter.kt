@@ -1,16 +1,20 @@
 package com.jvr.datovaschranka.lib.classes
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.graphics.Color
+import android.view.*
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 
+
 internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
-                             private var onItemClickListener: ((view: View?, position: Int) -> Unit)?) :
+                             private var onItemClickListener: ((
+                                 view: View?, position: Int, motionEvent: MotionEvent?
+                                , eventAction : MyGestureListenerExtended.EventAction) -> Unit)?) :
 
     RecyclerView.Adapter<CustomAdapter.TreeViewHolder>() {
     private var context : Context? = null
@@ -25,38 +29,63 @@ internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
     override fun onBindViewHolder(holder: TreeViewHolder, position: Int) {
         val item = itemsList[position]
         holder.lblNickName.text = item.nickName
-        if (item.active) {
+        /*if (item.active) {
             holder.lblActive.text = context!!.resources.getString(R.string.account_active)
         } else {
             holder.lblActive.text = context!!.resources.getString(R.string.account_in_active)
+        }*/
+
+        if (item.testItem) {
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#af978e"))
+        } else {
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#62c483"))
         }
-        holder.lblAccountType.text = item.testItem.toString()
+        //holder.lblAccountType.text = item.testItem.toString()
     }
 
     override fun getItemCount(): Int {
         return itemsList.size
     }
 
+    // https://stackoverflow.com/questions/45054908/how-to-add-a-gesture-detector-to-a-view-in-android
+    @SuppressLint("ClickableViewAccessibility")
     internal inner class TreeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private var touchListener: View.OnTouchListener = object : View.OnTouchListener {
+            //var mDetector: GestureDetector = GestureDetector(context, MyGestureListener())
+            val gestureDetector = GestureDetector(
+                context, MyGestureListenerExtended { eventAction : MyGestureListenerExtended.EventAction
+                                                     , motionEvent: MotionEvent?
+                    ->
+                    run {
+                        /*Log.d(
+                            "",
+                            view.id.toString() + ":" + eventAction.toString() + motionEvent?.toString()
+                        )*/
+                        onItemClickListener?.invoke(view, layoutPosition, motionEvent, eventAction)
+                    }
+                }
+            )
+
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return gestureDetector.onTouchEvent(event)
+            }
+        }
+
         var lblNickName: TextView
-        var lblActive : TextView
-        var lblAccountType : TextView
+        var itemLayout : ConstraintLayout
 
         init {
             lblNickName = view.findViewById(R.id.activity_main_item_lblNickName)
-            lblNickName.setOnClickListener{
-                onItemClickListener?.invoke(it, layoutPosition)
-            }
+            lblNickName.setOnTouchListener(touchListener)
 
-            lblActive = view.findViewById(R.id.activity_main_item_lblActive)
-            lblActive.setOnClickListener{
-                onItemClickListener?.invoke(it, layoutPosition)
-            }
+            itemLayout = view.findViewById(R.id.activity_main_item_layout)
+            itemLayout.setOnTouchListener(touchListener)
 
-            lblAccountType = view.findViewById(R.id.activity_main_item_lblAccountType)
+            /*lblAccountType = view.findViewById(R.id.activity_main_item_lblAccountType)
             lblAccountType.setOnClickListener{
                 onItemClickListener?.invoke(it, layoutPosition)
-            }
+            }*/
         }
     }
 }
