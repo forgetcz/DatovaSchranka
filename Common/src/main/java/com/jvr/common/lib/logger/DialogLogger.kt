@@ -10,7 +10,6 @@ import com.jvr.common.contracts.ILogger
 
 
 class DialogLogger : ILogger {
-    override fun getTag(): String { return javaClass.name }
 
     override fun d(context: BaseActivityClass, message: String) {}
     override fun d(tag: String, message: String) {}

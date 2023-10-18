@@ -19,10 +19,8 @@ import javax.net.ssl.HttpsURLConnection
 class RestLogger(Url:String): ILogger {
     private var url: String = Url
 
-    override fun getTag(): String { return javaClass.name }
-
     private val logger: ComplexLogger = ComplexLogger(
-        listOf(
+        mutableListOf(
             BasicLogger(), HistoryLogger() //er()
             //, new RestApiLogger()
         )

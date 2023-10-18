@@ -18,13 +18,12 @@ import java.util.*
 
 abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
 
-    open val logger: ILogger = ComplexLogger(
-        listOf(
+    @Suppress("PropertyName")
+    open val Log: ILogger = ComplexLogger(
+        mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )
-
-    override fun getTag(): String { return javaClass.name }
 
     /*
     * https://stackoverflow.com/questions/2900023/change-app-language-programmatically-in-android

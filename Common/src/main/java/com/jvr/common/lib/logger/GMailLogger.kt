@@ -6,7 +6,6 @@ import com.jvr.common.lib.gmail.GMailSender
 import java.lang.Exception
 
 class GMailLogger(User: String, Pass: String, Smtp: String) : ILogger {
-    override fun getTag(): String { return javaClass.name }
 
     private var gMailUser: String = User
     private var gMailPass: String = Pass

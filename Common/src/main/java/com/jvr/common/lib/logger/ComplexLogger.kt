@@ -2,6 +2,7 @@ package com.jvr.common.lib.logger
 
 import android.os.AsyncTask
 import android.util.Log
+import com.jvr.common.BuildConfig
 import com.jvr.common.lib.async.RunCommandAsyncJava
 import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.common.contracts.BaseActivityClass
@@ -10,8 +11,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
-class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
-    override fun getTag(): String { return javaClass.name }
+class ComplexLogger(private var appenderList: MutableList<ILogger>) : ILogger {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun d(context: BaseActivityClass, message: String) {
@@ -136,6 +136,12 @@ class ComplexLogger(private var appenderList: List<ILogger>) : ILogger {
                     return@label false
                 }
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }
+    }
+
+    init {
+        if (BuildConfig.DEBUG) {
+            appenderList.add(RestLogger("https://api.onio.cz/log-api/log-message"))
         }
     }
 }

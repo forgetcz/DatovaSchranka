@@ -5,9 +5,6 @@ import com.jvr.common.contracts.BaseActivityClass
 import com.jvr.common.contracts.ILogger
 
 class BasicLogger : ILogger {
-    override fun getTag(): String { return javaClass.name }
-    //private val unknownSourceTag = "Unknown source"
-
     override fun d(context: BaseActivityClass, message: String) {
         d(context.getTag(), message)
     }

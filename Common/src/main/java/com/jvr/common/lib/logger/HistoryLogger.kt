@@ -11,7 +11,6 @@ import java.util.ArrayList
  * Save all message to private List of messages
  */
 class HistoryLogger : ILogger, IHistoryLogger {
-    override fun getTag(): String { return javaClass.name }
 
     private val maxMessages = 100
     private val list: MutableList<ILogMessageItem?> = ArrayList(maxMessages)

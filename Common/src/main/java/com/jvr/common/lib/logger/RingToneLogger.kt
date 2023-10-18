@@ -8,10 +8,8 @@ import com.jvr.common.contracts.ILogger
 import java.lang.Exception
 
 class RingToneLogger : ILogger {
-    override fun getTag(): String { return javaClass.name }
-
     private val logger: ComplexLogger = ComplexLogger(
-        listOf(
+        mutableListOf(
             BasicLogger(), HistoryLogger() //er()
             //, new RestApiLogger()
         )

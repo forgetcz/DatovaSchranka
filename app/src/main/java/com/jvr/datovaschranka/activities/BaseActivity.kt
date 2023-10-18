@@ -19,8 +19,6 @@ import java.util.*
 
 abstract class BaseActivity: BaseActivityClass() {
 
-    override fun getTag(): String { return javaClass.name }
-
     private lateinit var timer: Timer
 
     //usually return true, false in case of api error to increase time for next try

@@ -7,10 +7,8 @@ import com.jvr.common.contracts.BaseActivityClass
 import java.lang.Exception
 
 class VibrateLogger : ILogger {
-    override fun getTag(): String { return javaClass.name }
-
     private val logger: ComplexLogger = ComplexLogger(
-        listOf(
+        mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )

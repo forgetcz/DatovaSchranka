@@ -195,7 +195,7 @@ class AddNewAccountActivity : BaseActivity() {
                             }
                         }
                     } catch (ex: Exception) {
-                        Log.e(logger.getTag(), ex.message!!)
+                        Log.e(ex)
                     }
                 }, null ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myActivityContext)
         } else {
