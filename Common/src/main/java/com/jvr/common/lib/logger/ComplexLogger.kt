@@ -11,7 +11,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
-class ComplexLogger(private var appenderList: MutableList<ILogger>) : ILogger {
+class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun d(context: BaseActivityClass, message: String) {
@@ -139,9 +139,9 @@ class ComplexLogger(private var appenderList: MutableList<ILogger>) : ILogger {
         }
     }
 
-    init {
+    /*init {
         if (BuildConfig.DEBUG) {
             appenderList.add(RestLogger("https://api.onio.cz/log-api/log-message"))
         }
-    }
+    }*/
 }

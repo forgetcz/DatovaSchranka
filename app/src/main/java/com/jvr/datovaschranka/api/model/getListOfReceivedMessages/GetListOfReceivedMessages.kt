@@ -16,15 +16,15 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
-import kotlin.collections.ArrayList
+
 
 class GetListOfReceivedMessages {
 
     companion object {
-        val lastMessages: MutableMap<Int, GetListOfReceivedMessagesResponseRoot?> = HashMap()
-        var lastReadDate : Date = Date(0)
+        val lastMessages: MutableMap<Int, Pair<Date,GetListOfReceivedMessagesResponseRoot?>> = HashMap()
     }
 
+    /*
     private var dbIDSender = ""
     private var dmAnnotation = ""
     private var messageStatus : ApiEnums.MessageStatus? = null
@@ -80,11 +80,11 @@ class GetListOfReceivedMessages {
         }
         return finalResultList
     }
-
+    */
     fun getListOfReceivedMessages(userId : Int, userName: String, password : String, testItem : Boolean
                                   , fromDate : Date, toDate: Date, offset : Int = 1
                                   , limit : Int = 100)
-            : GetListOfReceivedMessagesResponseRoot? {
+            : Pair<Date,GetListOfReceivedMessagesResponseRoot?>? {
 
         val soapXmlString = StringBuilder().run {
             appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
@@ -112,16 +112,11 @@ class GetListOfReceivedMessages {
         )
 
         if (response.responseStatus) {
-            lastReadDate = Date()
             val container = GetListOfReceivedMessagesResponseRoot().deserialize<GetListOfReceivedMessagesResponseRoot>(response.responseText)
-            lastMessages[userId] = container
+            lastMessages[userId] = Pair(Date(),container)
             return lastMessages[userId]
         } else {
             return null
         }
-    }
-
-    override fun toString(): String {
-        return "$dbIDSender:dbIDSender, $dmAnnotation : dmAnnotation"
     }
 }

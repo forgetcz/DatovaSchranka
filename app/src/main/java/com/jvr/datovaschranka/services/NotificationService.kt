@@ -52,7 +52,7 @@ class NotificationService: Service() {
                         if (namePassTableItem != null) {
                             val user = namePassTableItem.userName
                             val pass = namePassTableItem.userPassword
-                            val result = GetListOfReceivedMessages().getListOfReceivedMessages(
+                            GetListOfReceivedMessages().getListOfReceivedMessages(
                                 userItem._id!!, user, pass, userItem.testItem, DsApi.addDay(Date(), -7)!!, Date())
 
                         }

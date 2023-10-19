@@ -10,21 +10,28 @@ import android.preference.PreferenceManager
 import android.text.InputType
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.jvr.common.BuildConfig
 import com.jvr.common.lib.logger.BasicLogger
 import com.jvr.common.lib.logger.ComplexLogger
 import com.jvr.common.lib.logger.HistoryLogger
+import com.jvr.common.lib.logger.RestLogger
 import java.util.*
 
 
 abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
 
     @Suppress("PropertyName")
-    open val Log: ILogger = ComplexLogger(
+    val Log = ComplexLogger(
         mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )
 
+    init {
+        if (BuildConfig.DEBUG) {
+            Log.appenderList.add(RestLogger("https://api.onio.cz/log-api/log-message"))
+        }
+    }
     /*
     * https://stackoverflow.com/questions/2900023/change-app-language-programmatically-in-android
     * */

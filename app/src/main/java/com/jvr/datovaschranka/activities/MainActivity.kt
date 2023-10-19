@@ -18,6 +18,8 @@ import com.jvr.common.lib.logger.HistoryLogger
 import com.jvr.common.lib.logger.RestLogger
 import com.jvr.datovaschranka.BuildConfig
 import com.jvr.datovaschranka.R
+import com.jvr.datovaschranka.api.DsApi
+import com.jvr.datovaschranka.api.model.getListOfSentMessages.GetListOfSentMessages
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
@@ -56,31 +58,12 @@ class MainActivity : BaseActivity() {
         if (resultCode == RESULT_CANCELED) {
             return
         } else {
-            /*val data = resultData?.data
-            if (data != null) {
-               logger.d(getTag(), "Back $data")
-               val users = dbHelper.getUserTable.selectAll()
-               if (users != null) {
-                   //usersList = users
-                   //val recyclerView: RecyclerView = findViewById(R.id.activity_main_user_list_recycler)
-                   //customAdapter = CustomAdapter(usersList) { view: View?, position: Int
-                   //    -> onItemClick(view, position) }
-                   //recyclerView.adapter = customAdapter
-                   //customAdapter.notifyDataSetChanged()
-                   //recyclerView.itemAnimator = DefaultItemAnimator()
-                   /*fillTable(
-                       tableId = R.id.table_AccountList, columnNames = listOf(
-                           UsersTable.COLUMN_ID
-                           , UsersTable.COLUMN_NICK_NAME), tableData = usersList
-                       ,   listener = { view1 -> tableCellProcessClick(view1.id) }
-                       , UsersTable.COLUMN_ID)*/
-               }
-           }*/
+            mainBind()
         }
     }
 
     private fun onItemClick(
-        position: Int, eventAction: MyGestureListenerExtended.EventAction
+        layoutPosition: Int, eventAction: MyGestureListenerExtended.EventAction
     ) {
         /*Log.d(
             "",
@@ -88,7 +71,7 @@ class MainActivity : BaseActivity() {
         )*/
 
         if (eventAction == MyGestureListenerExtended.EventAction.onDoubleTap) {
-            val currentSelectedUser = usersList[position]
+            val currentSelectedUser = usersList[layoutPosition]
             val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
             nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
             startNextIntent(nextIntent)
@@ -111,24 +94,14 @@ class MainActivity : BaseActivity() {
             1, "h63c6h", "5CPOMFtsrX8yfejMnKlO9A", true
             , DsApi.addDay(Date(), -1000)!!, Date())
         */
+
+        GetListOfSentMessages().getListOfSentMessages(
+            1, "h63c6h", "5CPOMFtsrX8yfejMnKlO9A", true
+            , DsApi.addDay(Date(), -1000)!!, Date())
         dbHelper = DbHelper(this, null)
 
         binding.apply {
-            val users = dbHelper.getUserTable.selectAll()
-
-            if (users != null && users.size > 0) {
-                usersList = users
-
-                customAdapter = CustomAdapter(usersList) { _: View?, position: Int
-                                                           , _: MotionEvent?
-                                                           , eventAction : MyGestureListenerExtended.EventAction
-                    -> onItemClick(position, eventAction) }
-
-                val layoutManager = LinearLayoutManager(applicationContext)
-                val recyclerView: RecyclerView = findViewById(R.id.activity_main_user_list_recycler)
-                recyclerView.layoutManager = layoutManager
-                recyclerView.adapter = customAdapter
-            }
+            mainBind()
 
             btnActivityMainAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
@@ -141,6 +114,25 @@ class MainActivity : BaseActivity() {
             }
 
             startStopService(btnStartStopService)
+        }
+    }
+
+    private fun mainBind() {
+        val users = dbHelper.getUserTable.selectAll()
+
+        if (users != null && users.size > 0) {
+            usersList = users
+
+            customAdapter =
+                CustomAdapter(usersList) { _: View?, layoutPosition: Int, _: MotionEvent?, eventAction: MyGestureListenerExtended.EventAction
+                    ->
+                    onItemClick(layoutPosition, eventAction)
+                }
+
+            val layoutManager = LinearLayoutManager(applicationContext)
+            val recyclerView: RecyclerView = findViewById(R.id.activity_main_user_list_recycler)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = customAdapter
         }
     }
 

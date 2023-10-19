@@ -13,7 +13,7 @@ import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 
 internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
                              private var onItemClickListener: ((
-                                 view: View?, position: Int, motionEvent: MotionEvent?
+                                 view: View?, layoutPosition: Int, motionEvent: MotionEvent?
                                 , eventAction : MyGestureListenerExtended.EventAction) -> Unit)?) :
 
     RecyclerView.Adapter<CustomAdapter.TreeViewHolder>() {
