@@ -40,24 +40,26 @@ class NotificationService: Service() {
 
     private val runnableCode: Runnable = Runnable {
         try {
-            val time = Calendar.getInstance().time
+            //val time = Calendar.getInstance().time
             //val current = formatter.format(time)
 
             RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(applicationContext, null
                 ,{
                     val users = dbHelper.getUserTable.selectAll()
                     users?.forEach {  userItem ->
-                        val namePassTableItem = dbHelper.getNamePasswordTable
-                            .select(NamePasswordTable.COLUMN_FK_USER_ID+ "=" + userItem._id)
-                            ?.first()
-                        if (namePassTableItem != null) {
-                            val user = namePassTableItem.userName
-                            val pass = namePassTableItem.userPassword
-                            GetListOfReceivedMessages().getListOfReceivedMessages(
-                                userItem._id!!, user, pass, userItem.testItem
-                                , DsApi.addDay(Date(), -160)!!, Date())
-                            GetListOfSentMessages().getListOfSentMessages(userItem._id!!, user, pass
-                                , userItem.testItem, DsApi.addDay(Date(), -160)!!, Date())}
+                        if (userItem.active) {
+                            val namePassTableItem = dbHelper.getNamePasswordTable
+                                .select(NamePasswordTable.COLUMN_FK_USER_ID+ "=" + userItem._id)
+                                ?.first()
+                            if (namePassTableItem != null) {
+                                val user = namePassTableItem.userName
+                                val pass = namePassTableItem.userPassword
+                                GetListOfReceivedMessages().getListOfReceivedMessages(
+                                    userItem._id!!, user, pass, userItem.testItem
+                                    , DsApi.addDay(Date(), -160)!!, Date())
+                                GetListOfSentMessages().getListOfSentMessages(userItem._id!!, user, pass
+                                    , userItem.testItem, DsApi.addDay(Date(), -160)!!, Date())}
+                        }
                     }
                     /*Log.d("Handlers", "$time ($current): Called on main thread - start")
                     Thread.sleep(20000);

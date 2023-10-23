@@ -3,6 +3,7 @@ package com.jvr.datovaschranka.lib.classes
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.text.Html
 import android.view.*
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,8 +29,10 @@ internal class CustomAdapter(private var itemsList: MutableList<UsersTable.UserI
 
     override fun onBindViewHolder(holder: TreeViewHolder, position: Int) {
         val item = itemsList[position]
-        holder.lblNickName.text = "${item.original.nickName} (Unread: ${item.receivedItemsUnread}" +
+        var sourceString  = "${item.original.nickName} (Unread: <b>${item.receivedItemsUnread}</b>" +
                 "/ read: ${item.receivedItemsRead} / sent ${item.sentItems})"
+        val htmlText  = Html.fromHtml(sourceString)
+        holder.lblNickName.setText(htmlText)
 
         /*if (item.active) {
             holder.lblActive.text = context!!.resources.getString(R.string.account_active)
@@ -37,10 +40,12 @@ internal class CustomAdapter(private var itemsList: MutableList<UsersTable.UserI
             holder.lblActive.text = context!!.resources.getString(R.string.account_in_active)
         }*/
 
-        if (item.original.testItem) {
+        if (!item.original.active) {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#af978e"))
-        } else {
+        } else if (!item.original.testItem){
             holder.itemLayout.setBackgroundColor(Color.parseColor("#62c483"))
+        } else {
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#858ced"))
         }
         //holder.lblAccountType.text = item.testItem.toString()
     }

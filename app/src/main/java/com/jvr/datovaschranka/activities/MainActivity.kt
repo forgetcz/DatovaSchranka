@@ -128,13 +128,13 @@ class MainActivity : BaseActivity() {
                 if (lastReceivedMessages.containsKey(userId)) {
                     val messages = lastReceivedMessages[userId]!!.second.body.getListOfReceivedMessagesResponse.dmRecords
 
-                    val prihlasenim = messages.filter { it ->
-                        it.translatedDmMessageStatus == ApiEnums.MessageStatus.DorucenaPrihlasenim
+                    val ostatni = messages.filter { it ->
+                        it.translatedDmMessageStatus != ApiEnums.MessageStatus.Prectena
                     }
-                    newData.receivedItemsUnread = prihlasenim.size
+                    newData.receivedItemsUnread = ostatni.size
 
                     val prectena = messages.filter { it ->
-                        it.translatedDmMessageStatus ==ApiEnums.MessageStatus.Prectena
+                        it.translatedDmMessageStatus == ApiEnums.MessageStatus.Prectena
                     }
                     newData.receivedItemsRead = prectena.size
                 }
