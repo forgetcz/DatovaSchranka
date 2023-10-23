@@ -11,7 +11,7 @@ import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 
 
-internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
+internal class CustomAdapter(private var itemsList: MutableList<UsersTable.UserItemWithMessageData>,
                              private var onItemClickListener: ((
                                  view: View?, layoutPosition: Int, motionEvent: MotionEvent?
                                 , eventAction : MyGestureListenerExtended.EventAction) -> Unit)?) :
@@ -28,14 +28,16 @@ internal class CustomAdapter(private var itemsList: List<UsersTable.Item>,
 
     override fun onBindViewHolder(holder: TreeViewHolder, position: Int) {
         val item = itemsList[position]
-        holder.lblNickName.text = item.nickName
+        holder.lblNickName.text = "${item.original.nickName} (Unread: ${item.receivedItemsUnread}" +
+                "/ read: ${item.receivedItemsRead} / sent ${item.sentItems})"
+
         /*if (item.active) {
             holder.lblActive.text = context!!.resources.getString(R.string.account_active)
         } else {
             holder.lblActive.text = context!!.resources.getString(R.string.account_in_active)
         }*/
 
-        if (item.testItem) {
+        if (item.original.testItem) {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#af978e"))
         } else {
             holder.itemLayout.setBackgroundColor(Color.parseColor("#62c483"))

@@ -15,6 +15,7 @@ import com.jvr.common.lib.async.RunCommandAsyncKotlin
 import com.jvr.datovaschranka.activities.MainActivity
 import com.jvr.datovaschranka.api.DsApi
 import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
+import com.jvr.datovaschranka.api.model.getListOfSentMessages.GetListOfSentMessages
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.NamePasswordTable
 import java.text.SimpleDateFormat
@@ -53,9 +54,10 @@ class NotificationService: Service() {
                             val user = namePassTableItem.userName
                             val pass = namePassTableItem.userPassword
                             GetListOfReceivedMessages().getListOfReceivedMessages(
-                                userItem._id!!, user, pass, userItem.testItem, DsApi.addDay(Date(), -7)!!, Date())
-
-                        }
+                                userItem._id!!, user, pass, userItem.testItem
+                                , DsApi.addDay(Date(), -160)!!, Date())
+                            GetListOfSentMessages().getListOfSentMessages(userItem._id!!, user, pass
+                                , userItem.testItem, DsApi.addDay(Date(), -160)!!, Date())}
                     }
                     /*Log.d("Handlers", "$time ($current): Called on main thread - start")
                     Thread.sleep(20000);

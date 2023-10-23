@@ -21,17 +21,12 @@ import java.util.*
 abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
 
     @Suppress("PropertyName")
-    val Log = ComplexLogger(
+    open val Log = ComplexLogger(
         mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )
 
-    init {
-        if (BuildConfig.DEBUG) {
-            Log.appenderList.add(RestLogger("https://api.onio.cz/log-api/log-message"))
-        }
-    }
     /*
     * https://stackoverflow.com/questions/2900023/change-app-language-programmatically-in-android
     * */

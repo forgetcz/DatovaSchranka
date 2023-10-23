@@ -14,6 +14,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class UsersTable : BaseTable<UsersTable.Item>() {
+    data class UserItemWithMessageData (
+        var original: Item,
+        var sentItems : Int,
+        var receivedItemsUnread : Int,
+        var receivedItemsRead : Int,
+    );
+
     @Parcelize
     data class Item (
         override var _id: Int? = null,

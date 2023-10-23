@@ -4,24 +4,15 @@ package com.jvr.datovaschranka.api.model.getListOfReceivedMessages
 
 import android.text.format.DateFormat
 import com.jvr.datovaschranka.api.DsApi
-import com.jvr.datovaschranka.api.model.ApiEnums
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.NodeList
-import org.xml.sax.InputSource
-import java.io.StringReader
 import java.util.*
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathFactory
-
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 class GetListOfReceivedMessages {
 
     companion object {
-        val lastMessages: MutableMap<Int, Pair<Date,GetListOfReceivedMessagesResponseRoot?>> = HashMap()
+        private val reentrantLock: Lock = ReentrantLock()
+        val lastMessages: MutableMap<Int, Pair<Date,GetListOfReceivedMessagesResponseRoot>> = HashMap()
     }
 
     /*
@@ -84,7 +75,9 @@ class GetListOfReceivedMessages {
     fun getListOfReceivedMessages(userId : Int, userName: String, password : String, testItem : Boolean
                                   , fromDate : Date, toDate: Date, offset : Int = 1
                                   , limit : Int = 100)
-            : Pair<Date,GetListOfReceivedMessagesResponseRoot?>? {
+            : Pair<Date,GetListOfReceivedMessagesResponseRoot>? {
+
+        reentrantLock.lock()
 
         val soapXmlString = StringBuilder().run {
             appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
@@ -114,8 +107,10 @@ class GetListOfReceivedMessages {
         if (response.responseStatus) {
             val container = GetListOfReceivedMessagesResponseRoot().deserialize<GetListOfReceivedMessagesResponseRoot>(response.responseText)
             lastMessages[userId] = Pair(Date(),container)
+            reentrantLock.unlock();
             return lastMessages[userId]
         } else {
+            reentrantLock.unlock();
             return null
         }
     }

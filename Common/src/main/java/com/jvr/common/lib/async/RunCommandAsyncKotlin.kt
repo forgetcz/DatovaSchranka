@@ -70,7 +70,9 @@ class RunCommandAsyncKotlin<K, T , M>(activity: Context?, message: String?
                 return method(null);
             }
         } catch (ex: Exception) {
-            Log.e("", ex.message!!)
+            if (ex.message != null) {
+                Log.e("", ex.message!!)
+            }
             throw ex
         }
     }

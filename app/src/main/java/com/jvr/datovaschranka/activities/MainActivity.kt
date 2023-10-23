@@ -11,21 +11,15 @@ import android.widget.Button
 import androidx.activity.result.ActivityResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jvr.common.contracts.ILogger
-import com.jvr.common.lib.logger.BasicLogger
-import com.jvr.common.lib.logger.ComplexLogger
-import com.jvr.common.lib.logger.HistoryLogger
-import com.jvr.common.lib.logger.RestLogger
-import com.jvr.datovaschranka.BuildConfig
 import com.jvr.datovaschranka.R
-import com.jvr.datovaschranka.api.DsApi
+import com.jvr.datovaschranka.api.model.ApiEnums
+import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
 import com.jvr.datovaschranka.api.model.getListOfSentMessages.GetListOfSentMessages
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 import com.jvr.datovaschranka.lib.classes.CustomAdapter
 import com.jvr.datovaschranka.lib.classes.MyGestureListenerExtended
-import com.jvr.datovaschranka.lib.classes.NetworkMonitorUtil
 import com.jvr.datovaschranka.services.NotificationService
 import java.util.*
 
@@ -35,7 +29,7 @@ class MainActivity : BaseActivity() {
     private lateinit var usersList : ArrayList<UsersTable.Item>
     private var serviceStatus : Boolean = false
     private lateinit var customAdapter: CustomAdapter
-    private val networkMonitor = NetworkMonitorUtil(this)
+    //private val networkMonitor = NetworkMonitorUtil(this)
 
     /*override val Log: ComplexLogger = ComplexLogger(
         mutableListOf(
@@ -44,6 +38,7 @@ class MainActivity : BaseActivity() {
     )*/
 
     override fun processTimerEvent(inputDate: Date): Boolean {
+        mainBind()
         return true
         /*try {
 
@@ -95,9 +90,9 @@ class MainActivity : BaseActivity() {
             , DsApi.addDay(Date(), -1000)!!, Date())
         */
 
-        GetListOfSentMessages().getListOfSentMessages(
+        /*GetListOfSentMessages().getListOfSentMessages(
             1, "h63c6h", "5CPOMFtsrX8yfejMnKlO9A", true
-            , DsApi.addDay(Date(), -1000)!!, Date())
+            , DsApi.addDay(Date(), -1000)!!, Date())*/
         dbHelper = DbHelper(this, null)
 
         binding.apply {
@@ -122,9 +117,36 @@ class MainActivity : BaseActivity() {
 
         if (users != null && users.size > 0) {
             usersList = users
+            val lastReceivedMessages = GetListOfReceivedMessages.lastMessages
+            val lastSentMessages = GetListOfSentMessages.lastMessages
+            val valuedList : MutableList<UsersTable.UserItemWithMessageData> = mutableListOf()
+
+            usersList.forEach{
+                val userId = it._id
+                val newData : UsersTable.UserItemWithMessageData = UsersTable.UserItemWithMessageData(it, 0, 0,0)
+                newData.original = it
+                if (lastReceivedMessages.containsKey(userId)) {
+                    val messages = lastReceivedMessages[userId]!!.second.body.getListOfReceivedMessagesResponse.dmRecords
+
+                    val prihlasenim = messages.filter { it ->
+                        it.translatedDmMessageStatus == ApiEnums.MessageStatus.DorucenaPrihlasenim
+                    }
+                    newData.receivedItemsUnread = prihlasenim.size
+
+                    val prectena = messages.filter { it ->
+                        it.translatedDmMessageStatus ==ApiEnums.MessageStatus.Prectena
+                    }
+                    newData.receivedItemsRead = prectena.size
+                }
+                if (lastSentMessages.containsKey(userId)) {
+                    newData.sentItems = lastSentMessages[userId]!!.second.body.getListOfSentMessagesResponse.dmRecords.size
+                }
+                valuedList.add(newData)
+            }
 
             customAdapter =
-                CustomAdapter(usersList) { _: View?, layoutPosition: Int, _: MotionEvent?, eventAction: MyGestureListenerExtended.EventAction
+                CustomAdapter(valuedList) { _: View?, layoutPosition: Int, _: MotionEvent?
+                                           , eventAction: MyGestureListenerExtended.EventAction
                     ->
                     onItemClick(layoutPosition, eventAction)
                 }
@@ -138,7 +160,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        networkMonitor.register()
+        //networkMonitor.register()
     }
 
     private fun startStopService(it: View?) {

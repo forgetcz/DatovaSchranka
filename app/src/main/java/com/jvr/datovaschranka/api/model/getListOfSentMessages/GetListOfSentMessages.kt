@@ -5,18 +5,21 @@ import com.jvr.datovaschranka.api.DsApi
 import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
 import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessagesResponseRoot
 import java.util.*
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 class GetListOfSentMessages {
 
     companion object {
-        val lastMessages: MutableMap<Int, Pair<Date, GetListOfSentMessagesResponseRoot?>> = HashMap()
+        private val reentrantLock: Lock = ReentrantLock()
+        val lastMessages: MutableMap<Int, Pair<Date, GetListOfSentMessagesResponseRoot>> = HashMap()
     }
 
     fun getListOfSentMessages(userId : Int, userName: String, password : String, testItem : Boolean
                                   , fromDate : Date, toDate: Date, offset : Int = 1
                                   , limit : Int = 100)
-            : Pair<Date, GetListOfSentMessagesResponseRoot?>? {
-
+            : GetListOfSentMessagesResponseRoot? {
+        reentrantLock.lock()
         val soapXmlString = StringBuilder().run {
             appendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
             appendLine("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">")
@@ -41,8 +44,11 @@ class GetListOfSentMessages {
         if (response.responseStatus) {
             val container = GetListOfSentMessagesResponseRoot().deserialize<GetListOfSentMessagesResponseRoot>(response.responseText)
             lastMessages[userId] = Pair(Date(),container)
-            return lastMessages[userId]
+            reentrantLock.unlock();
+            val l = lastMessages[userId]
+            return container
         } else {
+            reentrantLock.unlock();
             return null
         }
     }

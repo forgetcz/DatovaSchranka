@@ -66,7 +66,7 @@ abstract class BaseActivity: BaseActivityClass() {
     //endregion
 
     //region  Timer
-    private var period: Long = 1000
+    private var period: Long = 10000
     private var timerErrors = 0
 
     /** Zobrazuje cas na display a informace o karte a ... */
@@ -88,7 +88,7 @@ abstract class BaseActivity: BaseActivityClass() {
                     }
                 }
             }
-        }, 0, period)
+        }, 100, period)
     }
 
     protected open fun stopTimer() {
