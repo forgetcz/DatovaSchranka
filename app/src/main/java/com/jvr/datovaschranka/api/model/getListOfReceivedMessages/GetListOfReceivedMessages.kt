@@ -15,63 +15,6 @@ class GetListOfReceivedMessages {
         val lastMessages: MutableMap<Int, Pair<Date,GetListOfReceivedMessagesResponseRoot>> = HashMap()
     }
 
-    /*
-    private var dbIDSender = ""
-    private var dmAnnotation = ""
-    private var messageStatus : ApiEnums.MessageStatus? = null
-
-    private fun fromXmlString(inputXml : String) : List<GetListOfReceivedMessages> {
-        val finalResultList : ArrayList<GetListOfReceivedMessages> = ArrayList()
-        val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
-        val builder: DocumentBuilder = factory.newDocumentBuilder()
-        val ins = InputSource(StringReader(inputXml))
-        val doc: Document = builder.parse(ins)
-
-        val xPath: XPath = XPathFactory.newInstance().newXPath()
-        val dbIDCompile = xPath.compile("/Envelope/Body/GetListOfReceivedMessagesResponse/dmRecords")
-
-        val dmRecords = dbIDCompile.evaluate(doc, XPathConstants.NODESET) as NodeList
-        val n2 = dmRecords.item(0)
-        val element2: Element = n2 as Element
-
-        val lines  = element2.childNodes
-        var counterRow = 0
-
-        while (counterRow < lines.length ){
-            val oneMessageItem = GetListOfReceivedMessages()
-            val oneRow = lines.item(counterRow)
-            val elements = oneRow.childNodes
-            var counterElements = 0
-            var allRequestedItemsFound = false
-
-            while (!allRequestedItemsFound && counterElements < elements.length ) {
-                val soapXmlElement = elements.item(counterElements)
-
-                when (soapXmlElement.nodeName) {
-                    "q:dbIDSender" -> {
-                        oneMessageItem.dbIDSender = soapXmlElement.firstChild.nodeValue
-                    }
-                    "q:dmAnnotation" -> {
-                        oneMessageItem.dmAnnotation = soapXmlElement.firstChild.nodeValue
-                    }
-                    "q:dmMessageStatus" -> {
-                        oneMessageItem.messageStatus = ApiEnums.MessageStatus.fromIntString(
-                            soapXmlElement.firstChild.nodeValue)
-                    }
-                }
-
-                allRequestedItemsFound = oneMessageItem.dbIDSender.isNotEmpty()
-                        && oneMessageItem.dmAnnotation.isNotEmpty()
-                        && oneMessageItem.messageStatus != null
-
-                counterElements++
-            }
-            finalResultList.add(oneMessageItem)
-            counterRow++
-        }
-        return finalResultList
-    }
-    */
     fun getListOfReceivedMessages(userId : Int, userName: String, password : String, testItem : Boolean
                                   , fromDate : Date, toDate: Date, offset : Int = 1
                                   , limit : Int = 100)

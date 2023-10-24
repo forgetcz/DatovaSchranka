@@ -74,10 +74,12 @@ class MainActivity : BaseActivity() {
             nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
             startNextIntent(nextIntent)
         } else if (eventAction == MyGestureListenerExtended.EventAction.onSingleTapConfirmed) {
-            val currentSelectedUser = usersList[layoutPosition]
-            val nextIntent = Intent(applicationContext, ListOfMessages::class.java)
-            nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
-            startNextIntent(nextIntent)
+            if (usersList.size > 0) {
+                val currentSelectedUser = usersList[layoutPosition]
+                val nextIntent = Intent(applicationContext, ListOfMessages::class.java)
+                nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
+                startNextIntent(nextIntent)
+            }
         }
     }
 

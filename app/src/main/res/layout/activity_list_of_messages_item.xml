@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="1dp"
     android:id="@+id/activity_list_of_messages__layout">
 
     <TextView
@@ -30,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/activity_list_of_messages__lblMessageDescription" />
 
     <TextView
-        android:id="@+id/activity_list_of_messages__lblMessageDate1"
+        android:id="@+id/activity_list_of_messages__lblMessageStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

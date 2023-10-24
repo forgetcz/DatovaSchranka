@@ -3,6 +3,7 @@ package com.jvr.datovaschranka.api.model.getListOfReceivedMessages
 import com.jvr.datovaschranka.api.model.ApiCommon
 import com.jvr.datovaschranka.api.model.ApiEnums
 import org.simpleframework.xml.*
+import java.util.*
 
 @Root(name = "SOAP-ENV:Envelope", strict = false)
 @NamespaceList(
@@ -141,4 +142,6 @@ class GetListOfReceivedMessagesResponseDmRecords {
     val translatedDmMessageStatus : ApiEnums.MessageStatus
         get() = ApiEnums.MessageStatus.fromInt(dmMessageStatus!!)
 
+    @field:Element(name = "dmDeliveryTime", required = false)
+    var dmDeliveryTime : String? = null
 }

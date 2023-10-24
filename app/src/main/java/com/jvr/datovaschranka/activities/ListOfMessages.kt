@@ -41,7 +41,8 @@ class ListOfMessages : BaseActivity() {
         val records = lastMessages!!.second.body.getListOfReceivedMessagesResponse.dmRecords
 
         customAdapter =
-            ListOfMessagesActivityAdapter(records) { _: View?, layoutPosition: Int, _: MotionEvent?
+            ListOfMessagesActivityAdapter(records)
+                { _: View?, layoutPosition: Int, _: MotionEvent?
                                               , eventAction: MyGestureListenerExtended.EventAction
                 ->
                 onItemClick(layoutPosition, eventAction)

@@ -5,9 +5,9 @@ import android.content.Context
 import android.text.Html
 import android.view.*
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.jvr.datovaschranka.R
+import com.jvr.datovaschranka.api.model.ApiEnums
 import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessagesResponseDmRecords
 
 internal class ListOfMessagesActivityAdapter(private var itemsList : List<GetListOfReceivedMessagesResponseDmRecords>,
@@ -27,11 +27,18 @@ internal class ListOfMessagesActivityAdapter(private var itemsList : List<GetLis
 
     override fun onBindViewHolder(holder: TreeViewHolder, position: Int) {
         val item = itemsList[position]
-        val sourceString  = "Popis : ${item.dmAnnotation})"
+
+        var sourceString  = "${item.dmAnnotation}"
+        if (item.translatedDmMessageStatus == ApiEnums.MessageStatus.DorucenaPrihlasenim){
+            sourceString = "<b><FONT COLOR=\"#ff0000\">$sourceString</FONT></b>"
+        }
         val htmlText  = Html.fromHtml(sourceString)
 
-        holder.lblMessageDescription.setText(htmlText)
-        holder.lblMessageDate.text = item.dmMessageStatus?.toString()
+        holder.lblMessageDescription.text = htmlText
+        val s = item.translatedDmMessageStatus.toString()
+        holder.lblMessageStatus.text = s
+        holder.lblMessageDate.text = item.dmDeliveryTime?.toString()
+
         /*
         if (item.active) {
             holder.lblActive.text = context!!.resources.getString(R.string.account_active)
@@ -78,18 +85,18 @@ internal class ListOfMessagesActivityAdapter(private var itemsList : List<GetLis
         }
 
         var lblMessageDescription: TextView
-        var lblMessageDate1: TextView
+        var lblMessageStatus: TextView
         var lblMessageDate : TextView
 
         init {
             lblMessageDescription = view.findViewById(R.id.activity_list_of_messages__lblMessageDescription)
             lblMessageDescription.setOnTouchListener(touchListener)
 
+            lblMessageStatus = view.findViewById(R.id.activity_list_of_messages__lblMessageStatus)
+            lblMessageStatus.setOnTouchListener(touchListener)
+
             lblMessageDate = view.findViewById(R.id.activity_list_of_messages__lblMessageDate)
             lblMessageDate.setOnTouchListener(touchListener)
-
-            lblMessageDate1 = view.findViewById(R.id.activity_list_of_messages__lblMessageDate1)
-            lblMessageDate1.setOnTouchListener(touchListener)
 
         }
     }
