@@ -173,6 +173,12 @@ class UsersTable : BaseTable<UsersTable.Item>() {
             values.put(COLUMN_TEST_ITEM, 0)
         }
 
+        if (item.active) {
+            values.put(COLUMN_IS_ACTIVE, 1)
+        } else {
+            values.put(COLUMN_IS_ACTIVE, 0)
+        }
+
         val updated = db.update(getTableName(), values, "$COLUMN_ID = ?", arrayOf(item._id.toString()))
         logger.d(getTag(),"Updated column $updated")
         item.dateUpdated = dateUpdated

@@ -7,7 +7,7 @@
     tools:context=".activities.AddNewAccountActivity">
 
     <EditText
-        android:id="@+id/txtRetypePassword"
+        android:id="@+id/activity_add_new_account__txtRetypePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,11 +17,11 @@
         android:minHeight="48dp"
         android:text="Pokusnej ucet - heslo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblPassword2"
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__lblPassword2"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/lblPassword2"
+        android:id="@+id/activity_add_new_account__lblPassword2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -29,10 +29,10 @@
         android:text="@string/retype_password"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__txtPassword" />
 
     <TextView
-        android:id="@+id/lbl_add_new_account_nick_name"
+        android:id="@+id/activity_add_new_account__lblNickName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/txtNickName"
+        android:id="@+id/activity_add_new_account__txtNickName"
         android:layout_width="267dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
@@ -52,12 +52,12 @@
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_add_new_account_nick_name"
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__lblNickName"
         android:text="Nick1"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/lblUserName"
+        android:id="@+id/activity_add_new_account__lblUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -65,10 +65,10 @@
         android:text="@string/user_name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtNickName" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__txtNickName" />
 
     <EditText
-        android:id="@+id/txtUserName"
+        android:id="@+id/activity_add_new_account__txtUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -78,11 +78,11 @@
         android:minHeight="48dp"
         android:text="Pokusnej ucet 1 - jmeno"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblUserName"
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__lblUserName"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/lblPassword"
+        android:id="@+id/activity_add_new_account__lblPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -90,10 +90,10 @@
         android:text="@string/password"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__txtUserName" />
 
     <EditText
-        android:id="@+id/txtPassword"
+        android:id="@+id/activity_add_new_account__txtPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -103,11 +103,11 @@
         android:minHeight="48dp"
         android:text="Pokusnej ucet - heslo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblPassword"
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__lblPassword"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/btnOk"
+        android:id="@+id/activity_add_new_account__btnOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -117,7 +117,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/btnCancel"
+        android:id="@+id/activity_add_new_account__btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -127,17 +127,17 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnTest"
+        android:id="@+id/activity_add_new_account__btnTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/test_it"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnCancel" />
+        app:layout_constraintStart_toEndOf="@+id/activity_add_new_account__btnCancel" />
 
     <CheckBox
-        android:id="@+id/chckTestAccount"
+        android:id="@+id/activity_add_new_account__checkTestAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -145,10 +145,10 @@
         android:checked="true"
         android:text="@string/test_account"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtRetypePassword" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__txtRetypePassword" />
 
     <CheckBox
-        android:id="@+id/chckActive"
+        android:id="@+id/activity_add_new_account__checkActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -156,16 +156,16 @@
         android:checked="true"
         android:text="Aktivni"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chckTestAccount" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_add_new_account__checkTestAccount" />
 
     <Button
-        android:id="@+id/btnDelete"
+        android:id="@+id/activity_add_new_account__btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
         android:text="Delete"
-        app:layout_constraintBottom_toTopOf="@+id/btnOk"
+        app:layout_constraintBottom_toTopOf="@+id/activity_add_new_account__btnOk"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

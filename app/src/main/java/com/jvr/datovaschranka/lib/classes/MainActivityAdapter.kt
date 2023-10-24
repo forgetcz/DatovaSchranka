@@ -12,12 +12,12 @@ import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
 
 
-internal class CustomAdapter(private var itemsList: MutableList<UsersTable.UserItemWithMessageData>,
-                             private var onItemClickListener: ((
+internal class MainActivityAdapter(private var itemsList: MutableList<UsersTable.UserItemWithMessageData>,
+                                   private var onItemClickListener: ((
                                  view: View?, layoutPosition: Int, motionEvent: MotionEvent?
                                 , eventAction : MyGestureListenerExtended.EventAction) -> Unit)?) :
 
-    RecyclerView.Adapter<CustomAdapter.TreeViewHolder>() {
+    RecyclerView.Adapter<MainActivityAdapter.TreeViewHolder>() {
     private var context : Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreeViewHolder {
@@ -83,10 +83,10 @@ internal class CustomAdapter(private var itemsList: MutableList<UsersTable.UserI
         var itemLayout : ConstraintLayout
 
         init {
-            lblNickName = view.findViewById(R.id.activity_main_item_lblNickName)
+            lblNickName = view.findViewById(R.id.activity_main_item__lblNickName)
             lblNickName.setOnTouchListener(touchListener)
 
-            itemLayout = view.findViewById(R.id.activity_main_item_layout)
+            itemLayout = view.findViewById(R.id.activity_main_item__layout)
             itemLayout.setOnTouchListener(touchListener)
 
             /*lblAccountType = view.findViewById(R.id.activity_main_item_lblAccountType)

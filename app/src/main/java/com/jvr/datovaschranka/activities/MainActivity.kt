@@ -11,6 +11,9 @@ import android.widget.Button
 import androidx.activity.result.ActivityResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jvr.common.lib.logger.BasicLogger
+import com.jvr.common.lib.logger.ComplexLogger
+import com.jvr.common.lib.logger.HistoryLogger
 import com.jvr.datovaschranka.R
 import com.jvr.datovaschranka.api.model.ApiEnums
 import com.jvr.datovaschranka.api.model.getListOfReceivedMessages.GetListOfReceivedMessages
@@ -18,7 +21,7 @@ import com.jvr.datovaschranka.api.model.getListOfSentMessages.GetListOfSentMessa
 import com.jvr.datovaschranka.databinding.ActivityMainBinding
 import com.jvr.datovaschranka.dbhelper.DbHelper
 import com.jvr.datovaschranka.dbhelper.tableModel.v1.UsersTable
-import com.jvr.datovaschranka.lib.classes.CustomAdapter
+import com.jvr.datovaschranka.lib.classes.MainActivityAdapter
 import com.jvr.datovaschranka.lib.classes.MyGestureListenerExtended
 import com.jvr.datovaschranka.services.NotificationService
 import java.util.*
@@ -28,14 +31,14 @@ class MainActivity : BaseActivity() {
     private lateinit var dbHelper: DbHelper
     private lateinit var usersList : ArrayList<UsersTable.Item>
     private var serviceStatus : Boolean = false
-    private lateinit var customAdapter: CustomAdapter
+    private lateinit var customAdapter: MainActivityAdapter
     //private val networkMonitor = NetworkMonitorUtil(this)
 
-    /*override val Log: ComplexLogger = ComplexLogger(
+    override val Log: ComplexLogger = ComplexLogger(
         mutableListOf(
             BasicLogger(), HistoryLogger()
         )
-    )*/
+    )
 
     override fun processTimerEvent(inputDate: Date): Boolean {
         mainBind()
@@ -70,6 +73,11 @@ class MainActivity : BaseActivity() {
             val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
             nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
             startNextIntent(nextIntent)
+        } else if (eventAction == MyGestureListenerExtended.EventAction.onSingleTapConfirmed) {
+            val currentSelectedUser = usersList[layoutPosition]
+            val nextIntent = Intent(applicationContext, ListOfMessages::class.java)
+            nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
+            startNextIntent(nextIntent)
         }
     }
 
@@ -98,17 +106,17 @@ class MainActivity : BaseActivity() {
         binding.apply {
             mainBind()
 
-            btnActivityMainAddNewAccount.setOnClickListener {
+            activityMainBtnAddNewAccount.setOnClickListener {
                 val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
                 startNextIntent(nextIntent)
             }
 
-            btnStartStopService.text = "Start service"
-            btnStartStopService.setOnClickListener{
+            activityMainBtnStartStopService.text = "Start service"
+            activityMainBtnStartStopService.setOnClickListener{
                 startStopService(it)
             }
 
-            startStopService(btnStartStopService)
+            startStopService(activityMainBtnStartStopService)
         }
     }
 
@@ -125,34 +133,39 @@ class MainActivity : BaseActivity() {
                 val userId = it._id
                 val newData : UsersTable.UserItemWithMessageData = UsersTable.UserItemWithMessageData(it, 0, 0,0)
                 newData.original = it
-                if (lastReceivedMessages.containsKey(userId)) {
-                    val messages = lastReceivedMessages[userId]!!.second.body.getListOfReceivedMessagesResponse.dmRecords
 
-                    val ostatni = messages.filter { it ->
+                val lastReceivedMessageForUser = lastReceivedMessages[userId]
+                if (lastReceivedMessageForUser != null) {
+                    val messages = lastReceivedMessageForUser.second.body.getListOfReceivedMessagesResponse.dmRecords
+
+                    val othersMessage = messages.filter { it ->
                         it.translatedDmMessageStatus != ApiEnums.MessageStatus.Prectena
                     }
-                    newData.receivedItemsUnread = ostatni.size
+                    newData.receivedItemsUnread = othersMessage.size
 
-                    val prectena = messages.filter { it ->
+                    val readMessages = messages.filter { it ->
                         it.translatedDmMessageStatus == ApiEnums.MessageStatus.Prectena
                     }
-                    newData.receivedItemsRead = prectena.size
+                    newData.receivedItemsRead = readMessages.size
                 }
-                if (lastSentMessages.containsKey(userId)) {
-                    newData.sentItems = lastSentMessages[userId]!!.second.body.getListOfSentMessagesResponse.dmRecords.size
+
+                val lastSentMessagesForUser = lastSentMessages[userId]
+                if (lastSentMessagesForUser != null) {
+                    newData.sentItems = lastSentMessagesForUser.second.body.getListOfSentMessagesResponse.dmRecords.size
                 }
+
                 valuedList.add(newData)
             }
 
             customAdapter =
-                CustomAdapter(valuedList) { _: View?, layoutPosition: Int, _: MotionEvent?
-                                           , eventAction: MyGestureListenerExtended.EventAction
+                MainActivityAdapter(valuedList) { _: View?, layoutPosition: Int, _: MotionEvent?
+                                                  , eventAction: MyGestureListenerExtended.EventAction
                     ->
                     onItemClick(layoutPosition, eventAction)
                 }
 
             val layoutManager = LinearLayoutManager(applicationContext)
-            val recyclerView: RecyclerView = findViewById(R.id.activity_main_user_list_recycler)
+            val recyclerView: RecyclerView = findViewById(R.id.activity_main__userRecycler)
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = customAdapter
         }

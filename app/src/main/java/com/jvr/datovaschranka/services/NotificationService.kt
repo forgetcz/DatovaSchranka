@@ -194,8 +194,8 @@ class NotificationService: Service() {
         }
 
         // Scheduling the first task which will execute after 0 seconds and then repeats periodically with
-        // a period of 120 seconds https://www.geeksforgeeks.org/scheduledthreadpoolexecutor-class-in-java/
-        schedule = executor.scheduleAtFixedRate(runnableCode, 0, 120,TimeUnit.SECONDS);
+        // a period of 3600 seconds https://www.geeksforgeeks.org/scheduledthreadpoolexecutor-class-in-java/
+        schedule = executor.scheduleAtFixedRate(runnableCode, 0, 3600,TimeUnit.SECONDS);
         return START_STICKY
 
         //runnableCode.run()

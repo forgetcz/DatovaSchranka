@@ -61,19 +61,19 @@ class AddNewAccountActivity : BaseActivity() {
         binding.apply {
             fillFormData(userTableItem, namePassTableItem)
 
-            btnOk.setOnClickListener {
+            activityAddNewAccountBtnOk.setOnClickListener {
                 btnOkClick()
             }
 
-            btnTest.setOnClickListener {
+            activityAddNewAccountBtnTest.setOnClickListener {
                 btnTestClick()
             }
 
-            btnCancel.setOnClickListener {
+            activityAddNewAccountBtnCancel.setOnClickListener {
                 myFinishActivity(RESULT_CANCELED)
             }
 
-            btnDelete.setOnClickListener{
+            activityAddNewAccountBtnDelete.setOnClickListener{
                 btnDeleteClick()
             }
         }
@@ -83,32 +83,32 @@ class AddNewAccountActivity : BaseActivity() {
         //region Check values
         val okCheck : StringBuilder = StringBuilder()
 
-        val nickName = txtNickName.text.toString()
+        val nickName = activityAddNewAccountTxtNickName.text.toString()
         if (nickName == "") {
             val pleaseEnterNickname = resources.getString(R.string.please_enter_nickname)
-            txtNickName.hint = pleaseEnterNickname
-            txtNickName.error = pleaseEnterNickname
+            activityAddNewAccountTxtNickName.hint = pleaseEnterNickname
+            activityAddNewAccountTxtNickName.error = pleaseEnterNickname
             okCheck.appendLine(pleaseEnterNickname)
         }
 
-        val userName = txtUserName.text.toString()
+        val userName = activityAddNewAccountTxtUserName.text.toString()
         if (userName == "") {
-            txtUserName.hint = "please enter user name"
-            txtUserName.error = "please enter user name"
+            activityAddNewAccountTxtUserName.hint = "please enter user name"
+            activityAddNewAccountTxtUserName.error = "please enter user name"
             okCheck.appendLine("please enter user name")
         }
 
-        val password = txtPassword.text.toString()
+        val password = activityAddNewAccountTxtPassword.text.toString()
         if (password == "") {
-            txtPassword.hint = "please enter password"
-            txtPassword.error = "please enter password"
+            activityAddNewAccountTxtPassword.hint = "please enter password"
+            activityAddNewAccountTxtPassword.error = "please enter password"
             okCheck.appendLine("please enter password")
         }
 
-        val retypePass = txtRetypePassword.text.toString()
+        val retypePass = activityAddNewAccountTxtRetypePassword.text.toString()
         if (retypePass != password) {
-            txtRetypePassword.hint = "password and retype password do not match"
-            txtRetypePassword.error = "password and retype password do not match"
+            activityAddNewAccountTxtRetypePassword.hint = "password and retype password do not match"
+            activityAddNewAccountTxtRetypePassword.error = "password and retype password do not match"
             okCheck.appendLine("password and retype password do not match")
         }
         //endregion
@@ -126,9 +126,10 @@ class AddNewAccountActivity : BaseActivity() {
         if (okCheck.isEmpty()) {
             val thisUserTableItem = UsersTable.Item()
             thisUserTableItem._id = userTableItem?._id
-            thisUserTableItem.nickName = txtNickName.text.toString()
-            thisUserTableItem.testItem = chckTestAccount.isChecked
+            thisUserTableItem.nickName = activityAddNewAccountTxtNickName.text.toString()
+            thisUserTableItem.testItem = activityAddNewAccountCheckTestAccount.isChecked
             thisUserTableItem.dbId = dbId!!
+            thisUserTableItem.active = activityAddNewAccountCheckActive.isChecked
 
             if (userTableItem == null) {
                 dbHelper.getUserTable.insert(thisUserTableItem)
@@ -139,8 +140,8 @@ class AddNewAccountActivity : BaseActivity() {
             val thisNamePassModelTable = NamePasswordTable.Item()
             thisNamePassModelTable._id = namePassTableItem?._id
             thisNamePassModelTable.fkUserId = thisUserTableItem._id
-            thisNamePassModelTable.userName = txtUserName.text.toString()
-            thisNamePassModelTable.userPassword = txtPassword.text.toString()
+            thisNamePassModelTable.userName = activityAddNewAccountTxtUserName.text.toString()
+            thisNamePassModelTable.userPassword = activityAddNewAccountTxtPassword.text.toString()
             if (namePassTableItem == null) {
                 dbHelper.getNamePasswordTable.insert(thisNamePassModelTable)
             } else {
@@ -154,9 +155,9 @@ class AddNewAccountActivity : BaseActivity() {
     private fun ActivityAddNewAccountBinding.btnTestClick() {
         val okCheck = checkInput(false)
         if (okCheck.isEmpty()) {
-            val userName = txtUserName.text.toString()
-            val password = txtPassword.text.toString()
-            val checkTest = chckTestAccount.isChecked
+            val userName = activityAddNewAccountTxtUserName.text.toString()
+            val password = activityAddNewAccountTxtPassword.text.toString()
+            val checkTest = activityAddNewAccountCheckTestAccount.isChecked
 
             RunCommandAsyncKotlin<AppCompatActivity, Any, Int>(myActivityContext
                 , "Check user connection"
@@ -167,8 +168,8 @@ class AddNewAccountActivity : BaseActivity() {
                         it?.runOnUiThread{
                             if (ownerResponse != null
                                     && ownerResponse.getOwnerInfoBody.getOwnerInfoFromLogin2Response.getOwnerInfoDbOwnerInfo.dbID != "") {
-                                txtNickName.setTextColor(Color.GREEN)
-                                txtUserName.setTextColor(Color.GREEN)
+                                activityAddNewAccountTxtNickName.setTextColor(Color.GREEN)
+                                activityAddNewAccountTxtUserName.setTextColor(Color.GREEN)
                                 AlertDialog.Builder(it)
                                     .setTitle(":)") //<font color='#e9e91e'>"
                                     .setMessage(Html.fromHtml("<font color='green'>Connect ok</font>"))
@@ -180,8 +181,8 @@ class AddNewAccountActivity : BaseActivity() {
                                     .create()
                                     .show()
                             } else {
-                                txtNickName.setTextColor(Color.RED)
-                                txtUserName.setTextColor(Color.RED)
+                                activityAddNewAccountTxtNickName.setTextColor(Color.RED)
+                                activityAddNewAccountTxtUserName.setTextColor(Color.RED)
                                 AlertDialog.Builder(it)
                                     .setTitle(":(") //<font color='#e9e91e'>"
                                     .setMessage(Html.fromHtml("<font color='red'>Connect failed</font>"))
@@ -230,10 +231,11 @@ class AddNewAccountActivity : BaseActivity() {
         userTableItem: UsersTable.Item?,
         namePassTableItem: NamePasswordTable.Item?
     ) {
-        txtNickName.setText(userTableItem?.nickName)
-        txtUserName.setText(namePassTableItem?.userName)
-        txtPassword.setText(namePassTableItem?.userPassword)
-        txtRetypePassword.setText(namePassTableItem?.userPassword)
-        chckTestAccount.isChecked = userTableItem?.testItem == true
+        activityAddNewAccountTxtNickName.setText(userTableItem?.nickName)
+        activityAddNewAccountTxtUserName.setText(namePassTableItem?.userName)
+        activityAddNewAccountTxtPassword.setText(namePassTableItem?.userPassword)
+        activityAddNewAccountTxtRetypePassword.setText(namePassTableItem?.userPassword)
+        activityAddNewAccountCheckTestAccount.isChecked = userTableItem?.testItem == true
+        activityAddNewAccountCheckActive.isChecked = userTableItem?.active == true
     }
 }

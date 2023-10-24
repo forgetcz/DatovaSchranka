@@ -8,7 +8,7 @@
     tools:context=".activities.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_main_user_list_recycler"
+        android:id="@+id/activity_main__userRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
@@ -17,7 +17,7 @@
         />
 
     <Button
-        android:id="@+id/btn_activity_main_add_new_account"
+        android:id="@+id/activity_main__btnAddNewAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -25,17 +25,17 @@
         android:text="@string/add_new_account"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_user_list_recycler"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main__userRecycler"
         tools:visibility="visible" />
 
     <Button
-        android:id="@+id/btnStartStopService"
+        android:id="@+id/activity_main__btnStartStopService"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Start/stop service"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_activity_main_add_new_account" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_main__btnAddNewAccount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
