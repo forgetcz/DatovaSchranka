@@ -11,9 +11,34 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
-class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
+class ComplexLogger(private val parentClassName : String,
+                    private val appenderList: MutableList<ILogger>) : ILogger {
 
-    @OptIn(DelicateCoroutinesApi::class)
+    override fun d(message: String) {
+        d(parentClassName, message)
+    }
+    override fun d(tag: String, message: String) {
+        for (logger in appenderList) {
+            RunCommandAsyncKotlin<Unit, Any, Int>(null, null
+                , {
+                    try {
+                        logger.d(tag, message)
+                        return@RunCommandAsyncKotlin
+                    } catch (ex: Exception) {
+                        Log.e(logger.getTag(), ex.message!!)
+                    }
+                }, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            /*RunCommandAsyncJava(null, "", label@{
+                try {
+                    logger.d(tag, message)
+                    return@label true
+                } catch (ex: Exception) {
+                    Log.e(logger.getTag(), ex.message!!)
+                    return@label false
+                }
+            }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)*/
+        }
+    }
     override fun d(context: BaseActivityClass, message: String) {
         for (logger in appenderList) {
             GlobalScope.async {
@@ -25,26 +50,21 @@ class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
             }
         }
     }
-    override fun d(tag: String, message: String) {
+
+    override fun i(message: String) {
+        i(parentClassName, message)
+    }
+    override fun i(tag: String, message: String) {
         for (logger in appenderList) {
-            RunCommandAsyncKotlin<Unit, Any, Int>(null, null
-                , {
+            RunCommandAsyncJava(null, "", {
                 try {
-                    logger.d(tag, message)
-                    return@RunCommandAsyncKotlin
+                    logger.i(tag, message)
+                    //true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
+                    //false
                 }
-            }, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            /*RunCommandAsyncJava(null, "", label@{
-                try {
-                    logger.d(tag, message)
-                    return@label true
-                } catch (ex: Exception) {
-                    Log.e(logger.getTag(), ex.message!!)
-                    return@label false
-                }
-            }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)*/
+            }) { }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
     override fun i(context: BaseActivityClass, message: String) {
@@ -60,15 +80,19 @@ class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
-    override fun i(tag: String, message: String) {
+
+    override fun w(message: String) {
+        w(parentClassName, message)
+    }
+    override fun w(tag: String, message: String) {
         for (logger in appenderList) {
             RunCommandAsyncJava(null, "", {
                 try {
-                    logger.i(tag, message)
-                    //true
+                    logger.w(tag, message)
+                    true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
-                    //false
+                    false
                 }
             }) { }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
@@ -86,17 +110,25 @@ class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
-    override fun w(tag: String, message: String) {
+
+    override fun e(message: String) {
+        e(parentClassName, Exception(message))
+    }
+    override fun e(message: Exception) {
+        e(parentClassName, message)
+    }
+
+    override fun e(tag: String, message: Exception) {
         for (logger in appenderList) {
-            RunCommandAsyncJava(null, "", {
+            RunCommandAsyncJava(null, "", label@{
                 try {
-                    logger.w(tag, message)
-                    true
+                    logger.e(tag, message)
+                    return@label true
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
-                    false
+                    return@label false
                 }
-            }) { }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
     override fun e(context: BaseActivityClass, message: String) {
@@ -121,19 +153,6 @@ class ComplexLogger(var appenderList: MutableList<ILogger>) : ILogger {
                 } catch (ex: Exception) {
                     Log.e(logger.getTag(), ex.message!!)
                     false
-                }
-            }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        }
-    }
-    override fun e(tag: String, message: Exception) {
-        for (logger in appenderList) {
-            RunCommandAsyncJava(null, "", label@{
-                try {
-                    logger.e(tag, message)
-                    return@label true
-                } catch (ex: Exception) {
-                    Log.e(logger.getTag(), ex.message!!)
-                    return@label false
                 }
             }) { res -> }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }

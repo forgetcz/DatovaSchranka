@@ -36,7 +36,7 @@ abstract class BaseTable<TItemType> : ITable<TItemType> where TItemType : Any, T
     }
 
     protected val logger: ComplexLogger = ComplexLogger(
-        mutableListOf(
+        this.javaClass.name,mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )

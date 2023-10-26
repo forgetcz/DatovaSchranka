@@ -20,7 +20,7 @@ class RestLogger(Url:String): ILogger {
     private var url: String = Url
 
     private val logger: ComplexLogger = ComplexLogger(
-        mutableListOf(
+        this.javaClass.name, mutableListOf(
             BasicLogger(), HistoryLogger() //er()
             //, new RestApiLogger()
         )
@@ -74,7 +74,7 @@ class RestLogger(Url:String): ILogger {
         return messageObject
     }
 
-    private fun restApiLog(ex: Exception?, context: Context?){
+    private fun restApiLog(tag : String, ex: Exception?, context: Context?){
         val httpEndpoint = URL(url)
         val myConnection = httpEndpoint.openConnection() as HttpsURLConnection
         myConnection.setRequestProperty("User-Agent", "my-rest-app-v0.1")
@@ -83,6 +83,7 @@ class RestLogger(Url:String): ILogger {
         myConnection.doOutput = true
 
         val messageObject: JSONObject = getBasicInfo(context)
+        messageObject.put("tag", tag)
         messageObject.put("message", ex?.message)
         messageObject.put("stack", Arrays.toString(ex?.stackTrace))
         //messageObject.put("logType",lt);
@@ -98,39 +99,49 @@ class RestLogger(Url:String): ILogger {
         }
     }
 
-    override fun d(context: BaseActivityClass, message: String) {
-        restApiLog(Exception(message), context)
+    override fun d(message: String) {
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
     }
-
     override fun d(tag: String, message: String) {
-        TODO("Not yet implemented")
+        Log.d(tag, ILogger.errMessageNotTargeted)
+    }
+    override fun d(context: BaseActivityClass, message: String) {
+        restApiLog(context.getTag(), Exception(message), context)
     }
 
-    override fun i(context: BaseActivityClass, message: String) {
-        TODO("Not yet implemented")
+    override fun i(message: String) {
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
     }
-
     override fun i(tag: String, message: String) {
-        TODO("Not yet implemented")
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
+    }
+    override fun i(context: BaseActivityClass, message: String) {
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
     }
 
-    override fun w(context: BaseActivityClass, message: String) {
-        TODO("Not yet implemented")
+    override fun w(message: String) {
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
     }
-
     override fun w(tag: String, message: String) {
-        TODO("Not yet implemented")
+        Log.d(tag, ILogger.errMessageNotTargeted)
+    }
+    override fun w(context: BaseActivityClass, message: String) {
+        Log.d(getTag(), ILogger.errMessageNotTargeted)
     }
 
+    override fun e(message: String) {
+        Log.d(getTag(), ILogger.errMessageNoContext)
+    }
     override fun e(context: BaseActivityClass, message: String) {
-        TODO("Not yet implemented")
+        restApiLog(context.getTag(), Exception(message), context)
     }
-
     override fun e(context: BaseActivityClass, message: Exception) {
-        TODO("Not yet implemented")
+        restApiLog(context.getTag(), Exception(message), context)
     }
-
     override fun e(tag: String, message: Exception) {
-        TODO("Not yet implemented")
+        Log.d(tag, ILogger.errMessageNoContext)
+    }
+    override fun e(message: Exception) {
+        Log.d(getTag(), ILogger.errMessageNoContext)
     }
 }

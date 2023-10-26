@@ -68,7 +68,7 @@ class DbHelper(context: Context, factory: CursorFactory?) :
         }
 
     private val logger: ComplexLogger = ComplexLogger(
-        mutableListOf(
+        this.javaClass.name,mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )

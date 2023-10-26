@@ -15,7 +15,7 @@ import com.jvr.datovaschranka.lib.classes.ListOfMessagesActivityAdapter
 import com.jvr.datovaschranka.lib.classes.MyGestureListenerExtended
 import java.util.*
 
-class ListOfMessages : BaseActivity() {
+class ListOfMessagesActivity : BaseActivity() {
     private lateinit var dbHelper: DbHelper
     private lateinit var binding: ActivityListOfMessagesBinding
     private var userTableItem: UsersTable.Item? = null
@@ -37,21 +37,24 @@ class ListOfMessages : BaseActivity() {
     }
 
     private fun mainBind() {
-        val lastMessages = GetListOfReceivedMessages.lastMessages[userTableItem!!._id!!]
-        val records = lastMessages!!.second.body.getListOfReceivedMessagesResponse.dmRecords
+        val lastMessages = GetListOfReceivedMessages.lastMessages
+        if (lastMessages.isNotEmpty()){
+            val lastUserMessages = lastMessages[userTableItem!!._id!!]
+            val records = lastUserMessages!!.second.body.getListOfReceivedMessagesResponse.dmRecords
 
-        customAdapter =
-            ListOfMessagesActivityAdapter(records)
+            customAdapter =
+                ListOfMessagesActivityAdapter(records)
                 { _: View?, layoutPosition: Int, _: MotionEvent?
-                                              , eventAction: MyGestureListenerExtended.EventAction
-                ->
-                onItemClick(layoutPosition, eventAction)
-            }
+                  , eventAction: MyGestureListenerExtended.EventAction
+                    ->
+                    onItemClick(layoutPosition, eventAction)
+                }
 
-        val layoutManager = LinearLayoutManager(applicationContext)
-        val recyclerView: RecyclerView = findViewById(R.id.activity_list_of_messages__recycler)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = customAdapter
+            val layoutManager = LinearLayoutManager(applicationContext)
+            val recyclerView: RecyclerView = findViewById(R.id.activity_list_of_messages__recycler)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = customAdapter
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

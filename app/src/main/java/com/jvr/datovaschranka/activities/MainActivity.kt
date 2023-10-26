@@ -32,10 +32,9 @@ class MainActivity : BaseActivity() {
     private lateinit var usersList : ArrayList<UsersTable.Item>
     private var serviceStatus : Boolean = false
     private lateinit var customAdapter: MainActivityAdapter
-    //private val networkMonitor = NetworkMonitorUtil(this)
 
     override val Log: ComplexLogger = ComplexLogger(
-        mutableListOf(
+        this.javaClass.name,mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )
@@ -63,23 +62,16 @@ class MainActivity : BaseActivity() {
     private fun onItemClick(
         layoutPosition: Int, eventAction: MyGestureListenerExtended.EventAction
     ) {
-        /*Log.d(
-            "",
-            view?.id?.toString() + ":" + eventAction.toString()
-        )*/
-
         if (eventAction == MyGestureListenerExtended.EventAction.onDoubleTap) {
             val currentSelectedUser = usersList[layoutPosition]
             val nextIntent = Intent(applicationContext, AddNewAccountActivity::class.java)
             nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
             startNextIntent(nextIntent)
         } else if (eventAction == MyGestureListenerExtended.EventAction.onSingleTapConfirmed) {
-            if (usersList.size > 0) {
-                val currentSelectedUser = usersList[layoutPosition]
-                val nextIntent = Intent(applicationContext, ListOfMessages::class.java)
-                nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
-                startNextIntent(nextIntent)
-            }
+            val currentSelectedUser = usersList[layoutPosition]
+            val nextIntent = Intent(applicationContext, ListOfMessagesActivity::class.java)
+            nextIntent.putExtra(UsersTable.Item::class.java.toString(), currentSelectedUser)
+            startNextIntent(nextIntent)
         }
     }
 
@@ -140,13 +132,13 @@ class MainActivity : BaseActivity() {
                 if (lastReceivedMessageForUser != null) {
                     val messages = lastReceivedMessageForUser.second.body.getListOfReceivedMessagesResponse.dmRecords
 
-                    val othersMessage = messages.filter { it ->
-                        it.translatedDmMessageStatus != ApiEnums.MessageStatus.Prectena
+                    val othersMessage = messages.filter { otherIt ->
+                        otherIt.translatedDmMessageStatus != ApiEnums.MessageStatus.Prectena
                     }
                     newData.receivedItemsUnread = othersMessage.size
 
-                    val readMessages = messages.filter { it ->
-                        it.translatedDmMessageStatus == ApiEnums.MessageStatus.Prectena
+                    val readMessages = messages.filter { readedIt ->
+                        readedIt.translatedDmMessageStatus == ApiEnums.MessageStatus.Prectena
                     }
                     newData.receivedItemsRead = readMessages.size
                 }
@@ -173,18 +165,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        //networkMonitor.register()
-    }
-
     private fun startStopService(it: View?) {
         if (!serviceStatus) {
             serviceStatus = true
             (it as Button).text = "Stop service"
-            val i = Intent(applicationContext, NotificationService::class.java)
-            i.putExtra("Par1", "Val1")
-            startService(i)
+            val serviceToStart = Intent(applicationContext, NotificationService::class.java)
+            serviceToStart.putExtra("Par1", "Val1")
+            startService(serviceToStart)
         } else {
             serviceStatus = false
             (it as Button).text = "Start service"

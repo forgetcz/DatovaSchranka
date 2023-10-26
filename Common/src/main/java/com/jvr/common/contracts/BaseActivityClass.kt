@@ -22,7 +22,7 @@ abstract class BaseActivityClass: AppCompatActivity(), IGetTag {
 
     @Suppress("PropertyName")
     open val Log = ComplexLogger(
-        mutableListOf(
+        this.javaClass.name, mutableListOf(
             BasicLogger(), HistoryLogger()
         )
     )

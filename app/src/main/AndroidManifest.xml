@@ -19,7 +19,7 @@
         android:theme="@style/Theme.DatovaSchranka"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ListOfMessages"
+            android:name=".activities.ListOfMessagesActivity"
             android:exported="false" />
         <activity
             android:name=".activities.AddNewAccountActivity"

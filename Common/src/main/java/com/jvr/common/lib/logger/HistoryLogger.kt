@@ -4,8 +4,8 @@ import com.jvr.common.contracts.ILogger
 import com.jvr.common.contracts.IHistoryLogger
 import com.jvr.common.contracts.ILogMessageItem
 import com.jvr.common.contracts.BaseActivityClass
-import java.lang.Exception
 import java.util.ArrayList
+import kotlin.Exception
 
 /**
  * Save all message to private List of messages
@@ -38,49 +38,64 @@ class HistoryLogger : ILogger, IHistoryLogger {
         return list
     }
 
+    override fun d(message: String) {
+        val stackTrace = Exception().stackTrace[1]
+        addMessage(stackTrace, getTag(), message, LogMessageItem.MessageType.Debug)
+    }
+    override fun d(tag: String, message: String) {
+        val stackTrace = Exception().stackTrace[1]
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Debug)
+    }
     override fun d(context: BaseActivityClass, message: String) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Debug)
     }
 
-    override fun d(tag: String, message: String) {
+    override fun i(message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Debug)
+        addMessage(stackTrace, getTag(), message, LogMessageItem.MessageType.Info)
     }
-
+    override fun i(tag: String, message: String) {
+        val stackTrace = Exception().stackTrace[1]
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Info)
+    }
     override fun i(context: BaseActivityClass, message: String) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Info)
     }
 
-    override fun i(tag: String, message: String) {
+    override fun w(message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Info)
+        addMessage(stackTrace, getTag(), message, LogMessageItem.MessageType.Warning)
     }
-
+    override fun w(tag: String, message: String) {
+        val stackTrace = Exception().stackTrace[1]
+        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Warning)
+    }
     override fun w(context: BaseActivityClass, message: String) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Warning)
     }
 
-    override fun w(tag: String, message: String) {
+    override fun e(message: String) {
         val stackTrace = Exception().stackTrace[1]
-        addMessage(stackTrace, tag, message, LogMessageItem.MessageType.Warning)
+        addMessage(stackTrace, getTag(), message, LogMessageItem.MessageType.Error)
     }
-
     override fun e(context: BaseActivityClass, message: String) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, context.getTag(), message, LogMessageItem.MessageType.Error)
     }
-
     override fun e(context: BaseActivityClass, message: Exception) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, context.getTag(), message.message, LogMessageItem.MessageType.Error)
     }
-
     override fun e(tag: String, message: Exception) {
         val stackTrace = Exception().stackTrace[1]
         addMessage(stackTrace, tag, message.message, LogMessageItem.MessageType.Error)
+    }
+    override fun e(message: Exception) {
+        val stackTrace = Exception().stackTrace[1]
+        addMessage(stackTrace, getTag(), message.message, LogMessageItem.MessageType.Error)
     }
 
 }
